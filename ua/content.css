@@ -1,0 +1,8 @@
+/*body *:hover{
+    background-color: rgba(250,134,129,0.3) !important;
+}*/
+body .hover-shadow{
+    background-color: rgba(250,134,129,0.3);
+    /*position: absolute;*/
+    /*z-index: 9999;*/
+}
