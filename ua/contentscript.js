@@ -2,17 +2,20 @@ var $body;
 var bodyWidth = 360;
 var controlWidth = 540;
 var $control;
+var $xpathPanel;
 $body = $('body');
 
 
-
+//BG  popup的确定都会传url
 chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
     //不是tab发来的消息
     if (!sender.tab) {
         console.log(message.url)
-        changeBody();
-        hover();
-        rightClick();
+        if (location.href == message.url) {
+            changeBody();
+            hover();
+            rightClick();
+        }
     }
 });
 
@@ -30,10 +33,16 @@ function changeBody() {
         width: controlWidth,
         minHeight: controlWidth
     });
+    $xpathPanel = $('<div>', {
+        id: 'xpath_panel'
+    });
+    $control.append($xpathPanel);
+
+
     $body.parent().append($control);
 }
 
-function hover(){
+function hover() {
     /************************************/
     // enter  leave 是不冒泡的  over out 冒泡
     // $body.on('mouseenter', '*', function(e){
@@ -109,11 +118,19 @@ function hover(){
     //     })
     // });
 }
-function rightClick(){
+
+function rightClick() {
     $body.contextmenu(function(e) {
         var target = e.target;
-        console.log(getPathTo(target));
+        // var xpathtext = getPathTo(target);
+        $parents = $(target).parents();
+
+        var xpathtext = getXpath($parents);
+        e.preventDefault();
+        // $xpathPanel.html(xpathtext);
+        alert(xpathtext)
     });
+
     function getPathTo(element) {
         if (element.id)
             return 'id("' + element.id + '")';
@@ -129,5 +146,28 @@ function rightClick(){
             if (sibling.nodeType === 1 && sibling.tagName === element.tagName)
                 ix++;
         }
+    }
+
+    var getChildrenIndex = function(ele) {
+        if (ele.sourceIndex) {
+            return ele.sourceIndex - ele.parentNode.sourceIndex - 1;
+        }
+        //others
+        var i = 0;
+        while (ele = ele.previousElementSibling) {
+            i++;
+        }
+        return i;
+    }
+    var getXpath = function($parents) {
+        var xpath = "";
+        while ($parents.length) {
+            var $tag = Array.prototype.pop.apply($parents);
+            if (!$tag || !$tag.tagName || $tag.tagName.toLowerCase() == "body" || $tag.tagName.toLowerCase() == "html") {
+                continue;
+            }
+            xpath += $tag.tagName.toLowerCase() + getChildrenIndex($tag) + ($parents.length == 0 ? "" : ">");
+        }
+        return xpath;
     }
 }
