@@ -13,3 +13,41 @@ body .hover-shadow{
     height: 30px;
     padding: 20px;
 }
+.info-panel{
+  margin: 2em 0px 2em 0;
+  padding: 0 0 0 2em;
+
+}
+.info-panel .panel-title{
+    height: 100px;
+    line-height: 100px;
+    font-size: 20px;
+    font-style: bold;
+}
+
+#basic-info .infos{
+  display: flex;
+  flex-flow: row wrap;
+}
+#basic-info .infos .info {
+  flex-grow: 1;
+  width: 200px;
+  background: #ddd;
+  padding: 1em;
+  margin: 0 18px 1em 0;
+  color: #666;
+  text-align: center;
+}
+#basic-info .infos .info .title {
+  font-weight: bold;
+  font-size: 16px;
+  display: block;
+  line-height: 1.2em;
+  min-height: 2.9em;
+  padding: 0 0 0.5em;
+}
+#basic-info .infos .info .value {
+  font-weight: bold;
+  line-height: 60px;
+  margin: 0;
+}

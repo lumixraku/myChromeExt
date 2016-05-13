@@ -15,9 +15,16 @@ document.addEventListener('DOMContentLoaded', function(e) {
             // message('Settings saved');
             msg.innerHTML = '设置成功 请刷新页面'
         });
-        sendToContent(value);
+        sendToBG(value);
+        // sendToContent(value);
     });
 }, false);
+
+function sendToBG(value){
+    chrome.runtime.sendMessage({url : value}, function(response) {
+
+    });
+}
 
 function sendToContent(value) {
     value = value || '';
@@ -32,4 +39,3 @@ function sendToContent(value) {
         });
     });
 }
-// sendToContent();
