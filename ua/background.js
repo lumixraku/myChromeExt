@@ -10,16 +10,14 @@ var UA = 'Mozilla/5.0 (iPhone; CPU iPhone OS 9_1 like Mac OS X) AppleWebKit/601.
     chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
         if (changeInfo.status === 'loading') {
             chrome.tabs.sendMessage(tabId, { 'url': localStorage.getItem('url') }, function() {
-                //document.querySelector('#applyCssMsg').innerHTML = response;
             });
         }
         if (changeInfo.status === 'complete') {
             chrome.tabs.sendMessage(tabId, { 'url': localStorage.getItem('url') }, function() {
-                //document.querySelector('#applyCssMsg').innerHTML = response;
             });
         }
     });
-})()
+})();
 
 
 chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
@@ -49,3 +47,12 @@ function changeUA(details) {
     }
     return { requestHeaders: headers };
 }
+
+//拦截响应 并修改xframe
+chrome.webRequest.onHeadersReceived.addListener(function(details){
+    details.responseHeaders.push({
+        'X-Frame-Options': 'sameorigin'
+    });
+    console.log(details.responseHeaders, details);
+},{urls: ['<all_urls>']}, ['responseHeaders', 'blocking']);
+
