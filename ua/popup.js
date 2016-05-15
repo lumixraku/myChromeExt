@@ -1,3 +1,4 @@
+var bodyWidth = 360;
 document.addEventListener('DOMContentLoaded', function(e) {
     var doc = document;
     var storeValue = localStorage.getItem('url');
@@ -21,8 +22,7 @@ document.addEventListener('DOMContentLoaded', function(e) {
 }, false);
 
 function sendToBG(value){
-    chrome.runtime.sendMessage({url : value}, function(response) {
-
+    chrome.runtime.sendMessage({url : value, from: 'popup_save'}, function(response) {
     });
 }
 

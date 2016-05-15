@@ -1,7 +1,7 @@
 (function() {
     var $body = $('body');
     var bodyWidth = 360;
-    var controlWidth = 540;
+    var controlWidth = 360;
     var $xpathPanel;
     $control = $('<div>', {
         id: 'control_panel'
@@ -9,17 +9,14 @@
     var $performancePanel = $('<div>', {
         id: 'performance_panel'
     });
-    var $phoneFrame = $('<iframe>', {
-        id: 'phoneFrame',
-        'sandbox': 'allow-same-origin'
+    var $phoneFrame = $('<div>', {
+        id: 'phoneFrame'
     });
     var phoneFrame = $phoneFrame[0];
     var HOVER_SHADOW = 'rgba(250,134,129,0.3)';
 
     /***************/
     var helper;
-
-
     helper = (function() {
         var helper = {};
 
@@ -141,20 +138,24 @@
 
     /********************************************************/
     //页面刷新时  传入url  //BG中会监测tab的刷新
+    sendToBG();
+    function sendToBG(){
+        chrome.runtime.sendMessage(window.performance);
+    }
     chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
         //不是tab发来的消息
         if (!sender.tab) {
             console.log(message.url);
             if (location.href == message.url) {
-                changeBody(bindEvents);
-                showPerformance(calcPerformance({
-                    resources: [],
-                    marks: [],
-                    measures: [],
-                    perfTiming: [],
-                    calcBasicInfo: {},
-                    allResourcesCalc: []
-                }));
+                // changeBody(bindEvents);
+                // showPerformance(calcPerformance({
+                //     resources: [],
+                //     marks: [],
+                //     measures: [],
+                //     perfTiming: [],
+                //     calcBasicInfo: {},
+                //     allResourcesCalc: []
+                // }));
             }
         }
     });
@@ -162,19 +163,25 @@
 
     function changeBody(callback) {
         $(function() {
-            // $body.css({
-            //     width: bodyWidth,
-            //     margin: 0//,
-            //     // 'border-right':'1px solid grey'
-            // });
-            $body.parent().append($control);
-            $body.parent().append($phoneFrame);
-
-            $phoneFrame.css({
-                width: 360,
-                height: 640,
-                'border-right': '1px solid grey'
+            $body.css({
+                width: bodyWidth,
+                margin: 0,
+                'border-right':'1px solid grey'
             });
+            $body.find('*').each(function(){
+                var elem = $(this)[0];
+                var style = getComputedStyle(elem);
+                if(style.position === 'fixed'){
+                    if(parseInt(style.width) > bodyWidth )
+                    $(this).css({
+                        width: bodyWidth
+                    });
+                }
+            })
+
+
+            $body.parent().append($control);
+
             $control.css({
                 position: 'fixed',
                 left: bodyWidth + 20,
@@ -185,33 +192,22 @@
                 'overflow-y': 'scroll',
                 'box-shadow': 'rgba(0, 0, 0, 0.5) 0px 0px 25px 0px'
             });
-            $performancePanel.css({
 
-            });
-
-            
-            phoneFrame.src = location.href + '&output=embed';
-            phoneFrame.onload = callback;
-            // callback();
             $control.append($performancePanel);
-            $(phoneFrame.contentDocument.body).html($body.children());
-            phoneFrame.contentDocument.head.innerHTML = $('head').html();
-            $body.css({
-                'display': 'none'
-            });
+            callback();
         });
     }
 
     function bindEvents() {
         var phoneFrame = $phoneFrame[0];
-        $(phoneFrame.contentDocument).on('mouseover', function(e) {
+        $body.on('mouseover', function(e) {
             var target = e.target;
             $(target).css({
                 'background-color': HOVER_SHADOW
             });
             e.stopPropagation();
         });
-        $(phoneFrame.contentDocument).on('mouseout', function(e) {
+        $body.on('mouseout', function(e) {
             var target = e.target;
             $(target).css({
                 'background-color':''
@@ -219,10 +215,9 @@
             e.stopPropagation();
         });
 
-        $(phoneFrame.contentDocument).on('contextmenu', function(e) {
+        $body.on('contextmenu', function(e) {
             var target = e.target;
             var xpathtext = getXpath(target);
-            // var xpathtext = getPathTo(target);
             e.preventDefault();
             alert(xpathtext);
         });
