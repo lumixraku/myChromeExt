@@ -138,15 +138,27 @@
 
     /********************************************************/
     //页面刷新时  传入url  //BG中会监测tab的刷新
-    sendToBG();
     function sendToBG(){
-        chrome.runtime.sendMessage(window.performance);
+
+        //不能直接将 window.performance 传给bg 
+        //消息传递要求值是可以序列化的  然而JSON.stringify(window.performance)
+        //得到的结果是 "{}" 
+        chrome.runtime.sendMessage({
+            timing:window.performance.timing,
+            resources: window.performance.getEntriesByType("resource"),
+            memory:{
+                totalJSHeapSize: window.performance.memory.totalJSHeapSize,
+                usedJSHeapSize: window.performance.memory.usedJSHeapSize,
+                jsHeapSizeLimit: window.performance.memory.usedJSHeapSize
+            }
+        });
     }
     chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
         //不是tab发来的消息
         if (!sender.tab) {
             console.log(message.url);
             if (location.href == message.url) {
+                sendToBG();
                 // changeBody(bindEvents);
                 // showPerformance(calcPerformance({
                 //     resources: [],
@@ -163,21 +175,23 @@
 
     function changeBody(callback) {
         $(function() {
-            $body.css({
-                width: bodyWidth,
-                margin: 0,
-                'border-right':'1px solid grey'
-            });
-            $body.find('*').each(function(){
-                var elem = $(this)[0];
-                var style = getComputedStyle(elem);
-                if(style.position === 'fixed'){
-                    if(parseInt(style.width) > bodyWidth )
-                    $(this).css({
-                        width: bodyWidth
-                    });
-                }
-            })
+
+            //在同一个页面显示源页面和信息
+            // $body.css({
+            //     width: bodyWidth,
+            //     margin: 0,
+            //     'border-right':'1px solid grey'
+            // });
+            // $body.find('*').each(function(){
+            //     var elem = $(this)[0];
+            //     var style = getComputedStyle(elem);
+            //     if(style.position === 'fixed'){
+            //         if(parseInt(style.width) > bodyWidth )
+            //         $(this).css({
+            //             width: bodyWidth
+            //         });
+            //     }
+            // });
 
 
             $body.parent().append($control);
@@ -269,10 +283,7 @@
     function calcPerformance(data) {
         data.resources = window.performance.getEntriesByType("resource");
         data.allResourcesCalc = data.resources
-            //remove this bookmarklet from the result
-            .filter(function(currR) {
-                return !currR.name.match(/http[s]?\:\/\/(micmro|nurun).github.io\/performance-bookmarklet\/.*/);
-            }).map(function(currR, i, arr) {
+                .map(function(currR, i, arr) {
                 //crunch the resources data into something easier to work with
                 var isRequest = currR.name.indexOf("http") === 0;
                 var urlFragments, maybeFileName, fileExtension;

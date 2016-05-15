@@ -1,14 +1,70 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>Document</title>
+    <style>
+    #control_panel {
+        margin-left: 400px;
+    }
+    
+    .info-panel {
+        margin: 2em 0px 2em 0;
+        padding: 0 0 0 2em;
+    }
+    
+    .info-panel .panel-title {
+        height: 100px;
+        line-height: 100px;
+        font-size: 20px;
+        font-style: bold;
+    }
+    
+    #timing_panel .infos {
+        display: flex;
+        flex-flow: row wrap;
+    }
+    
+    #timing_panel .infos .info {
+        flex-grow: 1;
+        width: 200px;
+        background: #ddd;
+        padding: 1em;
+        margin: 0 18px 1em 0;
+        color: #666;
+        text-align: center;
+    }
+    
+    #timing_panel .infos .info .title {
+        font-weight: bold;
+        font-size: 16px;
+        display: block;
+        line-height: 1.2em;
+        min-height: 2.9em;
+        padding: 0 0 0.5em;
+    }
+    
+    #timing_panel .infos .info .value {
+        font-weight: bold;
+        line-height: 60px;
+        margin: 0;
+    }
+    </style>
 </head>
+
 <body>
-performance
-
-<script type="text/javascript" src="performance.js">
-
-</script>
+    <div id="control_panel">
+        <h1>performance</h1>
+        <h4>Load Timing</h4>
+        <div id="timing_panel"></div>
+        <h4>Memory Info</h4>
+        <div id="memory_panel"></div>
+    </div>
+    <script src="lib/jquery.js"></script>
+    <script src="lib/underscore.js"></script>
+    <script type="text/javascript" src="performance.js">
+    </script>
 </body>
+
 </html>

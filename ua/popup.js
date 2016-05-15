@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', function(e) {
         chrome.storage.sync.set({ 'url': value }, function() {
             // Notify that we saved.
             // message('Settings saved');
-            msg.innerHTML = '设置成功 请刷新页面'
+            msg.innerHTML = '设置成功 请刷新页面';
         });
         sendToBG(value);
         // sendToContent(value);
