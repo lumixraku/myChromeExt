@@ -1,8 +1,7 @@
-var bodyWidth = 360;
 document.addEventListener('DOMContentLoaded', function(e) {
     var doc = document;
     var storeValue = localStorage.getItem('url');
-    var saveBtn = doc.querySelector('.button');
+    var saveBtn = doc.querySelector('.input-button');
     var input = doc.querySelector('.input-url');
     var msg = doc.querySelector('.msg');
     if (storeValue) {

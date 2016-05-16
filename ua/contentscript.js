@@ -2,7 +2,6 @@
     var $body = $('body');
     var bodyWidth = 360;
     var controlWidth = 360;
-    var $xpathPanel;
     $control = $('<div>', {
         id: 'control_panel'
     });
@@ -138,15 +137,15 @@
 
     /********************************************************/
     //页面刷新时  传入url  //BG中会监测tab的刷新
-    function sendToBG(){
+    function sendToBG() {
 
-        //不能直接将 window.performance 传给bg 
+        //不能直接将 window.performance 传给bg
         //消息传递要求值是可以序列化的  然而JSON.stringify(window.performance)
-        //得到的结果是 "{}" 
+        //得到的结果是 "{}"
         chrome.runtime.sendMessage({
-            timing:window.performance.timing,
+            timing: window.performance.timing,
             resources: window.performance.getEntriesByType("resource"),
-            memory:{
+            memory: {
                 totalJSHeapSize: window.performance.memory.totalJSHeapSize,
                 usedJSHeapSize: window.performance.memory.usedJSHeapSize,
                 jsHeapSizeLimit: window.performance.memory.usedJSHeapSize
@@ -157,17 +156,18 @@
         //不是tab发来的消息
         if (!sender.tab) {
             console.log(message.url);
-            if (location.href == message.url) {
-                sendToBG();
-                // changeBody(bindEvents);
-                // showPerformance(calcPerformance({
-                //     resources: [],
-                //     marks: [],
-                //     measures: [],
-                //     perfTiming: [],
-                //     calcBasicInfo: {},
-                //     allResourcesCalc: []
-                // }));
+            if (location.href.indexOf(message.url) != -1 ) {
+                // sendToBG();
+                changeBody(bindEvents);
+                showPerformance(calcPerformance({
+                    resources: [],
+                    marks: [],
+                    measures: [],
+                    perfTiming: [],
+                    calcBasicInfo: {},
+                    allResourcesCalc: [],
+                    memory: {}
+                }));
             }
         }
     });
@@ -177,34 +177,33 @@
         $(function() {
 
             //在同一个页面显示源页面和信息
-            // $body.css({
-            //     width: bodyWidth,
-            //     margin: 0,
-            //     'border-right':'1px solid grey'
-            // });
-            // $body.find('*').each(function(){
-            //     var elem = $(this)[0];
-            //     var style = getComputedStyle(elem);
-            //     if(style.position === 'fixed'){
-            //         if(parseInt(style.width) > bodyWidth )
-            //         $(this).css({
-            //             width: bodyWidth
-            //         });
-            //     }
-            // });
+            $body.css({
+                width: bodyWidth,
+                margin: 0,
+                'border-right': '1px solid grey'
+            });
+            $body.find('*').each(function() {
+                var elem = $(this)[0];
+                var style = getComputedStyle(elem);
+                if (style.position === 'fixed') {
+                    if (parseInt(style.width) > bodyWidth)
+                        // $(this).css({
+                        //     width: bodyWidth
+                        // });
+                        $(this).attr('style', $(this).attr('style') + '; ' + 'width: '+ bodyWidth +'px !important');
+                }
+            });
 
 
             $body.parent().append($control);
 
             $control.css({
                 position: 'fixed',
-                left: bodyWidth + 20,
+                left: $body.outerWidth(),
                 top: 0,
-                width: $(window).width() - bodyWidth - 70,
-                height: $(window).height() - 50,
-                margin: 20,
-                'overflow-y': 'scroll',
-                'box-shadow': 'rgba(0, 0, 0, 0.5) 0px 0px 25px 0px'
+                width: $(window).width() - $body.outerWidth(),
+                height: $(window).height(),
+                'overflow-y': 'scroll'
             });
 
             $control.append($performancePanel);
@@ -224,7 +223,7 @@
         $body.on('mouseout', function(e) {
             var target = e.target;
             $(target).css({
-                'background-color':''
+                'background-color': ''
             });
             e.stopPropagation();
         });
@@ -283,7 +282,7 @@
     function calcPerformance(data) {
         data.resources = window.performance.getEntriesByType("resource");
         data.allResourcesCalc = data.resources
-                .map(function(currR, i, arr) {
+            .map(function(currR, i, arr) {
                 //crunch the resources data into something easier to work with
                 var isRequest = currR.name.indexOf("http") === 0;
                 var urlFragments, maybeFileName, fileExtension;
@@ -331,6 +330,7 @@
         data.requestsOnly = data.allResourcesCalc.filter(function(currR) {
             return currR.name.indexOf("http") === 0 && !currR.name.match(/js.map$/);
         });
+        data.allRequestsCount = data.requestsOnly.length;
 
         //get counts
         // initiatorType 为css  表示这个资源是从css文件发出的请求
@@ -408,19 +408,21 @@
         data.perfTiming.push({
             value: data.allResourcesCalc.length,
             title: '请求',
-            name: 'totalReuqest'
+            name: 'Total Reuqests',
+            desc: '全部请求数量 请求越多  页面加载时间也越长'
         });
 
         data.perfTiming.push({
             value: data.requestsByDomain.length,
             title: '域名',
-            name: 'domains'
+            name: 'Domains',
+            desc: '加载资源所涉及到的域名 过多过少的域名都会影响加载时间'
         });
 
         data.perfTiming.push({
             value: data.slowestCalls[0].loadtime,
             title: '耗时最长的请求',
-            name: 'slowestCall',
+            name: 'Slowest Call',
             unit: 'ms'
         });
 
@@ -433,70 +435,88 @@
             }) / data.slowestCalls.length),
             title: '请求平均耗时',
             unit: 'ms',
-            name: 'averageCall'
+            name: 'Average Call'
+        });
+        data.perfTiming.push({
+            value: timing.domainLookupStart - timing.fetchStart,
+            title: '浏览器读取缓存时间',
+            unit: 'ms',
+            name: 'cacheElapse',
+            desc: '静态资源数量，大小都会影响下载时间'
         });
         data.perfTiming.push({
             value: timing.domainLookupEnd - timing.domainLookupStart,
             title: 'DNS查询时间',
             unit: 'ms',
-            name: 'dnsElapse'
+            name: 'dnsElapse',
+            desc: 'DNS查询时间'
         });
 
         data.perfTiming.push({
             value: timing.domComplete - timing.domLoading,
             title: 'DOM 处理耗时',
             unit: 'ms',
-            name: 'domProcessing'
+            name: 'DOM Processing',
+            desc: '解析 DOM 树结构的时间，过多的域名会使解析时间变长'
         });
         data.perfTiming.push({
             value: timing.responseStart - timing.requestStart,
             title: '请求耗时',
-            name: 'firstByte',
-            unit: 'ms'
-        });
-        data.perfTiming.push({
-            value: timing.responseStart - timing.navigationStart,
-            title: '网络处理耗时',
+            name: 'Time to First Byte',
             unit: 'ms',
-            name: 'netWork',
+            desc: '浏览器在拿到第一个资源的等待时间，是否配置了异地机房，CDN，带宽等都会影响这个结果'
         });
         data.perfTiming.push({
             value: timing.responseEnd - timing.responseStart,
-            title: '浏览器处理响应耗时',
+            title: '下载资源耗时',
             unit: 'ms',
-            name: 'contentDownloads'
+            name: 'contentDownloads',
+            desc: '静态资源数量，大小都会影响下载时间'
         });
         data.perfTiming.push({
             value: timing.domContentLoadedEventStart - timing.domLoading,
             title: 'DOM下载耗时',
             unit: 'ms',
-            name: 'domContentLoading'
+            name: 'DOM Content Loading'
         });
         data.perfTiming.push({
             value: timing.loadEventEnd - timing.navigationStart,
             title: '页面加载耗时',
             unit: 'ms',
-            name: ''
+            name: ' Total',
+            desc: '页面加载完成的时间, 这几乎代表了用户等待页面可用的时间'
         });
+
+        /*****************************************/
+        data.memory = window.performance.memory;
+
         console.log(data);
         return data;
 
     }
 
     function showPerformance(data) {
-        //basic info
-        var tempDiv = document.createElement('div');
         var $basicInfo = $('<div>', {
             id: 'basic-info',
             'class': 'info-panel'
         });
-        $basicInfo.html('<div class="panel-title">页面加载信息</div>');
+        var $memoryInfo = $('<div>', {
+            id: 'memory-info',
+            'class': 'info-panel'
+        });
+        var $resourceInfo = $('<div>', {
+            id: 'resource-info',
+            'class': 'info-panel'
+        });
+        $performancePanel.append($basicInfo, $memoryInfo, $resourceInfo);
+        /***********************************************/
+        $basicInfo.html('<div class="panel-title">连接信息</div>');
         var tplFn = _.template(
             ['<div class="infos">',
                 '<% for (var i=0; i < items.length; i++) { %>',
-                '<div class="info">',
+                '<div class="info connect-info">',
                 '<div class="title">',
-                '<%= items[i].title%>',
+                '<%= items[i].name%>',
                 '</div>',
                 '<div class="val">',
                 '<%= Math.round(items[i].value)%>',
@@ -504,14 +524,85 @@
                 '<%= items[i].unit%>',
                 '</span>',
                 '</div>',
+                '<div class="popup">',
+                '<%= items[i].desc %>',
+                '</div>',
                 '</div>',
                 '<% } %>',
                 '</div>'
             ].join(''));
-
         $basicInfo.html($basicInfo.html() + tplFn({ items: data.perfTiming }));
+        /***********************************************/
+        tplFn = _.template(
+            ['<div class="infos">',
+                '<div class="info">',
+                '<div class="title">',
+                '<%= item.name%>',
+                '</div>',
+                '<div class="val">',
+                'JavaScript占用内存',
+                '<%= item.used/1000/1000 %>Mb ',
+                '(<%= Math.round(item.used/item.total*100)%>',
+                '<span class="unit">%</span>)',
+                '</div>',
+                '</div>',
+                '</div>'
+            ].join(''));
+        $memoryInfo.html('<div class="panel-title">内存信息</div>' + tplFn({
+            item: {
+                name: '当前页面Js占用内存',
+                total: data.memory.totalJSHeapSize,
+                used: data.memory.usedJSHeapSize,
+                limit: data.memory.jsHeapSizeLimit
+            }
+        }));
+        /***********************************************/
+        var tplFn1 = _.template(
+            ['<div class="infos">',
+                '<% for (var i=0; i < item.list.length; i++) { %>',
+                '<div class="info">',
+                '<div class="title">',
+                '<%= item.list[i].fileType%>',
+                '</div>',
+                '<div class="val">',
+                '<%= item.list[i].count%> &nbsp; ',
+                '(<%= Math.round(item.list[i].count/item.allreqs*100) %>',
+                '<span class="unit">%</span>)',
+                '</div>',
+                '</div>',
+                '<% } %>',
+                '</div>'
+            ].join(''));
+        var tplFn2 = _.template(
+            ['<div class="infos list">',
+                '<% for (var i=0; i < item.list.length; i++) { %>',
+                '<div class="info">',
+                '<div class="title">',
+                '<%= item.list[i].domain%> : ',
+                '</div>',
+                '<div class="val">',
+                '<%= item.list[i].count%> &nbsp; ',
+                '(<%= Math.round(item.list[i].count/item.allreqs*100) %>',
+                '<span class="unit">%</span>)',
+                '</div>',
+                '</div>',
+                '<% } %>',
+                '</div>'
+            ].join(''));
+        $resourceInfo.html(['<div class="panel-title">资源信息</div>',
+            tplFn1({
+                item: {
+                    list: data.fileTypeCounts,
+                    allreqs: data.allRequestsCount
+                }
+            }),
+            '<div class="panel-title">域名资源</div>',
+            tplFn2({ item:{
+                list: data.requestsByDomain,
+                allreqs: data.allRequestsCount
+            }})
+        ].join(''));
 
-        $performancePanel.append($basicInfo);
     }
 
 })();

@@ -6,21 +6,44 @@
     <title>Document</title>
     <style>
     body {
-        width: 300px;
-        height: 200px;
+        width: 500px;
+        height: 300px;
     }
-    
+
     .msg {
+        margin: 10px 0;
+        height: 30px;
+        line-height: 30px;
+    }
+    .input-wrapper{
+        padding: 8px;
+        border: 1px solid #b6b6b6;
+        display: inline-block;
+    }
+    .input-url{
+        border: 0;
+        outline: 0;
+        width: 350px;
         height: 20px;
         line-height: 20px;
+        -webkit-appearance: none;
+    }
+    .input-button{
+        display: inline-block;
+        width: 104px;
+        height: 40px;
+        border: 0;
+
     }
     </style>
 </head>
 
 <body>
     <h4>Step1 设置你的页面URL</h4>
-    <input type="text" class='input-url' />
-    <input type="button" class="button" value="保存" />
+    <div class="input-wrapper">
+        <input type="text" class='input-url' width=350/>
+    </div>
+    <input type="button" class="input-button" value="保存" />
     <div class="msg"></div>
     <h4>Step2 使用鼠标右键选择你指定转化率的元素</h4>
 </body>
