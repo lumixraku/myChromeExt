@@ -6,9 +6,21 @@ document.addEventListener('DOMContentLoaded', function(e) {
     var msg = doc.querySelector('.msg');
     if (storeValue) {
         input.value = storeValue;
+    }else{
+        input.value = 'http://';
     }
-    saveBtn.addEventListener('click', function() {
+    input.addEventListener('keydown', function(e){
+        if(e.keyCode === 13){
+            saveHandler();
+        }
+    })
+    saveBtn.addEventListener('click', saveHandler);
+
+    function saveHandler(){
         var value = input.value;
+        if(!/^https?:\/\/.*/.test(value)){
+            value = 'http://' + value;
+        }
         localStorage.setItem('url', value);
         chrome.storage.sync.set({ 'url': value }, function() {
             // Notify that we saved.
@@ -17,8 +29,11 @@ document.addEventListener('DOMContentLoaded', function(e) {
         });
         sendToBG(value);
         // sendToContent(value);
-    });
+    }
+    
 }, false);
+
+
 
 function sendToBG(value){
     chrome.runtime.sendMessage({url : value, from: 'popup_save'}, function(response) {

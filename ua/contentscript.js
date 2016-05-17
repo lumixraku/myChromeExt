@@ -134,7 +134,6 @@
         return helper;
     })();
 
-
     /********************************************************/
     //页面刷新时  传入url  //BG中会监测tab的刷新
     function sendToBG() {
@@ -179,8 +178,7 @@
             //在同一个页面显示源页面和信息
             $body.css({
                 width: bodyWidth,
-                margin: 0,
-                'border-right': '1px solid grey'
+                margin: 0
             });
             $body.find('*').each(function() {
                 var elem = $(this)[0];
@@ -190,6 +188,7 @@
                         // $(this).css({
                         //     width: bodyWidth
                         // });
+                        //覆盖原page存在important
                         $(this).attr('style', $(this).attr('style') + '; ' + 'width: '+ bodyWidth +'px !important');
                 }
             });
@@ -216,14 +215,16 @@
         $body.on('mouseover', function(e) {
             var target = e.target;
             $(target).css({
-                'background-color': HOVER_SHADOW
+                'background-color': HOVER_SHADOW,
+                opacity: 0.5,
             });
             e.stopPropagation();
         });
         $body.on('mouseout', function(e) {
             var target = e.target;
             $(target).css({
-                'background-color': ''
+                'background-color': '',
+                opacity:''
             });
             e.stopPropagation();
         });
@@ -258,7 +259,7 @@
             }
             //others
             var i = 0;
-            while (ele = ele.previousElementSibling) {
+            while (ele = ele.previousElementSibling){
                 i++;
             }
             return i;
@@ -409,21 +410,22 @@
             value: data.allResourcesCalc.length,
             title: '请求',
             name: 'Total Reuqests',
-            desc: '全部请求数量 请求越多  页面加载时间也越长'
+            desc: '全部请求数量</br> 请求越多 页面加载时间也越长'
         });
 
         data.perfTiming.push({
             value: data.requestsByDomain.length,
             title: '域名',
             name: 'Domains',
-            desc: '加载资源所涉及到的域名 过多过少的域名都会影响加载时间'
+            desc: '全部资源所涉及到的域名</br> 过多过少的域名都会导致加载时间变长'
         });
 
         data.perfTiming.push({
             value: data.slowestCalls[0].loadtime,
             title: '耗时最长的请求',
             name: 'Slowest Call',
-            unit: 'ms'
+            unit: 'ms',
+            desc: '耗时最长的请求'
         });
 
         data.perfTiming.push({
@@ -435,56 +437,55 @@
             }) / data.slowestCalls.length),
             title: '请求平均耗时',
             unit: 'ms',
-            name: 'Average Call'
+            name: 'Average Call',
+            desc: '请求平均耗时'
         });
         data.perfTiming.push({
             value: timing.domainLookupStart - timing.fetchStart,
             title: '浏览器读取缓存时间',
             unit: 'ms',
             name: 'cacheElapse',
-            desc: '静态资源数量，大小都会影响下载时间'
+            desc: '浏览器读取缓存时间'
         });
         data.perfTiming.push({
             value: timing.domainLookupEnd - timing.domainLookupStart,
             title: 'DNS查询时间',
             unit: 'ms',
             name: 'dnsElapse',
-            desc: 'DNS查询时间'
+            desc: 'DNS查询时间</br> 该值由domainLookupEnd 减去 domainLookupStart得到'
         });
 
         data.perfTiming.push({
+            //domLoading 是开始处理dom的时候 此时responEnd 理论上已经结束
+            //domLoading  返回用户代理把其文档的 "current document readiness" 设置为 "loading"的时候
+            //domComplete  返回用户代理把其文档的 "current document readiness" 设置为 "complete"的时候
+            //就是 dom的readyState为 loading  complete的时候
             value: timing.domComplete - timing.domLoading,
             title: 'DOM 处理耗时',
             unit: 'ms',
             name: 'DOM Processing',
-            desc: '解析 DOM 树结构的时间，过多的域名会使解析时间变长'
+            desc: '解析DOM结构时间</br>  该值由domComplete 减去 domLoading得到'
         });
         data.perfTiming.push({
             value: timing.responseStart - timing.requestStart,
             title: '请求耗时',
             name: 'Time to First Byte',
             unit: 'ms',
-            desc: '浏览器在拿到第一个资源的等待时间，是否配置了异地机房，CDN，带宽等都会影响这个结果'
+            desc: '浏览器在拿到第一个资源的等待时间</br> 是否配置了异地机房，CDN，带宽等都会影响这个结果  该值由responseStart 减去 requestStart得到'
         });
         data.perfTiming.push({
             value: timing.responseEnd - timing.responseStart,
             title: '下载资源耗时',
             unit: 'ms',
             name: 'contentDownloads',
-            desc: '静态资源数量，大小都会影响下载时间'
-        });
-        data.perfTiming.push({
-            value: timing.domContentLoadedEventStart - timing.domLoading,
-            title: 'DOM下载耗时',
-            unit: 'ms',
-            name: 'DOM Content Loading'
+            desc: '下载资源耗时</br> 静态资源数量，大小都会影响下载时间 该值由responseEnd 减去 responseStart 得到'
         });
         data.perfTiming.push({
             value: timing.loadEventEnd - timing.navigationStart,
             title: '页面加载耗时',
             unit: 'ms',
             name: ' Total',
-            desc: '页面加载完成的时间, 这几乎代表了用户等待页面可用的时间'
+            desc: '页面加载完成的时间</br> 这几乎代表了用户等待页面可用的时间 该值由 loadEventEnd 减去 navigationStart 得到'
         });
 
         /*****************************************/
