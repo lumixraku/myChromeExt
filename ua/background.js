@@ -65,13 +65,8 @@ function getUrlForFilter(){
     if(/^https?:\/\/(.*)/.test(url)){
         rs = url.match(/^https?:\/\/(.*)/);
         if(rs[1]){
-            rs[1] += "/*";
-            // if(rs[1][rs[1].length - 1] === '/'){
-            //     rs[1] += "*";
-            // }else{
-            //     rs[1] += '/*';
-            // }
-            arr[0] = '*://*.' + rs[1];
+            // arr.push('*://*.' + rs[1] + '/');
+            arr.push('*://*.' + rs[1] + '/*');
         }
     }
     console.log(arr[0]);
