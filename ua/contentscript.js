@@ -2,17 +2,13 @@
     var $body = $('body');
     var bodyWidth = 360;
     var controlWidth = 360;
-    $control = $('<div>', {
+    var HOVER_SHADOW = 'rgba(250,134,129,0.3)';
+    var $control = $('<div>', {
         id: 'control_panel'
     });
     var $performancePanel = $('<div>', {
         id: 'performance_panel'
     });
-    var $phoneFrame = $('<div>', {
-        id: 'phoneFrame'
-    });
-    var phoneFrame = $phoneFrame[0];
-    var HOVER_SHADOW = 'rgba(250,134,129,0.3)';
 
     /********************************************************/
     //页面刷新时  传入url  //BG中会监测tab的刷新
@@ -38,7 +34,7 @@
             if (location.href.indexOf(message.url) != -1 ) {
                 // sendToBG();
                 changeBody(bindEvents);
-                showPerformance(calcPerformance({
+                helper.renderPerformacePanel(calcPerformance({
                     resources: [],
                     marks: [],
                     measures: [],
@@ -46,7 +42,7 @@
                     calcBasicInfo: {},
                     allResourcesCalc: [],
                     memory: {}
-                }));
+                }), $performancePanel);
             }
         }
     });
@@ -91,7 +87,6 @@
     }
 
     function bindEvents() {
-        var phoneFrame = $phoneFrame[0];
         $body.on('mouseover', function(e) {
             var target = e.target;
             $(target).css({
@@ -159,116 +154,4 @@
         };
 
     }
-
-
-    function showPerformance(data) {
-        var $basicInfo = $('<div>', {
-            id: 'basic-info',
-            'class': 'info-panel'
-        });
-        var $memoryInfo = $('<div>', {
-            id: 'memory-info',
-            'class': 'info-panel'
-        });
-        var $resourceInfo = $('<div>', {
-            id: 'resource-info',
-            'class': 'info-panel'
-        });
-        $performancePanel.append($basicInfo, $memoryInfo, $resourceInfo);
-        /***********************************************/
-        $basicInfo.html('<div class="panel-title">连接信息</div>');
-        var tplFn = _.template(
-            ['<div class="infos">',
-                '<% for (var i=0; i < items.length; i++) { %>',
-                '<div class="info connect-info">',
-                '<div class="title">',
-                '<%= items[i].name%>',
-                '</div>',
-                '<div class="val">',
-                '<%= Math.round(items[i].value)%>',
-                '<span class="unit">',
-                '<%= items[i].unit%>',
-                '</span>',
-                '</div>',
-                '<div class="popup">',
-                '<%= items[i].desc %>',
-                '</div>',
-                '</div>',
-                '<% } %>',
-                '</div>'
-            ].join(''));
-        $basicInfo.html($basicInfo.html() + tplFn({ items: data.perfTiming }));
-        /***********************************************/
-        tplFn = _.template(
-            ['<div class="infos">',
-                '<div class="info">',
-                '<div class="title">',
-                '<%= item.name%>',
-                '</div>',
-                '<div class="val">',
-                'JavaScript占用内存',
-                '<%= item.used/1000/1000 %>Mb ',
-                '(<%= Math.round(item.used/item.total*100)%>',
-                '<span class="unit">%</span>)',
-                '</div>',
-                '</div>',
-                '</div>'
-            ].join(''));
-        $memoryInfo.html('<div class="panel-title">内存信息</div>' + tplFn({
-            item: {
-                name: '当前页面Js占用内存',
-                total: data.memory.totalJSHeapSize,
-                used: data.memory.usedJSHeapSize,
-                limit: data.memory.jsHeapSizeLimit
-            }
-        }));
-        /***********************************************/
-        var tplFn1 = _.template(
-            ['<div class="infos">',
-                '<% for (var i=0; i < item.list.length; i++) { %>',
-                '<div class="info">',
-                '<div class="title">',
-                '<%= item.list[i].fileType%>',
-                '</div>',
-                '<div class="val">',
-                '<%= item.list[i].count%> &nbsp; ',
-                '(<%= Math.round(item.list[i].count/item.allreqs*100) %>',
-                '<span class="unit">%</span>)',
-                '</div>',
-                '</div>',
-                '<% } %>',
-                '</div>'
-            ].join(''));
-        var tplFn2 = _.template(
-            ['<div class="infos list">',
-                '<% for (var i=0; i < item.list.length; i++) { %>',
-                '<div class="info">',
-                '<div class="title">',
-                '<%= item.list[i].domain%> : ',
-                '</div>',
-                '<div class="val">',
-                '<%= item.list[i].count%> &nbsp; ',
-                '(<%= Math.round(item.list[i].count/item.allreqs*100) %>',
-                '<span class="unit">%</span>)',
-                '</div>',
-                '</div>',
-                '<% } %>',
-                '</div>'
-            ].join(''));
-        $resourceInfo.html(['<div class="panel-title">资源信息</div>',
-            tplFn1({
-                item: {
-                    list: data.fileTypeCounts,
-                    allreqs: data.allRequestsCount
-                }
-            }),
-            '<div class="panel-title">域名资源</div>',
-            tplFn2({ item:{
-                list: data.requestsByDomain,
-                allreqs: data.allRequestsCount
-            }})
-        ].join(''));
-
-    }
-
 })();
