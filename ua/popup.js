@@ -1,9 +1,9 @@
+var doc = document;
+var storeValue = localStorage.getItem('url');
+var saveBtn = doc.querySelector('.input-button');
+var input = doc.querySelector('.input-url');
+var msg = doc.querySelector('.msg');
 document.addEventListener('DOMContentLoaded', function(e) {
-    var doc = document;
-    var storeValue = localStorage.getItem('url');
-    var saveBtn = doc.querySelector('.input-button');
-    var input = doc.querySelector('.input-url');
-    var msg = doc.querySelector('.msg');
     if (storeValue) {
         input.value = storeValue;
     }else{
@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', function(e) {
         if(e.keyCode === 13){
             saveHandler();
         }
-    })
+    });
     saveBtn.addEventListener('click', saveHandler);
 
     function saveHandler(){
@@ -23,14 +23,12 @@ document.addEventListener('DOMContentLoaded', function(e) {
         }
         localStorage.setItem('url', value);
         chrome.storage.sync.set({ 'url': value }, function() {
-            // Notify that we saved.
-            // message('Settings saved');
             msg.innerHTML = '设置成功 请刷新页面';
         });
         sendToBG(value);
         // sendToContent(value);
     }
-    
+
 }, false);
 
 

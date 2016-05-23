@@ -68,8 +68,6 @@ function getUrlForFilter(){
 }
 //拦截请求  并修改UA  打开chrome
 chrome.webRequest.onBeforeSendHeaders.addListener(changeUA, requestFilter, ['requestHeaders', 'blocking']);
-
-
 function changeUA(details) {
     var headers = details.requestHeaders;
     for (var i = 0, l = headers.length; i < l; ++i) {

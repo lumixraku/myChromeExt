@@ -37,6 +37,10 @@
             nexus_6p: {
                 name: 'Nexus 6P',
                 ua: 'Mozilla/5.0 (Linux; Android 5.1.1; Nexus 6 Build/LYZ28E) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.23 Mobile Safari/537.36'
+            },
+            uc: {
+                name: 'UC',
+                ua: 'dv(Redmi Note 2);pr(UCBrowser/10.9.10.788);ov(Android 5.0.2);ss(360*640);pi(1080*1920);bt(YZ);pm(1);bv(1);nm(0);im(0);sr(0);nt(2);'
             }
         },
         devices = (localStorage['devices']) ? JSON.parse(localStorage['devices']) : defaultDevices,
