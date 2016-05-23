@@ -21,13 +21,14 @@
     "content_scripts": [{
         "matches": ["<all_urls>"],
         "css": ["content.css"],
-        "js": ["lib/jquery.js", "lib/underscore.js", "contentscript.js"]
+        "js": ["lib/jquery.js", "lib/underscore.js", "lib/helper.js", "lib/yslow.js", "performance.js", "controller.js", "contentscript.js"]
     }],
     "permissions": [
         "webRequest",
         "webRequestBlocking",
         "<all_urls>",
         "tabs",
-        "storage"
+        "storage",
+        "cookies"
     ]
 }

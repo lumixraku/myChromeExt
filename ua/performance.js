@@ -1,146 +1,7 @@
-$timingPanel = $('#timing_panel');
-$memoryPanel = $('#memoryPanel');
-
-var data = {
-    resources: [],
-    marks: [],
-    measures: [],
-    perfTiming: [], //timing after calc 
-    timing: {}, //window.performance.timing 
-    calcBasicInfo: {},
-    allResourcesCalc: []
-};
-/***************/
-var helper;
-helper = (function() {
-    var helper = {};
-
-    //extract a resources file type
-    helper.getFileType = function(fileExtension, initiatorType) {
-        if (fileExtension) {
-            switch (fileExtension) {
-                case "jpg":
-                case "jpeg":
-                case "png":
-                case "gif":
-                case "webp":
-                case "svg":
-                case "ico":
-                    return "image";
-                case "js":
-                    return "js";
-                case "css":
-                    return "css";
-                case "html":
-                    return "html";
-                case "woff":
-                case "woff2":
-                case "ttf":
-                case "eot":
-                case "otf":
-                    return "font";
-                case "swf":
-                    return "flash";
-                case "map":
-                    return "source-map";
-            }
-        }
-        if (initiatorType) {
-            switch (initiatorType) {
-                case "xmlhttprequest":
-                    return "ajax";
-                case "img":
-                    return "image";
-                case "script":
-                    return "js";
-                case "internal":
-                case "iframe":
-                    return "html"; //actual page
-                default:
-                    return "other";
-            }
-        }
-        return initiatorType;
-    };
-
-
-    helper.endsWith = function(str, suffix) {
-        return str.indexOf(suffix, str.length - suffix.length) !== -1;
-    };
-
-
-    //counts occurences of items in array arr and returns them as array of key valure pairs
-    //keyName overwrites the name of the key attribute
-    helper.getItemCount = function(arr, keyName) {
-        var counts = {},
-            resultArr = [],
-            obj;
-
-        arr.forEach(function(key) {
-            counts[key] = counts[key] ? counts[key] + 1 : 1;
-        });
-
-        //pivot data
-        for (var fe in counts) {
-            obj = {};
-            obj[keyName || "key"] = fe;
-            obj.count = counts[fe];
-
-            resultArr.push(obj);
-        }
-        return resultArr.sort(function(a, b) {
-            return a.count < b.count ? 1 : -1;
-        });
-    };
-
-    helper.clone = function(obj) {
-        var copy;
-
-        // Handle the 3 simple types, and null or undefined
-        if (null === obj || "object" != typeof obj) return obj;
-
-        // Handle Date
-        if (obj instanceof Date) {
-            copy = new Date();
-            copy.setTime(obj.getTime());
-            return copy;
-        }
-
-        // Handle Array
-        if (obj instanceof Array) {
-            copy = [];
-            for (var i = 0, len = obj.length; i < len; i++) {
-                copy[i] = helper.clone(obj[i]);
-            }
-            return copy;
-        }
-
-        // Handle Object
-        if (obj instanceof Object) {
-            copy = {};
-            for (var attr in obj) {
-                if (obj.hasOwnProperty(attr)) copy[attr] = helper.clone(obj[attr]);
-            }
-            return copy;
-        }
-
-        throw new Error("Unable to helper.clone obj");
-    };
-
-    return helper;
-})();
-// msg from bg
-chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
-    if (message.from === 'bgToPerf') {
-        // document.body.innerHTML = JSON.stringify(message);
-        data.resources = message.message.resources;
-        data.timing = message.message.timing;
-
-        showPerformance(calcPerformance(data));
-    }
-});
+/*计算并整理 window.performance的结果*/
 
 function calcPerformance(data) {
+    data.resources = window.performance.getEntriesByType("resource");
     data.allResourcesCalc = data.resources
         .map(function(currR, i, arr) {
             //crunch the resources data into something easier to work with
@@ -190,6 +51,7 @@ function calcPerformance(data) {
     data.requestsOnly = data.allResourcesCalc.filter(function(currR) {
         return currR.name.indexOf("http") === 0 && !currR.name.match(/js.map$/);
     });
+    data.allRequestsCount = data.requestsOnly.length;
 
     //get counts
     // initiatorType 为css  表示这个资源是从css文件发出的请求
@@ -263,24 +125,27 @@ function calcPerformance(data) {
     }
 
     /*****************************************************/
-    var timing = data.timing;
+    var timing = window.performance.timing;
     data.perfTiming.push({
         value: data.allResourcesCalc.length,
         title: '请求',
-        name: 'Total Requests'
+        name: 'Total Reuqests',
+        desc: '全部请求数量</br> 请求越多 页面加载时间也越长'
     });
 
     data.perfTiming.push({
         value: data.requestsByDomain.length,
         title: '域名',
-        name: 'Domains'
+        name: 'Domains',
+        desc: '全部资源所涉及到的域名</br> 过多过少的域名都会导致加载时间变长'
     });
 
     data.perfTiming.push({
         value: data.slowestCalls[0].loadtime,
         title: '耗时最长的请求',
         name: 'Slowest Call',
-        unit: 'ms'
+        unit: 'ms',
+        desc: '耗时最长的请求'
     });
 
     data.perfTiming.push({
@@ -290,81 +155,63 @@ function calcPerformance(data) {
             }
             return a + b.duration;
         }) / data.slowestCalls.length),
-        title: '平均请求耗时',
+        title: '请求平均耗时',
         unit: 'ms',
-        name: 'Average Call'
+        name: 'Average Call',
+        desc: '请求平均耗时'
+    });
+    data.perfTiming.push({
+        value: timing.domainLookupStart - timing.fetchStart,
+        title: '浏览器读取缓存时间',
+        unit: 'ms',
+        name: 'cacheElapse',
+        desc: '浏览器读取缓存时间'
     });
     data.perfTiming.push({
         value: timing.domainLookupEnd - timing.domainLookupStart,
         title: 'DNS查询时间',
         unit: 'ms',
-        name: 'dnsElapse'
+        name: 'dnsElapse',
+        desc: 'DNS查询时间</br> 该值由domainLookupEnd 减去 domainLookupStart得到'
     });
 
     data.perfTiming.push({
+        //domLoading 是开始处理dom的时候 此时responEnd 理论上已经结束
+        //domLoading  返回用户代理把其文档的 "current document readiness" 设置为 "loading"的时候
+        //domComplete  返回用户代理把其文档的 "current document readiness" 设置为 "complete"的时候
+        //就是 dom的readyState为 loading  complete的时候
         value: timing.domComplete - timing.domLoading,
         title: 'DOM 处理耗时',
         unit: 'ms',
-        name: 'DOM Processing'
+        name: 'DOM Processing',
+        desc: '解析DOM结构时间</br>  该值由domComplete 减去 domLoading得到'
     });
     data.perfTiming.push({
         value: timing.responseStart - timing.requestStart,
         title: '请求耗时',
         name: 'Time to First Byte',
-        unit: 'ms'
-    });
-    data.perfTiming.push({
-        value: timing.responseStart - timing.navigationStart,
-        title: '网络处理耗时',
         unit: 'ms',
-        name: 'netWork',
+        desc: '浏览器在拿到第一个资源的等待时间</br> 是否配置了异地机房，CDN，带宽等都会影响这个结果  该值由responseStart 减去 requestStart得到'
     });
     data.perfTiming.push({
         value: timing.responseEnd - timing.responseStart,
-        title: '浏览器处理响应耗时',
+        title: '下载资源耗时',
         unit: 'ms',
-        name: 'contentDownloads'
-    });
-    data.perfTiming.push({
-        value: timing.domContentLoadedEventStart - timing.domLoading,
-        title: 'DOM下载耗时',
-        unit: 'ms',
-        name: 'DOM Content Loading'
+        name: 'contentDownloads',
+        desc: '下载资源耗时</br> 静态资源数量，大小都会影响下载时间 该值由responseEnd 减去 responseStart 得到'
     });
     data.perfTiming.push({
         value: timing.loadEventEnd - timing.navigationStart,
         title: '页面加载耗时',
         unit: 'ms',
-        name: 'Total'
+        name: ' Total',
+        desc: '页面加载完成的时间</br> 这几乎代表了用户等待页面可用的时间 该值由 loadEventEnd 减去 navigationStart 得到'
     });
+
+    /*****************************************/
+    data.memory = window.performance.memory;
+
     console.log(data);
     return data;
 
-}
-
-function showPerformance(data) {
-    var itemsHtml = createBasicInfoItems(data.perfTiming);
-    $timingPanel.html(itemsHtml);
-}
-
-function createBasicInfoItems(items){
-    var html = ['<div class="infos">'];
-    for (var i = 0; i < items.length; i++) {
-         html.push ([
-
-            '<div class="info">',
-            '<div class="title">',
-            items[i].name,
-            '</div>',
-            '<div class="val">',
-            Math.round(items[i].value),
-            '<span class="unit">',
-            items[i].unit,
-            '</span>',
-            '</div>',
-            '</div>',
-        ].join(''));
-    }
-    html.push('</div>');
-    return  html.join('');
 }
