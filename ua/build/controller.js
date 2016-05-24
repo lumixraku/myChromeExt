@@ -25,6 +25,8 @@ $(function(){
         // outstanding_net_request:0
         // root_node:document
         MYSLOW.controller.lint(doc, yscontext);
+
+        //lint 的结果yscontext.result_set.results
         // {
         //   "score": 0,
         //   "message": "There xxx",

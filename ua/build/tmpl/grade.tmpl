@@ -1,0 +1,12 @@
+<div class="infos list">
+    <% for (var i=0; i < list.length; i++) { %>
+        <div class="info">
+            <div class="title">
+                <%= list[i].name%> :
+            </div>
+            <div class="val">
+                <%= list[i].message || "Good" %>
+            </div>
+        </div>
+        <% } %>
+</div>

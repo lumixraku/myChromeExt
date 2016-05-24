@@ -548,9 +548,9 @@ MYSLOW.ComponentSet.prototype = {
                         el.dataOldSrc = src;
                     }
                 }
-                addEventListener(iwin, 'DOMSubtreeModified', getTarget);
-                addEventListener(iwin, 'DOMNodeInserted', getTarget);
-                addEventListener(iwin, 'DOMAttrModified', getTarget);
+                // addEventListener(iwin, 'DOMSubtreeModified', getTarget);
+                // addEventListener(iwin, 'DOMNodeInserted', getTarget);
+                // addEventListener(iwin, 'DOMAttrModified', getTarget);
                 timer = setTimer(done, 3000);
                 enough = setTimer(done, 10000);
             };
@@ -596,11 +596,11 @@ MYSLOW.ComponentSet.prototype = {
             clearTimer(timer);
 
             // remove listeners
-            removeEventListener(iwin, 'DOMSubtreeModified', getTarget);
-            removeEventListener(iwin, 'DOMNodeInserted', getTarget);
-            removeEventListener(iwin, 'DOMAttrModified', getTarget);
-            removeEventListener(ifrm, 'load', iframeOnload);
-            removeEventListener(iwin, 'load', iframeOnload);
+            // removeEventListener(iwin, 'DOMSubtreeModified', getTarget);
+            // removeEventListener(iwin, 'DOMNodeInserted', getTarget);
+            // removeEventListener(iwin, 'DOMAttrModified', getTarget);
+            // removeEventListener(ifrm, 'load', iframeOnload);
+            // removeEventListener(iwin, 'load', iframeOnload);
 
             // changed components loop
             for (i = 0, len =  comps.length; i < len; i += 1) {
@@ -619,31 +619,31 @@ MYSLOW.ComponentSet.prototype = {
             }
 
             // remove temp iframe and invoke callback passing cset
-            ifrm.parentNode.removeChild(ifrm);
+            // ifrm.parentNode.removeChild(ifrm);
             triggered = 1;
             callback(ret);// ret就是comps  raw info
         };
 
         // create temp iframe with doc html
-        ifrm = doc.createElement('iframe');
-        ifrm.style.cssText = 'position:absolute;top:-999em;';
-        doc.body.appendChild(ifrm);
-        iwin = ifrm.contentWindow;
+        // ifrm = doc.createElement('iframe');
+        // ifrm.style.cssText = 'position:absolute;top:-999em;';
+        // doc.body.appendChild(ifrm);
+        // iwin = ifrm.contentWindow;
 
         // set a fallback when onload is not triggered
         noOnloadTimer = setTimer(done, 3000);
 
         // set onload and ifram content
-        if (iwin) {
-            idoc = iwin.document;
-        } else {
-            iwin = idoc = ifrm.contentDocument;
-        }
-        addEventListener(iwin, 'load', iframeOnload);
-        addEventListener(ifrm, 'load', iframeOnload);
-        idoc.open().write(docBody);
-        idoc.close();
-        addEventListener(iwin, 'load', iframeOnload);
+        // if (iwin) {
+        //     idoc = iwin.document;
+        // } else {
+        //     iwin = idoc = ifrm.contentDocument;
+        // }
+        // addEventListener(iwin, 'load', iframeOnload);
+        // addEventListener(ifrm, 'load', iframeOnload);
+        // idoc.open().write(docBody);
+        // idoc.close();
+        // addEventListener(iwin, 'load', iframeOnload);
     }
 };
 

@@ -1,0 +1,19 @@
+<div class="panel-title">加载信息</div>
+<div class="infos">
+    <% for (var i=0; i < items.length; i++) { %>
+        <div class="info connect-info">
+            <div class="title">
+                <%= items[i].name%>
+            </div>
+            <div class="val">
+                <%= Math.round(items[i].value)%>
+                    <span class="unit">
+                <%= items[i].unit%>
+                </span>
+            </div>
+            <div class="popup">
+                <%= items[i].desc %>
+            </div>
+        </div>
+        <% } %>
+</div>

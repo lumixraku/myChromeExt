@@ -1,0 +1,14 @@
+<div class="infos list">
+    <% for (var i=0; i < list.length; i++) { %>
+        <div class="info">
+            <div class="title">
+                <%= list[i].url%> :
+            </div>
+            <div class="val">
+                (TYPE:<%= list[i].type %>) &nbsp;
+                Size: <%= (list[i].size/1000).toFixed(2) %> &nbsp;
+                <span class="unit">Kb</span>
+            </div>
+        </div>
+        <% } %>
+</div>

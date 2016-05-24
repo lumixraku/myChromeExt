@@ -1,0 +1,14 @@
+<div class="panel-title">内存信息</div>
+<div class="infos">
+    <div class="info">
+        <div class="title">
+            <%= item.name%>
+        </div>
+        <div class="val">
+            JavaScript占用内存
+            <%= item.used/1000/1000 %>Mb
+            (<%= Math.round(item.used/item.total*100)%>
+                <span class="unit">%</span>)
+        </div>
+    </div>
+</div>

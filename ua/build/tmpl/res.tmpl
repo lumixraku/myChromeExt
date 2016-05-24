@@ -1,0 +1,15 @@
+<div class="panel-title">资源信息</div>
+<div class="infos">
+    <% for (var i=0; i < item.list.length; i++) { %>
+        <div class="info">
+            <div class="title">
+                <%= item.list[i].fileType%>
+            </div>
+            <div class="val">
+                <%= item.list[i].count%> &nbsp; (
+                    <%= Math.round(item.list[i].count/item.allreqs*100) %>
+                        <span class="unit">%</span>)
+            </div>
+        </div>
+        <% } %>
+</div>

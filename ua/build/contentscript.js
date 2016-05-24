@@ -14,7 +14,8 @@
             '<div id="req-info" class="info-panel"></div>',
             '<div id="grade-info" class="info-panel"></div>',
             '<div id="memory-info" class="info-panel"></div>',
-            '</div>'
+        '</div>',
+        '<div id="templates"></div>'
         ].join('')
     );
 
@@ -65,11 +66,8 @@
                 var style = getComputedStyle(elem);
                 if (style.position === 'fixed') {
                     if (parseInt(style.width) > bodyWidth)
-                    // $(this).css({
-                    //     width: bodyWidth
-                    // });
                     //覆盖原page存在important
-                        $(this).attr('style', $(this).attr('style') + '; ' + 'width: ' + bodyWidth + 'px !important');
+                    $(this).attr('style', $(this).attr('style') + '; ' + 'width: ' + bodyWidth + 'px !important');
                 }
             });
 
@@ -84,7 +82,6 @@
             });
             $body.parent().append($control);
 
-            // $control.append($performancePanel);
             callback(calcPerformance({
                 resources: [],
                 marks: [],

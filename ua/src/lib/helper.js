@@ -2,6 +2,37 @@ var helper;
 helper = (function() {
     var helper = {};
 
+    function template (id, data) {
+        var me = arguments.callee;
+        if (!me.cache[id]) me.cache[id] = (function () {
+            var name = id, string = /^[\w\-]+$/.test(id) ? me.get(id): (name = 'template(string)', id); // no warnings
+            var line = 1, body = (
+                "try { " +
+                    (me.variable ?  "var " + me.variable + " = this.stash;" : "with (this.stash) { ") +
+                        "this.ret += '"  +
+                        string.
+                            replace(/<%/g, '\x11').replace(/%>/g, '\x13'). // if you want other tag, just edit this line
+                            replace(/'(?![^\x11\x13]+?\x13)/g, '\\x27').
+                            replace(/^\s*|\s*$/g, '').
+                            replace(/\n/g, function () { return "';\nthis.line = " + (++line) + "; this.ret += '\\n" }).
+                            replace(/\x11=raw(.+?)\x13/g, "' + ($1) + '").
+                            replace(/\x11=(.+?)\x13/g, "' + this.escapeHTML($1) + '").
+                            replace(/\x11(.+?)\x13/g, "'; $1; this.ret += '") +
+                    "'; " + (me.variable ? "" : "}") + "return this.ret;" +
+                "} catch (e) { throw 'TemplateError: ' + e + ' (on " + name + "' + ' line ' + this.line + ')'; } " +
+                "//# sourceURL=" + name + "\n" // source map
+            ).replace(/this\.ret \+= '';/g, '');
+            var func = new Function(body);
+            var map  = { '&' : '&amp;', '<' : '&lt;', '>' : '&gt;', '\x22' : '&#x22;', '\x27' : '&#x27;' };
+            var escapeHTML = function (string) { return (''+string).replace(/[&<>\'\"]/g, function (_) { return map[_] }) };
+            return function (stash) { return func.call(me.context = { escapeHTML: escapeHTML, line: 1, ret : '', stash: stash }) };
+        })();
+        return data ? me.cache[id](data) : me.cache[id];
+    }
+    template.cache = {};
+    template.get = function (id) { return document.getElementById(id).innerHTML };
+    helper.template = template;
+
     //extract a resources file type
     helper.getFileType = function(fileExtension, initiatorType) {
         if (fileExtension) {
@@ -49,7 +80,6 @@ helper = (function() {
         }
         return initiatorType;
     };
-
 
     helper.endsWith = function(str, suffix) {
         return str.indexOf(suffix, str.length - suffix.length) !== -1;
@@ -113,39 +143,15 @@ helper = (function() {
 
         throw new Error("Unable to helper.clone obj");
     };
+
+
+
+
     helper.renderYslowPanel = function(data, $performancePanel){
         var $reqInfo = $('#req-info');
         var $gradeInfo = $('#grade-info');
-        var tplFn1 = _.template([
-            '<div class="infos">',
-                '<%for(key in item){%>',
-                '<div class="info">',
-                    '<div class="title">',
-                        '<%= key%>',
-                    '</div>',
-                    '<div class="val">',
-                        '<%= item[key] %>',
-                    '</div>',
-                '</div>',
-                '<%}%>',
-            '</div>'
-        ].join(''));
-        var tplFn2 = _.template(
-            ['<div class="infos list">',
-                '<% for (var i=0; i < list.length; i++) { %>',
-                '<div class="info">',
-                '<div class="title">',
-                '<%= list[i].url%> : ',
-                '</div>',
-                '<div class="val">',
-                '(TYPE: <%= list[i].type %>) &nbsp;',
-                'Size: <%= (list[i].size/1000).toFixed(2) %> &nbsp;',
-                '<span class="unit">Kb</span>)',
-                '</div>',
-                '</div>',
-                '<% } %>',
-                '</div>'
-            ].join(''));
+        var tplFn1 = helper.template(__inline('../tmpl/req1.tmpl'));
+        var tplFn2 = helper.template(__inline('../tmpl/req2.tmpl'));
         $reqInfo.html(['<div class="panel-title">请求信息</div>', tplFn1({
             item:{
                 domCount: data.component_set.domElementsCount,
@@ -163,60 +169,22 @@ helper = (function() {
         }), '<div class="panel-title">详细资源请求</div>',tplFn2({
             list: data.component_set.components
         })].join(''));
-        var tplFn3 = [
-
-        ];
-
+        var tplFn3 = helper.template(__inline('../tmpl/grade.tmpl'));
+        $gradeInfo.html(['<div class="panel-title">页面性能指标和建议</div>',tplFn3({
+            list: data.result_set.results
+        })].join(''));
 
     };
     helper.renderPerformacePanel = function(data) {
         var $basicInfo = $('#basic-info');
         var $memoryInfo = $('#memory-info');
         var $resourceInfo = $('#resource-info');
-        // $performancePanel = $('#performance_panel');
-        // $performancePanel.append($basicInfo, $memoryInfo, $resourceInfo);
-        /***********************************************/
-        $basicInfo.html('<div class="panel-title">加载信息</div>');
-        var tplFn = _.template(
-            ['<div class="infos">',
-                '<% for (var i=0; i < items.length; i++) { %>',
-                '<div class="info connect-info">',
-                '<div class="title">',
-                '<%= items[i].name%>',
-                '</div>',
-                '<div class="val">',
-                '<%= Math.round(items[i].value)%>',
-                '<span class="unit">',
-                '<%= items[i].unit%>',
-                '</span>',
-                '</div>',
-                '<div class="popup">',
-                '<%= items[i].desc %>',
-                '</div>',
-                '</div>',
-                '<% } %>',
-                '</div>'
-            ].join(''));
-        $basicInfo.html($basicInfo.html() + tplFn({
+        var tplFn = helper.template(__inline('../tmpl/load.tmpl'));
+        $basicInfo.html(tplFn({
             items: data.perfTiming
         }));
-        /***********************************************/
-        tplFn = _.template(
-            ['<div class="infos">',
-                '<div class="info">',
-                '<div class="title">',
-                '<%= item.name%>',
-                '</div>',
-                '<div class="val">',
-                'JavaScript占用内存',
-                '<%= item.used/1000/1000 %>Mb ',
-                '(<%= Math.round(item.used/item.total*100)%>',
-                '<span class="unit">%</span>)',
-                '</div>',
-                '</div>',
-                '</div>'
-            ].join(''));
-        $memoryInfo.html('<div class="panel-title">内存信息</div>' + tplFn({
+        var tplFn0 = helper.template(__inline('../tmpl/memory.tmpl'));
+        $memoryInfo.html(tplFn0({
             item: {
                 name: '当前页面Js占用内存',
                 total: data.memory.totalJSHeapSize,
@@ -224,47 +192,15 @@ helper = (function() {
                 limit: data.memory.jsHeapSizeLimit
             }
         }));
-        /***********************************************/
-        var tplFn1 = _.template(
-            ['<div class="infos">',
-                '<% for (var i=0; i < item.list.length; i++) { %>',
-                '<div class="info">',
-                '<div class="title">',
-                '<%= item.list[i].fileType%>',
-                '</div>',
-                '<div class="val">',
-                '<%= item.list[i].count%> &nbsp; ',
-                '(<%= Math.round(item.list[i].count/item.allreqs*100) %>',
-                '<span class="unit">%</span>)',
-                '</div>',
-                '</div>',
-                '<% } %>',
-                '</div>'
-            ].join(''));
-        var tplFn2 = _.template(
-            ['<div class="infos list">',
-                '<% for (var i=0; i < item.list.length; i++) { %>',
-                '<div class="info">',
-                '<div class="title">',
-                '<%= item.list[i].domain%> : ',
-                '</div>',
-                '<div class="val">',
-                '<%= item.list[i].count%> &nbsp; ',
-                '(<%= Math.round(item.list[i].count/item.allreqs*100) %>',
-                '<span class="unit">%</span>)',
-                '</div>',
-                '</div>',
-                '<% } %>',
-                '</div>'
-            ].join(''));
-        $resourceInfo.html(['<div class="panel-title">资源信息</div>',
+        var tplFn1 = helper.template(__inline('../tmpl/res.tmpl'));
+        var tplFn2 = helper.template(__inline('../tmpl/resByDomain.tmpl'));
+        $resourceInfo.html([
             tplFn1({
                 item: {
                     list: data.fileTypeCounts,
                     allreqs: data.allRequestsCount
                 }
             }),
-            '<div class="panel-title">域名资源</div>',
             tplFn2({
                 item: {
                     list: data.requestsByDomain,
