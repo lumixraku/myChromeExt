@@ -1,4 +1,5 @@
 (function() {
+    var doc = document;
     var $body = $('body');
     var bodyWidth = 360;
     var controlWidth = 360;
@@ -6,9 +7,16 @@
     var $control = $('<div>', {
         id: 'control_panel'
     });
-    var $performancePanel = $('<div>', {
-        id: 'performance_panel'
-    });
+    $control.html(
+        ['<div id="performance_panel">',
+            '<div id="basic-info" class="info-panel"></div>',
+            '<div id="resource-info" class="info-panel"></div>',
+            '<div id="req-info" class="info-panel"></div>',
+            '<div id="grade-info" class="info-panel"></div>',
+            '<div id="memory-info" class="info-panel"></div>',
+            '</div>'
+        ].join('')
+    );
 
     /********************************************************/
     //页面刷新时  传入url  //BG中会监测tab的刷新
@@ -31,18 +39,9 @@
         //不是tab发来的消息
         if (!sender.tab) {
             console.log(message.url);
-            if (location.href.indexOf(message.url) != -1 ) {
-                // sendToBG();
-                changeBody(bindEvents);
-                helper.renderPerformacePanel(calcPerformance({
-                    resources: [],
-                    marks: [],
-                    measures: [],
-                    perfTiming: [],
-                    calcBasicInfo: {},
-                    allResourcesCalc: [],
-                    memory: {}
-                }), $performancePanel);
+            if (location.href.indexOf(message.url) != -1) {
+                bindEvents();
+                changeBody(helper.renderPerformacePanel);
             }
         }
     });
@@ -50,6 +49,11 @@
 
     function changeBody(callback) {
         $(function() {
+            //rem 的临时解决办法
+            if (doc.documentElement.style.fontSize != '') {
+                document.documentElement.style.fontSize = controlWidth / 10 + 'px';
+            }
+
 
             //在同一个页面显示源页面和信息
             $body.css({
@@ -61,16 +65,14 @@
                 var style = getComputedStyle(elem);
                 if (style.position === 'fixed') {
                     if (parseInt(style.width) > bodyWidth)
-                        // $(this).css({
-                        //     width: bodyWidth
-                        // });
-                        //覆盖原page存在important
-                        $(this).attr('style', $(this).attr('style') + '; ' + 'width: '+ bodyWidth +'px !important');
+                    // $(this).css({
+                    //     width: bodyWidth
+                    // });
+                    //覆盖原page存在important
+                        $(this).attr('style', $(this).attr('style') + '; ' + 'width: ' + bodyWidth + 'px !important');
                 }
             });
 
-
-            $body.parent().append($control);
 
             $control.css({
                 position: 'fixed',
@@ -80,9 +82,18 @@
                 height: $(window).height(),
                 'overflow-y': 'scroll'
             });
+            $body.parent().append($control);
 
-            $control.append($performancePanel);
-            callback();
+            // $control.append($performancePanel);
+            callback(calcPerformance({
+                resources: [],
+                marks: [],
+                measures: [],
+                perfTiming: [],
+                calcBasicInfo: {},
+                allResourcesCalc: [],
+                memory: {}
+            }));
         });
     }
 
@@ -99,7 +110,7 @@
             var target = e.target;
             $(target).css({
                 'background-color': '',
-                opacity:''
+                opacity: ''
             });
             e.stopPropagation();
         });
@@ -134,7 +145,7 @@
             }
             //others
             var i = 0;
-            while (ele = ele.previousElementSibling){
+            while (ele = ele.previousElementSibling) {
                 i++;
             }
             return i;

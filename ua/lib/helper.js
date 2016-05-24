@@ -113,23 +113,70 @@ helper = (function() {
 
         throw new Error("Unable to helper.clone obj");
     };
+    helper.renderYslowPanel = function(data, $performancePanel){
+        var $reqInfo = $('#req-info');
+        var $gradeInfo = $('#grade-info');
+        var tplFn1 = _.template([
+            '<div class="infos">',
+                '<%for(key in item){%>',
+                '<div class="info">',
+                    '<div class="title">',
+                        '<%= key%>',
+                    '</div>',
+                    '<div class="val">',
+                        '<%= item[key] %>',
+                    '</div>',
+                '</div>',
+                '<%}%>',
+            '</div>'
+        ].join(''));
+        var tplFn2 = _.template(
+            ['<div class="infos list">',
+                '<% for (var i=0; i < list.length; i++) { %>',
+                '<div class="info">',
+                '<div class="title">',
+                '<%= list[i].url%> : ',
+                '</div>',
+                '<div class="val">',
+                '(TYPE: <%= list[i].type %>) &nbsp;',
+                'Size: <%= (list[i].size/1000).toFixed(2) %> &nbsp;',
+                '<span class="unit">Kb</span>)',
+                '</div>',
+                '</div>',
+                '<% } %>',
+                '</div>'
+            ].join(''));
+        $reqInfo.html(['<div class="panel-title">请求信息</div>', tplFn1({
+            item:{
+                domCount: data.component_set.domElementsCount,
+                totalRequests: data.PAGE.totalRequests,
+                totalSize: (data.PAGE.totalSize/1000).toFixed(2) + 'Kb',
+            }
+        }), '<div class="panel-title">分类请求信息</div>',tplFn1({
+            item: (function(){
+                var o = {};
+                for(var key in data.PAGE.totalObjSize){
+                    o[key] = (data.PAGE.totalObjSize[key]/1000).toFixed(2) + 'Kb';
+                }
+                return o;
+            })()
+        }), '<div class="panel-title">详细资源请求</div>',tplFn2({
+            list: data.component_set.components
+        })].join(''));
+        var tplFn3 = [
 
-    helper.renderPerformacePanel = function(data, $performancePanel) {
-        var $basicInfo = $('<div>', {
-            id: 'basic-info',
-            'class': 'info-panel'
-        });
-        var $memoryInfo = $('<div>', {
-            id: 'memory-info',
-            'class': 'info-panel'
-        });
-        var $resourceInfo = $('<div>', {
-            id: 'resource-info',
-            'class': 'info-panel'
-        });
-        $performancePanel.append($basicInfo, $memoryInfo, $resourceInfo);
+        ];
+
+
+    };
+    helper.renderPerformacePanel = function(data) {
+        var $basicInfo = $('#basic-info');
+        var $memoryInfo = $('#memory-info');
+        var $resourceInfo = $('#resource-info');
+        // $performancePanel = $('#performance_panel');
+        // $performancePanel.append($basicInfo, $memoryInfo, $resourceInfo);
         /***********************************************/
-        $basicInfo.html('<div class="panel-title">连接信息</div>');
+        $basicInfo.html('<div class="panel-title">加载信息</div>');
         var tplFn = _.template(
             ['<div class="infos">',
                 '<% for (var i=0; i < items.length; i++) { %>',

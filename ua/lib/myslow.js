@@ -1,25 +1,16 @@
 /**
-
- * Copyright (c) 2012, Yahoo! Inc.  All rights reserved.
- * Copyrights licensed under the New BSD License. See the accompanying LICENSE file for terms.
- */
-
-/*global YSLOW:true*/
-/*jslint white: true, onevar: true, undef: true, nomen: true, eqeqeq: true, plusplus: true, bitwise: true, regexp: true, newcap: true, immed: true */
-
-/**
- * @module YSLOW
- * @class YSLOW
+ * @module MYSLOW
+ * @class MYSLOW
  * @static
  */
-if (typeof YSLOW === 'undefined') {
-    YSLOW = {};
+if (typeof MYSLOW === 'undefined') {
+    MYSLOW = {};
 }
 
 /**
  * Enable/disable debbuging messages
  */
-YSLOW.DEBUG = true;
+MYSLOW.DEBUG = true;
 
 /**
  *
@@ -35,10 +26,10 @@ YSLOW.DEBUG = true;
  *   <li><code>lint()</code> a method that accepts a document, array of components and a config object and returns a reuslt object</li>
  * </ul>
  *
- * @param {YSLOW.Rule} rule A new rule object to add
+ * @param {MYSLOW.Rule} rule A new rule object to add
  */
-YSLOW.registerRule = function (rule) {
-    YSLOW.controller.addRule(rule);
+MYSLOW.registerRule = function (rule) {
+    MYSLOW.controller.addRule(rule);
 };
 
 /**
@@ -54,10 +45,10 @@ YSLOW.registerRule = function (rule) {
  *   <li><code>weights</code> a hash of ruleID => ruleweight </li>
  * </ul>
  *
- * @param {YSLOW.Ruleset} ruleset The new ruleset object to be registered
+ * @param {MYSLOW.Ruleset} ruleset The new ruleset object to be registered
  */
-YSLOW.registerRuleset = function (ruleset) {
-    YSLOW.controller.addRuleset(ruleset);
+MYSLOW.registerRuleset = function (ruleset) {
+    MYSLOW.controller.addRuleset(ruleset);
 };
 
 /**
@@ -77,13 +68,13 @@ YSLOW.registerRuleset = function (ruleset) {
  *    reportcardView: function(resultset) { ... }
  * }
  *
- * Refer to YSLOW.HTMLRenderer for the function prototype.
+ * Refer to MYSLOW.HTMLRenderer for the function prototype.
  *
  *
- * @param {YSLOW.renderer} renderer The new renderer object to be registered.
+ * @param {MYSLOW.renderer} renderer The new renderer object to be registered.
  */
-YSLOW.registerRenderer = function (renderer) {
-    YSLOW.controller.addRenderer(renderer);
+MYSLOW.registerRenderer = function (renderer) {
+    MYSLOW.controller.addRenderer(renderer);
 };
 
 /**
@@ -98,10 +89,10 @@ YSLOW.registerRenderer = function (renderer) {
  *   <li><code>run</code>, function that takes doc and componentset object, return content to be output</li>
  * </ul>
  *
- * @param {YSLOW.Tool} tool The new tool object to be registered
+ * @param {MYSLOW.Tool} tool The new tool object to be registered
  */
-YSLOW.registerTool = function (tool) {
-    YSLOW.Tools.addCustomTool(tool);
+MYSLOW.registerTool = function (tool) {
+    MYSLOW.Tools.addCustomTool(tool);
 };
 
 
@@ -112,8 +103,8 @@ YSLOW.registerTool = function (tool) {
  * @param {Function} callback A function to be called when the event fires
  * @param {Object} that Object to be assigned to the "this" value of the callback function
  */
-YSLOW.addEventListener = function (event_name, callback, that) {
-    YSLOW.util.event.addListener(event_name, callback, that);
+MYSLOW.addEventListener = function (event_name, callback, that) {
+    MYSLOW.util.event.addListener(event_name, callback, that);
 };
 
 /**
@@ -123,17 +114,17 @@ YSLOW.addEventListener = function (event_name, callback, that) {
  * @param {Function} callback The callback function that was added as a listener
  * @return {Boolean} TRUE is the listener was removed successfully, FALSE otherwise (for example in cases when the listener doesn't exist)
  */
-YSLOW.removeEventListener = function (event_name, callback) {
-    return YSLOW.util.event.removeListener(event_name, callback);
+MYSLOW.removeEventListener = function (event_name, callback) {
+    return MYSLOW.util.event.removeListener(event_name, callback);
 };
 
 /**
- * @namespace YSLOW
+ * @namespace MYSLOW
  * @constructor
  * @param {String} name Error type
  * @param {String} message Error description
  */
-YSLOW.Error = function (name, message) {
+MYSLOW.Error = function (name, message) {
     /**
      * Type of error, e.g. "Interface error"
      * @type String
@@ -146,7 +137,7 @@ YSLOW.Error = function (name, message) {
     this.message = message;
 };
 
-YSLOW.Error.prototype = {
+MYSLOW.Error.prototype = {
     toString: function () {
         return this.name + "\n" + this.message;
     }
@@ -156,13 +147,13 @@ YSLOW.Error.prototype = {
  * Copyrights licensed under the New BSD License. See the accompanying LICENSE file for terms.
  */
 
-YSLOW.version = '3.1.2';
+MYSLOW.version = '3.1.2';
 /**
  * Copyright (c) 2012, Yahoo! Inc.  All rights reserved.
  * Copyrights licensed under the New BSD License. See the accompanying LICENSE file for terms.
  */
 
-/*global YSLOW,MutationEvent*/
+/*global MYSLOW,MutationEvent*/
 /*jslint browser: true, continue: true, sloppy: true, maxerr: 50, indent: 4 */
 
 /**
@@ -172,7 +163,7 @@ YSLOW.version = '3.1.2';
  * @param {DOMElement} node DOM Element
  * @param {Number} onloadTimestamp onload timestamp
  */
-YSLOW.ComponentSet = function (node, onloadTimestamp) {
+MYSLOW.ComponentSet = function (node, onloadTimestamp) {
 
     //
     // properties
@@ -187,7 +178,7 @@ YSLOW.ComponentSet = function (node, onloadTimestamp) {
 
 };
 
-YSLOW.ComponentSet.prototype = {
+MYSLOW.ComponentSet.prototype = {
 
     /**
      * Call this function when you don't use the component set any more.
@@ -198,7 +189,7 @@ YSLOW.ComponentSet.prototype = {
         this.component_info = [];
         this.cleared = true;
         if (this.outstanding_net_request > 0) {
-            YSLOW.util.dump("YSLOW.ComponentSet.Clearing component set before all net requests finish.");
+            MYSLOW.util.dump("MYSLOW.ComponentSet.Clearing component set before all net requests finish.");
         }
     },
 
@@ -222,15 +213,15 @@ YSLOW.ComponentSet.prototype = {
         }
         if (url && type) {
             // check if url is valid.
-            if (!YSLOW.ComponentSet.isValidProtocol(url) ||
-                    !YSLOW.ComponentSet.isValidURL(url)) {
+            if (!MYSLOW.ComponentSet.isValidProtocol(url) ||
+                    !MYSLOW.ComponentSet.isValidURL(url)) {
                 return comp;
             }
 
             // Make sure url is absolute url.
-            url = YSLOW.util.makeAbsoluteUrl(url, base_href);
+            url = MYSLOW.util.makeAbsoluteUrl(url, base_href);
             // For security purpose
-            url = YSLOW.util.escapeHtml(url);
+            url = MYSLOW.util.escapeHtml(url);
 
             found = typeof this.component_info[url] !== 'undefined';
             isDoc = type === 'doc';
@@ -243,7 +234,7 @@ YSLOW.ComponentSet.prototype = {
                     'count': found ? this.component_info[url].count : 0
                 };
 
-                comp = new YSLOW.Component(url, type, this, o);
+                comp = new MYSLOW.Component(url, type, this, o);
                 if (comp) {
                     comp.id = this.nextID += 1;
                     this.components[this.components.length] = comp;
@@ -260,7 +251,7 @@ YSLOW.ComponentSet.prototype = {
                     }
                 } else {
                     this.component_info[url].state = 'ERROR';
-                    YSLOW.util.event.fire("componentFetchError");
+                    MYSLOW.util.event.fire("componentFetchError");
                 }
             }
             this.component_info[url].count += 1;
@@ -279,8 +270,8 @@ YSLOW.ComponentSet.prototype = {
 
         if (url && type) {
             // For security purpose
-            url = YSLOW.util.escapeHtml(url);
-            url = YSLOW.util.makeAbsoluteUrl(url, base_href);
+            url = MYSLOW.util.escapeHtml(url);
+            url = MYSLOW.util.makeAbsoluteUrl(url, base_href);
             if (this.component_info[url] === undefined) {
                 return this.addComponent(url, type, base_href);
             }
@@ -310,13 +301,13 @@ YSLOW.ComponentSet.prototype = {
             types = {};
 
         if (typeof includeAfterOnload === 'undefined') {
-            includeAfterOnload = !(YSLOW.util.Preference.getPref(
+            includeAfterOnload = !(MYSLOW.util.Preference.getPref(
                 'excludeAfterOnload',
                 true
             ));
         }
         if (typeof includeBeacons === 'undefined') {
-            includeBeacons = !(YSLOW.util.Preference.getPref(
+            includeBeacons = !(MYSLOW.util.Preference.getPref(
                 'excludeBeaconsFromLint',
                 true
             ));
@@ -396,7 +387,7 @@ YSLOW.ComponentSet.prototype = {
         }
         if (typeof this.component_info[comp.url] === 'undefined') {
             // this should not happen.
-            YSLOW.util.dump("YSLOW.ComponentSet.onComponentGetInfoStateChange(): Unexpected component: " + comp.url);
+            MYSLOW.util.dump("MYSLOW.ComponentSet.onComponentGetInfoStateChange(): Unexpected component: " + comp.url);
             return;
         }
 
@@ -408,18 +399,18 @@ YSLOW.ComponentSet.prototype = {
             // Got all component detail info.
             if (this.outstanding_net_request === 0) {
                 this.notified_fetch_done = true;
-                YSLOW.util.event.fire("componentFetchDone", {
+                MYSLOW.util.event.fire("componentFetchDone", {
                     'component_set': this
                 });
             }
         } else {
             // how does this happen?
-            YSLOW.util.dump("Unexpected component info state: [" + comp.type + "]" + comp.url + "state: " + state + " comp_info_state: " + this.component_info[comp.url].state);
+            MYSLOW.util.dump("Unexpected component info state: [" + comp.type + "]" + comp.url + "state: " + state + " comp_info_state: " + this.component_info[comp.url].state);
         }
 
         // fire event.
         progress = this.getProgress();
-        YSLOW.util.event.fire("componentFetchProgress", {
+        MYSLOW.util.event.fire("componentFetchProgress", {
             'total': progress.total,
             'current': progress.received,
             'last_component_url': comp.url
@@ -433,7 +424,7 @@ YSLOW.ComponentSet.prototype = {
     notifyPeelDone: function () {
         if (this.outstanding_net_request === 0 && !this.notified_fetch_done) {
             this.notified_fetch_done = true;
-            YSLOW.util.event.fire("componentFetchDone", {
+            MYSLOW.util.event.fire("componentFetchDone", {
                 'component_set': this
             });
         }
@@ -463,7 +454,7 @@ YSLOW.ComponentSet.prototype = {
 
         // skip testing when doc not found
         if (!docBody) {
-            YSLOW.util.dump('doc body is empty');
+            MYSLOW.util.dump('doc body is empty');
             return callback(that);
         }
 
@@ -504,7 +495,7 @@ YSLOW.ComponentSet.prototype = {
     setAfterOnload: function (callback, obj) {
         var ifrm, idoc, iwin, timer, done, noOnloadTimer,
             that, docBody, doc, components, ret, enough, triggered,
-            util = YSLOW.util,
+            util = MYSLOW.util,
             addEventListener = util.addEventListener,
             removeEventListener = util.removeEventListener,
             setTimer = setTimeout,
@@ -565,7 +556,7 @@ YSLOW.ComponentSet.prototype = {
             };
 
         if (obj) {
-            that = YSLOW.ComponentSet.prototype;
+            that = MYSLOW.ComponentSet.prototype;
             docBody = obj.docBody;
             doc = obj.doc;
             components = obj.components;
@@ -579,7 +570,7 @@ YSLOW.ComponentSet.prototype = {
         }
 
         // check for mutation event support or anti-iframe option
-        if (typeof MutationEvent === 'undefined' || YSLOW.antiIframe) {
+        if (typeof MutationEvent === 'undefined' || MYSLOW.antiIframe) {
             return that.setSimpleAfterOnload(callback, obj);
         }
 
@@ -659,7 +650,7 @@ YSLOW.ComponentSet.prototype = {
 /*
  * List of protocols to ignore in component set.
  */
-YSLOW.ComponentSet.ignoreProtocols = ['data', 'chrome', 'javascript', 'about',
+MYSLOW.ComponentSet.ignoreProtocols = ['data', 'chrome', 'javascript', 'about',
     'resource', 'jar', 'chrome-extension', 'file'];
 
 /**
@@ -668,7 +659,7 @@ YSLOW.ComponentSet.ignoreProtocols = ['data', 'chrome', 'javascript', 'about',
  * @param url
  * @return false if url does not contain hostname.
  */
-YSLOW.ComponentSet.isValidProtocol = function (s) {
+MYSLOW.ComponentSet.isValidProtocol = function (s) {
     var i, index, protocol,
         ignoreProtocols = this.ignoreProtocols,
         len = ignoreProtocols.length;
@@ -694,7 +685,7 @@ YSLOW.ComponentSet.isValidProtocol = function (s) {
  * @param url
  * @return false if url does not contain hostname.
  */
-YSLOW.ComponentSet.isValidURL = function (url) {
+MYSLOW.ComponentSet.isValidURL = function (url) {
     var arr, host;
 
     url = url.toLowerCase();
@@ -721,15 +712,15 @@ YSLOW.ComponentSet.isValidURL = function (url) {
  * Copyrights licensed under the New BSD License. See the accompanying LICENSE file for terms.
  */
 
-/*global YSLOW*/
+/*global MYSLOW*/
 /*jslint white: true, onevar: true, undef: true, newcap: true, nomen: true, plusplus: true, bitwise: true, browser: true, maxerr: 50, indent: 4 */
 
 /**
- * @namespace YSLOW
+ * @namespace MYSLOW
  * @class Component
  * @constructor
  */
-YSLOW.Component = function (url, type, parent_set, o) {//创建comps对象
+MYSLOW.Component = function (url, type, parent_set, o) {//创建comps对象
     var obj = o && o.obj,
         comp = (o && o.comp) || {};
 
@@ -798,11 +789,11 @@ YSLOW.Component = function (url, type, parent_set, o) {//创建comps对象
 /**
  * Return the state of getting detail info from the net.
  */
-YSLOW.Component.prototype.getInfoState = function () {
+MYSLOW.Component.prototype.getInfoState = function () {
     return this.get_info_state;
 };
 
-YSLOW.Component.prototype.populateProperties = function (resolveRedirect, ignoreImgReq) {
+MYSLOW.Component.prototype.populateProperties = function (resolveRedirect, ignoreImgReq) {
     var comp, encoding, expires, content_length, img_src, obj, dataUri,
         that = this,
         NULL = null,
@@ -823,7 +814,7 @@ YSLOW.Component.prototype.populateProperties = function (resolveRedirect, ignore
     content_length = that.headers['content-length'];
 
     // gzip, deflate
-    encoding = YSLOW.util.trim(that.headers['content-encoding']);//这里 似乎所有的图片资源都没有content-encoding
+    encoding = MYSLOW.util.trim(that.headers['content-encoding']);//这里 似乎所有的图片资源都没有content-encoding
     if (encoding === 'gzip' || encoding === 'deflate') {
         that.compressed = encoding;
         that.size = (that.body.length) ? that.body.length : NULL; //计算资源的size
@@ -881,7 +872,7 @@ YSLOW.Component.prototype.populateProperties = function (resolveRedirect, ignore
         }
         if (that.body.length) {
             img_src = 'data:' + that.headers['content-type'] + ';base64,' +
-                YSLOW.util.base64Encode(that.body);
+                MYSLOW.util.base64Encode(that.body);
             dataUri = 1;
         } else {
             img_src = that.url;
@@ -918,7 +909,7 @@ YSLOW.Component.prototype.populateProperties = function (resolveRedirect, ignore
 /**
  *  Return true if this object has a last-modified date significantly in the past.
  */
-YSLOW.Component.prototype.hasOldModifiedDate = function () {
+MYSLOW.Component.prototype.hasOldModifiedDate = function () {
     var now = Number(new Date()),
         modified_date = this.headers['last-modified'];
 
@@ -936,10 +927,10 @@ YSLOW.Component.prototype.hasOldModifiedDate = function () {
  * @param expires Date object
  * @return true if this object has a far future Expires.
  */
-YSLOW.Component.prototype.hasFarFutureExpiresOrMaxAge = function () {
+MYSLOW.Component.prototype.hasFarFutureExpiresOrMaxAge = function () {
     var expires_in_seconds,
         now = Number(new Date()),
-        minSeconds = YSLOW.util.Preference.getPref('minFutureExpiresSeconds', 2 * 24 * 60 * 60),
+        minSeconds = MYSLOW.util.Preference.getPref('minFutureExpiresSeconds', 2 * 24 * 60 * 60),
         minMilliSeconds = minSeconds * 1000;
 
     if (typeof this.expires === 'object') {
@@ -952,11 +943,11 @@ YSLOW.Component.prototype.hasFarFutureExpiresOrMaxAge = function () {
     return false;
 };
 
-YSLOW.Component.prototype.getEtag = function () {
+MYSLOW.Component.prototype.getEtag = function () {
     return this.headers.etag || '';
 };
 
-YSLOW.Component.prototype.getMaxAge = function () {
+MYSLOW.Component.prototype.getMaxAge = function () {
     var index, maxage, expires,
         cache_control = this.headers['cache-control'];
 
@@ -965,7 +956,7 @@ YSLOW.Component.prototype.getMaxAge = function () {
         if (index > -1) {
             maxage = parseInt(cache_control.substring(index + 8), 10);
             if (maxage > 0) {
-                expires = YSLOW.util.maxAgeToDate(maxage);
+                expires = MYSLOW.util.maxAgeToDate(maxage);
             }
         }
     }
@@ -978,7 +969,7 @@ YSLOW.Component.prototype.getMaxAge = function () {
  * @return total size of Set-Cookie headers of this component.
  * @type Number
  */
-YSLOW.Component.prototype.getSetCookieSize = function () {
+MYSLOW.Component.prototype.getSetCookieSize = function () {
     // only return total size of cookie received.
     var aCookies, k,
         size = 0;
@@ -1000,7 +991,7 @@ YSLOW.Component.prototype.getSetCookieSize = function () {
  * @return total size of Cookie headers Request of this component.
  * @type Number
  */
-YSLOW.Component.prototype.getReceivedCookieSize = function () {
+MYSLOW.Component.prototype.getReceivedCookieSize = function () {
     // only return total size of cookie sent.
     var aCookies, k,
         size = 0;
@@ -1019,7 +1010,7 @@ YSLOW.Component.prototype.getReceivedCookieSize = function () {
 
 /**
  * Platform implementation of
- * YSLOW.Component.prototype.setComponentDetails = function (o) {}
+ * MYSLOW.Component.prototype.setComponentDetails = function (o) {}
  * goes here
 /*
 /**
@@ -1032,7 +1023,7 @@ YSLOW.Component.prototype.getReceivedCookieSize = function () {
  * given source and set component properties.
  * @param o The object containing component details.
  */
-YSLOW.Component.prototype.setComponentDetails = function (o) {
+MYSLOW.Component.prototype.setComponentDetails = function (o) {
     var comp = this,
 
         parseComponent = function (component) {
@@ -1100,16 +1091,16 @@ YSLOW.Component.prototype.setComponentDetails = function (o) {
  * Copyrights licensed under the New BSD License. See the accompanying LICENSE file for terms.
  */
 
-/*global YSLOW*/
+/*global MYSLOW*/
 /*jslint white: true, browser: true, onevar: true, undef: true, nomen: true, eqeqeq: true, plusplus: true, bitwise: true, regexp: true, newcap: true, immed: true */
 
 /**
- * @namespace YSLOW
+ * @namespace MYSLOW
  * @class controller
  * @static
  */
 
-YSLOW.controller = {
+MYSLOW.controller = {
 
     rules: {},
 
@@ -1130,21 +1121,21 @@ YSLOW.controller = {
         var arr_rulesets, i, obj, value;
 
         // listen to onload event.
-        YSLOW.util.event.addListener("onload", function (e) {
+        MYSLOW.util.event.addListener("onload", function (e) {
             this.onloadTimestamp = e.time;
-            YSLOW.util.setTimer(function () {
-                YSLOW.controller.run_pending_event();
+            MYSLOW.util.setTimer(function () {
+                MYSLOW.controller.run_pending_event();
             });
         }, this);
 
         // listen to onunload event.
-        YSLOW.util.event.addListener("onUnload", function (e) {
+        MYSLOW.util.event.addListener("onUnload", function (e) {
             this.run_pending = 0;
             this.onloadTimestamp = null;
         }, this);
 
         // load custom ruleset
-        arr_rulesets = YSLOW.util.Preference.getPrefList("customRuleset.", undefined);
+        arr_rulesets = MYSLOW.util.Preference.getPrefList("customRuleset.", undefined);
         if (arr_rulesets && arr_rulesets.length > 0) {
             for (i = 0; i < arr_rulesets.length; i += 1) {
                 value = arr_rulesets[i].value;
@@ -1156,7 +1147,7 @@ YSLOW.controller = {
             }
         }
 
-        this.default_ruleset_id = YSLOW.util.Preference.getPref("defaultRuleset", 'ydefault');
+        this.default_ruleset_id = MYSLOW.util.Preference.getPref("defaultRuleset", 'ydefault');
 
         // load rule config preference
         this.loadRulePreference();
@@ -1167,7 +1158,7 @@ YSLOW.controller = {
      * Delay the running until onload event.
      *
      * @param {Window} win window object
-     * @param {YSLOW.context} yscontext YSlow context to use.
+     * @param {MYSLOW.context} yscontext YSlow context to use.
      * @param {Boolean} autorun value to indicate if triggered by autorun
      */
     run: function (win, yscontext, autorun) {
@@ -1177,7 +1168,7 @@ YSLOW.controller = {
         if (!doc || !doc.location || doc.location.href.indexOf("about:") === 0 || "undefined" === typeof doc.location.hostname) {
             if (!autorun) {
                 line = 'Please enter a valid website address before running YSlow.';
-                YSLOW.ysview.openDialog(YSLOW.ysview.panel_doc, 389, 150, line, '', 'Ok');
+                MYSLOW.ysview.openDialog(MYSLOW.ysview.panel_doc, 389, 150, line, '', 'Ok');
             }
             return;
         }
@@ -1196,12 +1187,12 @@ YSLOW.controller = {
             return;
         }
 
-        YSLOW.util.event.fire("peelStart", undefined);
-        cset = YSLOW.peeler.peel(doc, this.onloadTimestamp);
+        MYSLOW.util.event.fire("peelStart", undefined);
+        cset = MYSLOW.peeler.peel(doc, this.onloadTimestamp);
         // need to set yscontext_component_set before firing peelComplete,
         // otherwise, may run into infinite loop.
         yscontext.component_set = cset;
-        YSLOW.util.event.fire("peelComplete", {
+        MYSLOW.util.event.fire("peelComplete", {
             'component_set': cset
         });
 
@@ -1223,10 +1214,10 @@ YSLOW.controller = {
      * Run lint function of the ruleset matches the passed rulset_id.
      * If ruleset_id is undefined, use Controller's default ruleset.
      * @param {Document} doc Document object of the page to run lint.
-     * @param {YSLOW.context} yscontext YSlow context to use.
+     * @param {MYSLOW.context} yscontext YSlow context to use.
      * @param {String} ruleset_id ID of the ruleset to run.
      * @return Lint result
-     * @type YSLOW.ResultSet
+     * @type MYSLOW.ResultSet
      */
     lint: function (doc, yscontext, ruleset_id) {
         var rule, rules, i, conf, result, weight, score,
@@ -1258,7 +1249,7 @@ YSLOW.controller = {
                     this.rules.hasOwnProperty(i)) {
                 try {
                     rule = this.rules[i];
-                    conf = YSLOW.util.merge(rule.config, rules[i]);
+                    conf = MYSLOW.util.merge(rule.config, rules[i]);
 
                     result = rule.lint(doc, yscontext.component_set, conf);
 
@@ -1287,7 +1278,7 @@ YSLOW.controller = {
                         if (typeof result.score === 'number') {
                             total_weight += result.weight;
 
-                            if (!YSLOW.util.Preference.getPref('allowNegativeScore', false)) {
+                            if (!MYSLOW.util.Preference.getPref('allowNegativeScore', false)) {
                                 if (result.score < 0) {
                                     result.score = 0;
                                 }
@@ -1309,8 +1300,8 @@ YSLOW.controller = {
 
                     results[results.length] = result;
                 } catch (err) {
-                    YSLOW.util.dump("YSLOW.controller.lint: " + i, err);
-                    YSLOW.util.event.fire("lintError", {
+                    MYSLOW.util.dump("MYSLOW.controller.lint: " + i, err);
+                    MYSLOW.util.event.fire("lintError", {
                         'rule': i,
                         'message': err
                     });
@@ -1319,9 +1310,9 @@ YSLOW.controller = {
         }
 
         yscontext.PAGE.overallScore = total_score / (total_weight > 0 ? total_weight : 1);
-        yscontext.result_set = new YSLOW.ResultSet(results, yscontext.PAGE.overallScore, ruleset);
+        yscontext.result_set = new MYSLOW.ResultSet(results, yscontext.PAGE.overallScore, ruleset);
         yscontext.result_set.url = yscontext.component_set.doc_comp.url;
-        YSLOW.util.event.fire("lintResultReady", {
+        MYSLOW.util.event.fire("lintResultReady", {
             'yslowContext': yscontext
         });
 
@@ -1331,12 +1322,12 @@ YSLOW.controller = {
     /**
      * Run tool that matches the passed tool_id
      * @param {String} tool_id ID of the tool to be run.
-     * @param {YSLOW.context} yscontext YSlow context
+     * @param {MYSLOW.context} yscontext YSlow context
      * @param {Object} param parameters to be passed to run method of tool.
      */
     runTool: function (tool_id, yscontext, param) {
         var result, html, doc, h, css, uri, req2, l, s, message, body,
-            tool = YSLOW.Tools.getTool(tool_id);
+            tool = MYSLOW.Tools.getTool(tool_id);
 
         try {
             if (typeof tool === "object") {
@@ -1348,7 +1339,7 @@ YSLOW.controller = {
                     } else if (typeof result === "string") {
                         html = result;
                     }
-                    doc = YSLOW.util.getNewDoc();
+                    doc = MYSLOW.util.getNewDoc();
                     body = doc.body || doc.documentElement;
                     body.innerHTML = html;
                     h = doc.getElementsByTagName('head')[0];
@@ -1377,20 +1368,20 @@ YSLOW.controller = {
                     }
                     if (typeof result.plot_component !== "undefined" && result.plot_component === true) {
                         // plot components
-                        YSLOW.renderer.plotComponents(doc, yscontext);
+                        MYSLOW.renderer.plotComponents(doc, yscontext);
                     }
                 }
             } else {
                 message = tool_id + " is not a tool.";
-                YSLOW.util.dump(message);
-                YSLOW.util.event.fire("toolError", {
+                MYSLOW.util.dump(message);
+                MYSLOW.util.event.fire("toolError", {
                     'tool_id': tool_id,
                     'message': message
                 });
             }
         } catch (err) {
-            YSLOW.util.dump("YSLOW.controller.runTool: " + tool_id, err);
-            YSLOW.util.event.fire("toolError", {
+            MYSLOW.util.dump("MYSLOW.controller.runTool: " + tool_id, err);
+            MYSLOW.util.event.fire("toolError", {
                 'tool_id': tool_id,
                 'message': err
             });
@@ -1440,15 +1431,15 @@ YSLOW.controller = {
     },
 
     /**
-     * @see YSLOW.registerRule
+     * @see MYSLOW.registerRule
      */
     addRule: function (rule) {
         var i, doc_obj,
             required = ['id', 'name', 'config', 'info', 'lint'];
 
-        // check YSLOW.doc class for text
-        if (YSLOW.doc.rules && YSLOW.doc.rules[rule.id]) {
-            doc_obj = YSLOW.doc.rules[rule.id];
+        // check MYSLOW.doc class for text
+        if (MYSLOW.doc.rules && MYSLOW.doc.rules[rule.id]) {
+            doc_obj = MYSLOW.doc.rules[rule.id];
             if (doc_obj.name) {
                 rule.name = doc_obj.name;
             }
@@ -1459,27 +1450,27 @@ YSLOW.controller = {
 
         for (i = 0; i < required.length; i += 1) {
             if (typeof rule[required[i]] === 'undefined') {
-                throw new YSLOW.Error('Interface error', 'Improperly implemented rule interface');
+                throw new MYSLOW.Error('Interface error', 'Improperly implemented rule interface');
             }
         }
         if (this.rules[rule.id] !== undefined) {
-            throw new YSLOW.Error('Rule register error', rule.id + " is already defined.");
+            throw new MYSLOW.Error('Rule register error', rule.id + " is already defined.");
         }
         this.rules[rule.id] = rule;
     },
 
     /**
-     * @see YSLOW.registerRuleset
+     * @see MYSLOW.registerRuleset
      */
     addRuleset: function (ruleset, update) {
         var i, required = ['id', 'name', 'rules'];
 
         for (i = 0; i < required.length; i += 1) {
             if (typeof ruleset[required[i]] === 'undefined') {
-                throw new YSLOW.Error('Interface error', 'Improperly implemented ruleset interface');
+                throw new MYSLOW.Error('Interface error', 'Improperly implemented ruleset interface');
             }
             if (this.checkRulesetName(ruleset.id) && update !== true) {
-                throw new YSLOW.Error('Ruleset register error', ruleset.id + " is already defined.");
+                throw new MYSLOW.Error('Ruleset register error', ruleset.id + " is already defined.");
             }
         }
         this.rulesets[ruleset.id] = ruleset;
@@ -1498,7 +1489,7 @@ YSLOW.controller = {
             // if we are deleting the default ruleset, change default to 'ydefault'.
             if (this.default_ruleset_id === ruleset_id) {
                 this.default_ruleset_id = 'ydefault';
-                YSLOW.util.Preference.setPref("defaultRuleset", this.default_ruleset_id);
+                MYSLOW.util.Preference.setPref("defaultRuleset", this.default_ruleset_id);
             }
             return ruleset;
         }
@@ -1508,21 +1499,21 @@ YSLOW.controller = {
 
     /**
      * Save ruleset to preference.
-     * @param {YSLOW.Ruleset} ruleset ruleset to be saved.
+     * @param {MYSLOW.Ruleset} ruleset ruleset to be saved.
      */
     saveRulesetToPref: function (ruleset) {
         if (ruleset.custom === true) {
-            YSLOW.util.Preference.setPref("customRuleset." + ruleset.id, JSON.stringify(ruleset, null, 2));
+            MYSLOW.util.Preference.setPref("customRuleset." + ruleset.id, JSON.stringify(ruleset, null, 2));
         }
     },
 
     /**
      * Remove ruleset from preference.
-     * @param {YSLOW.Ruleset} ruleset ruleset to be deleted.
+     * @param {MYSLOW.Ruleset} ruleset ruleset to be deleted.
      */
     deleteRulesetFromPref: function (ruleset) {
         if (ruleset.custom === true) {
-            YSLOW.util.Preference.deletePref("customRuleset." + ruleset.id);
+            MYSLOW.util.Preference.deletePref("customRuleset." + ruleset.id);
         }
     },
 
@@ -1535,7 +1526,7 @@ YSLOW.controller = {
     },
 
     /**
-     * @see YSLOW.registerRenderer
+     * @see MYSLOW.registerRenderer
      */
     addRenderer: function (renderer) {
         this.renderers[renderer.id] = renderer;
@@ -1598,14 +1589,14 @@ YSLOW.controller = {
         if (this.rulesets[id] !== undefined) {
             this.default_ruleset_id = id;
             // save to pref
-            YSLOW.util.Preference.setPref("defaultRuleset", id);
+            MYSLOW.util.Preference.setPref("defaultRuleset", id);
         }
     },
 
     /**
      * Get default ruleset.
      * @return default ruleset
-     * @type YSLOW.Ruleset
+     * @type MYSLOW.Ruleset
      */
     getDefaultRuleset: function () {
         if (this.rulesets[this.default_ruleset_id] === undefined) {
@@ -1628,7 +1619,7 @@ YSLOW.controller = {
      */
     loadRulePreference: function () {
         var rule = this.getRule('yexpires'),
-            minSeconds = YSLOW.util.Preference.getPref("minFutureExpiresSeconds", 2 * 24 * 60 * 60);
+            minSeconds = MYSLOW.util.Preference.getPref("minFutureExpiresSeconds", 2 * 24 * 60 * 60);
 
         if (minSeconds > 0 && rule) {
             rule.config.howfar = minSeconds;
@@ -1640,15 +1631,15 @@ YSLOW.controller = {
  * Copyrights licensed under the New BSD License. See the accompanying LICENSE file for terms.
  */
 
-/*global YSLOW, Firebug, Components, ActiveXObject, gBrowser, window, getBrowser*/
+/*global MYSLOW, Firebug, Components, ActiveXObject, gBrowser, window, getBrowser*/
 /*jslint sloppy: true, bitwise: true, browser: true, regexp: true*/
 
 /**
- * @namespace YSLOW
+ * @namespace MYSLOW
  * @class util
  * @static
  */
-YSLOW.util = {
+MYSLOW.util = {
 
     /**
      * merges two objects together, the properties of the second
@@ -1685,7 +1676,7 @@ YSLOW.util = {
         var args;
 
         // skip when debbuging is disabled
-        if (!YSLOW.DEBUG) {
+        if (!MYSLOW.DEBUG) {
             return;
         }
 
@@ -2326,13 +2317,13 @@ YSLOW.util = {
         }
         rel = (rel) ? ' rel="' + rel + '"' : '';
 
-        url = YSLOW.util.escapeHtml(url);
-        text = YSLOW.util.escapeHtml(text);
+        url = MYSLOW.util.escapeHtml(url);
+        text = MYSLOW.util.escapeHtml(text);
 
-        escaped_dq_url = YSLOW.util.escapeQuotes(url, 'double');
+        escaped_dq_url = MYSLOW.util.escapeQuotes(url, 'double');
 
         if (bBriefUrl) {
-            text = YSLOW.util.briefUrl(text, maxChars);
+            text = MYSLOW.util.briefUrl(text, maxChars);
             sTitle = ' title="' + escaped_dq_url + '"';
         }
 
@@ -2340,7 +2331,7 @@ YSLOW.util = {
             sResults += '<a' + rel + sClass + sTitle + ' href="' +
                 escaped_dq_url +
                 '" onclick="javascript:document.ysview.openLink(\'' +
-                YSLOW.util.escapeQuotes(url) +
+                MYSLOW.util.escapeQuotes(url) +
                 '\'); return false;">' + text.substring(0, maxChars);
             text = text.substring(maxChars);
             iLines += 1;
@@ -2397,7 +2388,7 @@ YSLOW.util = {
      * @type String
      */
     prettyType: function (sType) {
-        return YSLOW.util.prettyTypes[sType];
+        return MYSLOW.util.prettyTypes[sType];
     },
 
     /**
@@ -2433,7 +2424,7 @@ YSLOW.util = {
 
     /**
      * Returns YSlow results as an Object.
-     * @param {YSLOW.context} yscontext yslow context.
+     * @param {MYSLOW.context} yscontext yslow context.
      * @param {String|Array} info Information to be shown
      *        (basic|grade|stats|comps|all) [basic].
      * @return {Object} the YSlow results object.
@@ -2443,7 +2434,7 @@ YSLOW.util = {
             cs, etag, name, len, include_grade, include_comps, include_stats,
             result, len2, spaceid, header, sourceHeaders, targetHeaders,
             reButton = / <button [\s\S]+<\/button>/,
-            util = YSLOW.util,
+            util = MYSLOW.util,
             isArray = util.isArray,
             stats = {},
             stats_c = {},
@@ -2614,7 +2605,7 @@ YSLOW.util = {
     /**
      * Send YSlow beacon.
      * @param {Object} results Results object
-     *        generated by {@link YSLOW.util.getResults}.
+     *        generated by {@link MYSLOW.util.getResults}.
      * @param {String|Array} info Information to be beaconed
      *        (basic|grade|stats|comps|all).
      * @param {String} url The URL to fire beacon to.
@@ -2623,7 +2614,7 @@ YSLOW.util = {
     sendBeacon: function (results, info, url) {
         var i, len, req, name, img,
             beacon = '',
-            util = YSLOW.util,
+            util = MYSLOW.util,
             pref = util.Preference,
             method = 'get';
 
@@ -2680,7 +2671,7 @@ YSLOW.util = {
     getDict: function (info, ruleset) {
         var i, len, include_grade, include_stats, include_comps,
             weights, rs,
-            yslow = YSLOW,
+            yslow = MYSLOW,
             controller = yslow.controller,
             rules = yslow.doc.rules,
             dict = {
@@ -2819,7 +2810,7 @@ YSLOW.util = {
      */
     objToXML: function (obj, root) {
         var toXML,
-            util = YSLOW.util,
+            util = MYSLOW.util,
             safeXML = util.safeXML,
             xml = '<?xml version="1.0" encoding="UTF-8"?>';
 
@@ -2867,7 +2858,7 @@ YSLOW.util = {
      */
     prettyPrintResults: function (obj) {
         var pp,
-            util = YSLOW.util,
+            util = MYSLOW.util,
             str = '',
             mem = {},
 
@@ -2974,7 +2965,7 @@ YSLOW.util = {
                 f: 0,
                 'n/a': -1
             },
-            yslow = YSLOW,
+            yslow = MYSLOW,
             util = yslow.util,
             isObj = util.isObject(threshold),
             rules = yslow.doc.rules,
@@ -3058,7 +3049,7 @@ YSLOW.util = {
         var i, res, line, offenders, j, lenJ,
             len = results.length,
             tap = [],
-            util = YSLOW.util,
+            util = MYSLOW.util,
             decodeURI = util.decodeURIComponent;
 
         // tap version
@@ -3123,7 +3114,7 @@ YSLOW.util = {
             failures = 0,
             junit = [],
             cases = [],
-            util = YSLOW.util,
+            util = MYSLOW.util,
             decodeURI = util.decodeURIComponent,
             safeXML = util.safeXML,
 
@@ -3206,7 +3197,7 @@ YSLOW.util = {
 
     /**
      *  Try to find a spaceid in the HTML document source.
-     * @param {YSLOW.ComponentSet} cset Component set.
+     * @param {MYSLOW.ComponentSet} cset Component set.
      * @return spaceID string
      * @type string
      */
@@ -3249,7 +3240,7 @@ YSLOW.util = {
         var newCss;
 
         if (!doc) {
-            YSLOW.util.dump('YSLOW.util.loadCSS: doc is not specified');
+            MYSLOW.util.dump('MYSLOW.util.loadCSS: doc is not specified');
             return '';
         }
 
@@ -3267,7 +3258,7 @@ YSLOW.util = {
      * @param {String} url URL of page to be opened.
      */
     openLink: function (url) {
-        if (YSLOW.util.Preference.getPref("browser.link.open_external") === 3) {
+        if (MYSLOW.util.Preference.getPref("browser.link.open_external") === 3) {
             gBrowser.selectedTab = gBrowser.addTab(url);
         } else {
             window.open(url, " blank");
@@ -3277,7 +3268,7 @@ YSLOW.util = {
     /**
      * Sends a URL to smush.it for optimization
      * Example usage:
-     * <code>YSLOW.util.smushIt('http://smush.it/css/skin/screenshot.png', function(resp){alert(resp.dest)});</code>
+     * <code>MYSLOW.util.smushIt('http://smush.it/css/skin/screenshot.png', function(resp){alert(resp.dest)});</code>
      * This code alerts the path to the optimized result image.
      *
      * @param {String} imgurl URL of the image to optimize
@@ -3287,7 +3278,7 @@ YSLOW.util = {
         var xhr,
             smushurl = this.getSmushUrl(),
             url = smushurl + '/ws.php?img=' + encodeURIComponent(imgurl),
-            req = YSLOW.util.getXHR();
+            req = MYSLOW.util.getXHR();
 
         req.open('GET', url, true);
         req.onreadystatechange = function (e) {
@@ -3307,7 +3298,7 @@ YSLOW.util = {
     getSmushUrl: function () {
         var g_default_smushit_url = 'http://www.smushit.com/ysmush.it';
 
-        return YSLOW.util.Preference.getPref('smushItURL', g_default_smushit_url) + '/';
+        return MYSLOW.util.Preference.getPref('smushItURL', g_default_smushit_url) + '/';
     },
 
     /**
@@ -3397,7 +3388,7 @@ YSLOW.util = {
      * @param function fn the function to be invoked by event listener
      */
     addEventListener: function (el, ev, fn) {
-        var util = YSLOW.util;
+        var util = MYSLOW.util;
 
         if (el.addEventListener) {
             util.addEventListener = function (el, ev, fn) {
@@ -3422,7 +3413,7 @@ YSLOW.util = {
      * @param function fn the function invoked by the removed listener
      */
     removeEventListener: function (el, ev, fn) {
-        var util = YSLOW.util;
+        var util = MYSLOW.util;
 
         if (el.removeEventListener) {
             util.removeEventListener = function (el, ev, fn) {
@@ -3640,9 +3631,9 @@ YSLOW.util = {
  * Oversimplified usage:
  * <pre>
  * // subscribe
- * YSLOW.util.event.addListener('martiansAttack', alert);
+ * MYSLOW.util.event.addListener('martiansAttack', alert);
  * // fire the event
- * YSLOW.util.event.fire('martiansAttack', 'panic!');
+ * MYSLOW.util.event.fire('martiansAttack', 'panic!');
  * </pre>
  *
  * More real life usage
@@ -3655,16 +3646,16 @@ YSLOW.util = {
  * };
  *
  * // subscribe
- * YSLOW.util.event.addListener('martiansAttack', myobj.panic, myobj);
+ * MYSLOW.util.event.addListener('martiansAttack', myobj.panic, myobj);
  * // somewhere someone fires the event
- * YSLOW.util.event.fire('martiansAttack', {date: new Date(), message: 'panic!'});
+ * MYSLOW.util.event.fire('martiansAttack', {date: new Date(), message: 'panic!'});
  *
  *
- * @namespace YSLOW.util
+ * @namespace MYSLOW.util
  * @class event
  * @static
  */
-YSLOW.util.event = {
+MYSLOW.util.event = {
     /**
      * Hash of subscribers where the key is the event name and the value is an array of callbacks-type objects
      * The callback objects have keys "callback" which is the function to be called and "that" which is the value
@@ -3742,12 +3733,12 @@ YSLOW.util.event = {
 /**
  * Class that implements setting and unsetting preferences
  *
- * @namespace YSLOW.util
+ * @namespace MYSLOW.util
  * @class Preference
  * @static
  *
  */
-YSLOW.util.Preference = {
+MYSLOW.util.Preference = {
 
     /**
      * @private
@@ -3813,16 +3804,16 @@ YSLOW.util.Preference = {
  * Copyrights licensed under the New BSD License. See the accompanying LICENSE file for terms.
  */
 
-/*global YSLOW*/
+/*global MYSLOW*/
 /*jslint white: true, onevar: true, undef: true, nomen: true, eqeqeq: true, plusplus: true, bitwise: true, regexp: true, newcap: true, immed: true */
 
 /**
  * A class that collects all in-product text.
- * @namespace YSLOW
+ * @namespace MYSLOW
  * @class doc
  * @static
  */
-YSLOW.doc = {
+MYSLOW.doc = {
 
     tools_desc: undefined,
 
@@ -3859,100 +3850,100 @@ YSLOW.doc = {
 //
 // Rules text
 //
-YSLOW.doc.addRuleInfo('ynumreq', 'Make fewer HTTP requests', 'Decreasing the number of components on a page reduces the number of HTTP requests required to render the page, resulting in faster page loads.  Some ways to reduce the number of components include:  combine files, combine multiple scripts into one script, combine multiple CSS files into one style sheet, and use CSS Sprites and image maps.');
+MYSLOW.doc.addRuleInfo('ynumreq', 'Make fewer HTTP requests', 'Decreasing the number of components on a page reduces the number of HTTP requests required to render the page, resulting in faster page loads.  Some ways to reduce the number of components include:  combine files, combine multiple scripts into one script, combine multiple CSS files into one style sheet, and use CSS Sprites and image maps.');
 
-YSLOW.doc.addRuleInfo('ycdn', 'Use a Content Delivery Network (CDN)', 'User proximity to web servers impacts response times.  Deploying content across multiple geographically dispersed servers helps users perceive that pages are loading faster.');
+MYSLOW.doc.addRuleInfo('ycdn', 'Use a Content Delivery Network (CDN)', 'User proximity to web servers impacts response times.  Deploying content across multiple geographically dispersed servers helps users perceive that pages are loading faster.');
 
-YSLOW.doc.addRuleInfo('yexpires', 'Add Expires headers', 'Web pages are becoming increasingly complex with more scripts, style sheets, images, and Flash on them.  A first-time visit to a page may require several HTTP requests to load all the components.  By using Expires headers these components become cacheable, which avoids unnecessary HTTP requests on subsequent page views.  Expires headers are most often associated with images, but they can and should be used on all page components including scripts, style sheets, and Flash.');
+MYSLOW.doc.addRuleInfo('yexpires', 'Add Expires headers', 'Web pages are becoming increasingly complex with more scripts, style sheets, images, and Flash on them.  A first-time visit to a page may require several HTTP requests to load all the components.  By using Expires headers these components become cacheable, which avoids unnecessary HTTP requests on subsequent page views.  Expires headers are most often associated with images, but they can and should be used on all page components including scripts, style sheets, and Flash.');
 
-YSLOW.doc.addRuleInfo('ycompress', 'Compress components with gzip', 'Compression reduces response times by reducing the size of the HTTP response.  Gzip is the most popular and effective compression method currently available and generally reduces the response size by about 70%.  Approximately 90% of today\'s Internet traffic travels through browsers that claim to support gzip.');
+MYSLOW.doc.addRuleInfo('ycompress', 'Compress components with gzip', 'Compression reduces response times by reducing the size of the HTTP response.  Gzip is the most popular and effective compression method currently available and generally reduces the response size by about 70%.  Approximately 90% of today\'s Internet traffic travels through browsers that claim to support gzip.');
 
-YSLOW.doc.addRuleInfo('ycsstop', 'Put CSS at top', 'Moving style sheets to the document HEAD element helps pages appear to load quicker since this allows pages to render progressively.');
+MYSLOW.doc.addRuleInfo('ycsstop', 'Put CSS at top', 'Moving style sheets to the document HEAD element helps pages appear to load quicker since this allows pages to render progressively.');
 
-YSLOW.doc.addRuleInfo('yjsbottom', 'Put JavaScript at bottom', 'JavaScript scripts block parallel downloads; that is, when a script is downloading, the browser will not start any other downloads.  To help the page load faster, move scripts to the bottom of the page if they are deferrable.');
+MYSLOW.doc.addRuleInfo('yjsbottom', 'Put JavaScript at bottom', 'JavaScript scripts block parallel downloads; that is, when a script is downloading, the browser will not start any other downloads.  To help the page load faster, move scripts to the bottom of the page if they are deferrable.');
 
-YSLOW.doc.addRuleInfo('yexpressions', 'Avoid CSS expressions', 'CSS expressions (supported in IE beginning with Version 5) are a powerful, and dangerous, way to dynamically set CSS properties.  These expressions are evaluated frequently:  when the page is rendered and resized, when the page is scrolled, and even when the user moves the mouse over the page.  These frequent evaluations degrade the user experience.');
+MYSLOW.doc.addRuleInfo('yexpressions', 'Avoid CSS expressions', 'CSS expressions (supported in IE beginning with Version 5) are a powerful, and dangerous, way to dynamically set CSS properties.  These expressions are evaluated frequently:  when the page is rendered and resized, when the page is scrolled, and even when the user moves the mouse over the page.  These frequent evaluations degrade the user experience.');
 
-YSLOW.doc.addRuleInfo('yexternal', 'Make JavaScript and CSS external', 'Using external JavaScript and CSS files generally produces faster pages because the files are cached by the browser.  JavaScript and CSS that are inlined in HTML documents get downloaded each time the HTML document is requested.  This reduces the number of HTTP requests but increases the HTML document size.  On the other hand, if the JavaScript and CSS are in external files cached by the browser, the HTML document size is reduced without increasing the number of HTTP requests.');
+MYSLOW.doc.addRuleInfo('yexternal', 'Make JavaScript and CSS external', 'Using external JavaScript and CSS files generally produces faster pages because the files are cached by the browser.  JavaScript and CSS that are inlined in HTML documents get downloaded each time the HTML document is requested.  This reduces the number of HTTP requests but increases the HTML document size.  On the other hand, if the JavaScript and CSS are in external files cached by the browser, the HTML document size is reduced without increasing the number of HTTP requests.');
 
-YSLOW.doc.addRuleInfo('ydns', 'Reduce DNS lookups', 'The Domain Name System (DNS) maps hostnames to IP addresses, just like phonebooks map people\'s names to their phone numbers.  When you type URL www.yahoo.com into the browser, the browser contacts a DNS resolver that returns the server\'s IP address.  DNS has a cost; typically it takes 20 to 120 milliseconds for it to look up the IP address for a hostname.  The browser cannot download anything from the host until the lookup completes.');
+MYSLOW.doc.addRuleInfo('ydns', 'Reduce DNS lookups', 'The Domain Name System (DNS) maps hostnames to IP addresses, just like phonebooks map people\'s names to their phone numbers.  When you type URL www.yahoo.com into the browser, the browser contacts a DNS resolver that returns the server\'s IP address.  DNS has a cost; typically it takes 20 to 120 milliseconds for it to look up the IP address for a hostname.  The browser cannot download anything from the host until the lookup completes.');
 
-YSLOW.doc.addRuleInfo('yminify', 'Minify JavaScript and CSS', 'Minification removes unnecessary characters from a file to reduce its size, thereby improving load times.  When a file is minified, comments and unneeded white space characters (space, newline, and tab) are removed.  This improves response time since the size of the download files is reduced.');
+MYSLOW.doc.addRuleInfo('yminify', 'Minify JavaScript and CSS', 'Minification removes unnecessary characters from a file to reduce its size, thereby improving load times.  When a file is minified, comments and unneeded white space characters (space, newline, and tab) are removed.  This improves response time since the size of the download files is reduced.');
 
-YSLOW.doc.addRuleInfo('yredirects', 'Avoid URL redirects', 'URL redirects are made using HTTP status codes 301 and 302.  They tell the browser to go to another location.  Inserting a redirect between the user and the final HTML document delays everything on the page since nothing on the page can be rendered and no components can be downloaded until the HTML document arrives.');
+MYSLOW.doc.addRuleInfo('yredirects', 'Avoid URL redirects', 'URL redirects are made using HTTP status codes 301 and 302.  They tell the browser to go to another location.  Inserting a redirect between the user and the final HTML document delays everything on the page since nothing on the page can be rendered and no components can be downloaded until the HTML document arrives.');
 
-YSLOW.doc.addRuleInfo('ydupes', 'Remove duplicate JavaScript and CSS', 'Duplicate JavaScript and CSS files hurt performance by creating unnecessary HTTP requests (IE only) and wasted JavaScript execution (IE and Firefox).  In IE, if an external script is included twice and is not cacheable, it generates two HTTP requests during page loading.  Even if the script is cacheable, extra HTTP requests occur when the user reloads the page.  In both IE and Firefox, duplicate JavaScript scripts cause wasted time evaluating the same scripts more than once.  This redundant script execution happens regardless of whether the script is cacheable.');
+MYSLOW.doc.addRuleInfo('ydupes', 'Remove duplicate JavaScript and CSS', 'Duplicate JavaScript and CSS files hurt performance by creating unnecessary HTTP requests (IE only) and wasted JavaScript execution (IE and Firefox).  In IE, if an external script is included twice and is not cacheable, it generates two HTTP requests during page loading.  Even if the script is cacheable, extra HTTP requests occur when the user reloads the page.  In both IE and Firefox, duplicate JavaScript scripts cause wasted time evaluating the same scripts more than once.  This redundant script execution happens regardless of whether the script is cacheable.');
 
-YSLOW.doc.addRuleInfo('yetags', 'Configure entity tags (ETags)', 'Entity tags (ETags) are a mechanism web servers and the browser use to determine whether a component in the browser\'s cache matches one on the origin server.  Since ETags are typically constructed using attributes that make them unique to a specific server hosting a site, the tags will not match when a browser gets the original component from one server and later tries to validate that component on a different server.');
+MYSLOW.doc.addRuleInfo('yetags', 'Configure entity tags (ETags)', 'Entity tags (ETags) are a mechanism web servers and the browser use to determine whether a component in the browser\'s cache matches one on the origin server.  Since ETags are typically constructed using attributes that make them unique to a specific server hosting a site, the tags will not match when a browser gets the original component from one server and later tries to validate that component on a different server.');
 
-YSLOW.doc.addRuleInfo('yxhr', 'Make AJAX cacheable', 'One of AJAX\'s benefits is it provides instantaneous feedback to the user because it requests information asynchronously from the backend web server.  However, using AJAX does not guarantee the user will not wait for the asynchronous JavaScript and XML responses to return.  Optimizing AJAX responses is important to improve performance, and making the responses cacheable is the best way to optimize them.');
+MYSLOW.doc.addRuleInfo('yxhr', 'Make AJAX cacheable', 'One of AJAX\'s benefits is it provides instantaneous feedback to the user because it requests information asynchronously from the backend web server.  However, using AJAX does not guarantee the user will not wait for the asynchronous JavaScript and XML responses to return.  Optimizing AJAX responses is important to improve performance, and making the responses cacheable is the best way to optimize them.');
 
-YSLOW.doc.addRuleInfo('yxhrmethod', 'Use GET for AJAX requests', 'When using the XMLHttpRequest object, the browser implements POST in two steps:  (1) send the headers, and (2) send the data.  It is better to use GET instead of POST since GET sends the headers and the data together (unless there are many cookies).  IE\'s maximum URL length is 2 KB, so if you are sending more than this amount of data you may not be able to use GET.');
+MYSLOW.doc.addRuleInfo('yxhrmethod', 'Use GET for AJAX requests', 'When using the XMLHttpRequest object, the browser implements POST in two steps:  (1) send the headers, and (2) send the data.  It is better to use GET instead of POST since GET sends the headers and the data together (unless there are many cookies).  IE\'s maximum URL length is 2 KB, so if you are sending more than this amount of data you may not be able to use GET.');
 
-YSLOW.doc.addRuleInfo('ymindom', 'Reduce the number of DOM elements', 'A complex page means more bytes to download, and it also means slower DOM access in JavaScript.  Reduce the number of DOM elements on the page to improve performance.');
+MYSLOW.doc.addRuleInfo('ymindom', 'Reduce the number of DOM elements', 'A complex page means more bytes to download, and it also means slower DOM access in JavaScript.  Reduce the number of DOM elements on the page to improve performance.');
 
-YSLOW.doc.addRuleInfo('yno404', 'Avoid HTTP 404 (Not Found) error', 'Making an HTTP request and receiving a 404 (Not Found) error is expensive and degrades the user experience.  Some sites have helpful 404 messages (for example, "Did you mean ...?"), which may assist the user, but server resources are still wasted.');
+MYSLOW.doc.addRuleInfo('yno404', 'Avoid HTTP 404 (Not Found) error', 'Making an HTTP request and receiving a 404 (Not Found) error is expensive and degrades the user experience.  Some sites have helpful 404 messages (for example, "Did you mean ...?"), which may assist the user, but server resources are still wasted.');
 
-YSLOW.doc.addRuleInfo('ymincookie', 'Reduce cookie size', 'HTTP cookies are used for authentication, personalization, and other purposes.  Cookie information is exchanged in the HTTP headers between web servers and the browser, so keeping the cookie size small minimizes the impact on response time.');
+MYSLOW.doc.addRuleInfo('ymincookie', 'Reduce cookie size', 'HTTP cookies are used for authentication, personalization, and other purposes.  Cookie information is exchanged in the HTTP headers between web servers and the browser, so keeping the cookie size small minimizes the impact on response time.');
 
-YSLOW.doc.addRuleInfo('ycookiefree', 'Use cookie-free domains', 'When the browser requests a static image and sends cookies with the request, the server ignores the cookies.  These cookies are unnecessary network traffic.  To workaround this problem, make sure that static components are requested with cookie-free requests by creating a subdomain and hosting them there.');
+MYSLOW.doc.addRuleInfo('ycookiefree', 'Use cookie-free domains', 'When the browser requests a static image and sends cookies with the request, the server ignores the cookies.  These cookies are unnecessary network traffic.  To workaround this problem, make sure that static components are requested with cookie-free requests by creating a subdomain and hosting them there.');
 
-YSLOW.doc.addRuleInfo('ynofilter', 'Avoid AlphaImageLoader filter', 'The IE-proprietary AlphaImageLoader filter attempts to fix a problem with semi-transparent true color PNG files in IE versions less than Version 7.  However, this filter blocks rendering and freezes the browser while the image is being downloaded.  Additionally, it increases memory consumption.  The problem is further multiplied because it is applied per element, not per image.');
+MYSLOW.doc.addRuleInfo('ynofilter', 'Avoid AlphaImageLoader filter', 'The IE-proprietary AlphaImageLoader filter attempts to fix a problem with semi-transparent true color PNG files in IE versions less than Version 7.  However, this filter blocks rendering and freezes the browser while the image is being downloaded.  Additionally, it increases memory consumption.  The problem is further multiplied because it is applied per element, not per image.');
 
-YSLOW.doc.addRuleInfo('yimgnoscale', 'Do not scale images in HTML', 'Web page designers sometimes set image dimensions by using the width and height attributes of the HTML image element.  Avoid doing this since it can result in images being larger than needed.  For example, if your page requires image myimg.jpg which has dimensions 240x720 but displays it with dimensions 120x360 using the width and height attributes, then the browser will download an image that is larger than necessary.');
+MYSLOW.doc.addRuleInfo('yimgnoscale', 'Do not scale images in HTML', 'Web page designers sometimes set image dimensions by using the width and height attributes of the HTML image element.  Avoid doing this since it can result in images being larger than needed.  For example, if your page requires image myimg.jpg which has dimensions 240x720 but displays it with dimensions 120x360 using the width and height attributes, then the browser will download an image that is larger than necessary.');
 
-YSLOW.doc.addRuleInfo('yfavicon', 'Make favicon small and cacheable', 'A favicon is an icon associated with a web page; this icon resides in the favicon.ico file in the server\'s root.  Since the browser requests this file, it needs to be present; if it is missing, the browser returns a 404 error (see "Avoid HTTP 404 (Not Found) error" above).  Since favicon.ico resides in the server\'s root, each time the browser requests this file, the cookies for the server\'s root are sent.  Making the favicon small and reducing the cookie size for the server\'s root cookies improves performance for retrieving the favicon.  Making favicon.ico cacheable avoids frequent requests for it.');
+MYSLOW.doc.addRuleInfo('yfavicon', 'Make favicon small and cacheable', 'A favicon is an icon associated with a web page; this icon resides in the favicon.ico file in the server\'s root.  Since the browser requests this file, it needs to be present; if it is missing, the browser returns a 404 error (see "Avoid HTTP 404 (Not Found) error" above).  Since favicon.ico resides in the server\'s root, each time the browser requests this file, the cookies for the server\'s root are sent.  Making the favicon small and reducing the cookie size for the server\'s root cookies improves performance for retrieving the favicon.  Making favicon.ico cacheable avoids frequent requests for it.');
 
-YSLOW.doc.addRuleInfo('yemptysrc', 'Avoid empty src or href', 'You may expect a browser to do nothing when it encounters an empty image src.  However, it is not the case in most browsers. IE makes a request to the directory in which the page is located; Safari, Chrome, Firefox 3 and earlier make a request to the actual page itself. This behavior could possibly corrupt user data, waste server computing cycles generating a page that will never be viewed, and in the worst case, cripple your servers by sending a large amount of unexpected traffic.');
+MYSLOW.doc.addRuleInfo('yemptysrc', 'Avoid empty src or href', 'You may expect a browser to do nothing when it encounters an empty image src.  However, it is not the case in most browsers. IE makes a request to the directory in which the page is located; Safari, Chrome, Firefox 3 and earlier make a request to the actual page itself. This behavior could possibly corrupt user data, waste server computing cycles generating a page that will never be viewed, and in the worst case, cripple your servers by sending a large amount of unexpected traffic.');
 
 //
 // Tools text
 //
-YSLOW.doc.tools_desc = 'Click on the tool name to launch the tool.';
+MYSLOW.doc.tools_desc = 'Click on the tool name to launch the tool.';
 
-YSLOW.doc.addToolInfo('jslint', 'JSLint', 'Run JSLint on all JavaScript code in this document');
+MYSLOW.doc.addToolInfo('jslint', 'JSLint', 'Run JSLint on all JavaScript code in this document');
 
-YSLOW.doc.addToolInfo('alljs', 'All JS', 'Show all JavaScript code in this document');
+MYSLOW.doc.addToolInfo('alljs', 'All JS', 'Show all JavaScript code in this document');
 
-YSLOW.doc.addToolInfo('jsbeautified', 'All JS Beautified', 'Show all JavaScript code in this document in an easy to read format');
+MYSLOW.doc.addToolInfo('jsbeautified', 'All JS Beautified', 'Show all JavaScript code in this document in an easy to read format');
 
-YSLOW.doc.addToolInfo('jsminified', 'All JS Minified', 'Show all JavaScript code in this document in a minified (no comments or white space) format');
+MYSLOW.doc.addToolInfo('jsminified', 'All JS Minified', 'Show all JavaScript code in this document in a minified (no comments or white space) format');
 
-YSLOW.doc.addToolInfo('allcss', 'All CSS', 'Show all CSS code in this document');
+MYSLOW.doc.addToolInfo('allcss', 'All CSS', 'Show all CSS code in this document');
 
-YSLOW.doc.addToolInfo('cssmin', 'YUI CSS Compressor', 'Show all CSS code in the document in a minified format');
+MYSLOW.doc.addToolInfo('cssmin', 'YUI CSS Compressor', 'Show all CSS code in the document in a minified format');
 
-YSLOW.doc.addToolInfo('smushItAll', 'All Smush.it&trade;', 'Run Smush.it&trade; on all image components in this document');
+MYSLOW.doc.addToolInfo('smushItAll', 'All Smush.it&trade;', 'Run Smush.it&trade; on all image components in this document');
 
-YSLOW.doc.addToolInfo('printableview', 'Printable View', 'Show a printable view of grades, component lists, and statistics');
+MYSLOW.doc.addToolInfo('printableview', 'Printable View', 'Show a printable view of grades, component lists, and statistics');
 
 //
 // Splash text
 //
-YSLOW.doc.splash.title = 'Grade your web pages with YSlow';
+MYSLOW.doc.splash.title = 'Grade your web pages with YSlow';
 
-YSLOW.doc.splash.content = {
+MYSLOW.doc.splash.content = {
     'header': 'YSlow gives you:',
     'text': '<ul><li>Grade based on the performance of the page (you can define your own ruleset)</li><li>Summary of the page components</li><li>Chart with statistics</li><li>Tools for analyzing performance, including Smush.it&trade; and JSLint</li></ul>'
 };
 
-YSLOW.doc.splash.more_info = 'Learn more about YSlow and the Yahoo! Developer Network';
+MYSLOW.doc.splash.more_info = 'Learn more about YSlow and the Yahoo! Developer Network';
 
 //
 // Rule Settings
 //
-YSLOW.doc.rulesettings_desc = 'Choose which ruleset (YSlow V2, Classic V1, or Small Site/Blog) best fits your specific needs.  Or create a new set and click Save as... to save it.';
+MYSLOW.doc.rulesettings_desc = 'Choose which ruleset (YSlow V2, Classic V1, or Small Site/Blog) best fits your specific needs.  Or create a new set and click Save as... to save it.';
 
 //
 // Components table legend
 //
-YSLOW.doc.components_legend.beacon = 'type column indicates the component is loaded after window onload event';
-YSLOW.doc.components_legend.after_onload = 'denotes 1x1 pixels image that may be image beacon';
+MYSLOW.doc.components_legend.beacon = 'type column indicates the component is loaded after window onload event';
+MYSLOW.doc.components_legend.after_onload = 'denotes 1x1 pixels image that may be image beacon';
 
 //
 // View names
 //
-YSLOW.doc.view_names = {
+MYSLOW.doc.view_names = {
     grade: 'Grade',
     components: 'Components',
     stats: 'Statistics',
@@ -3961,13 +3952,13 @@ YSLOW.doc.view_names = {
 };
 
 // copyright text
-YSLOW.doc.copyright = 'Copyright &copy; ' + (new Date()).getFullYear() + ' Yahoo! Inc. All rights reserved.';
+MYSLOW.doc.copyright = 'Copyright &copy; ' + (new Date()).getFullYear() + ' Yahoo! Inc. All rights reserved.';
 /**
  * Copyright (c) 2012, Yahoo! Inc.  All rights reserved.
  * Copyrights licensed under the New BSD License. See the accompanying LICENSE file for terms.
  */
 
-/*global YSLOW*/
+/*global MYSLOW*/
 /*jslint white: true, onevar: true, undef: true, nomen: true, regexp: true, continue: true, plusplus: true, bitwise: true, newcap: true, type: true, unparam: true, maxerr: 50, indent: 4*/
 
 /**
@@ -3975,7 +3966,7 @@ YSLOW.doc.copyright = 'Copyright &copy; ' + (new Date()).getFullYear() + ' Yahoo
  * Example of a rule object:
  *
  * <pre>
- * YSLOW.registerRule({
+ * MYSLOW.registerRule({
  *
  *     id: 'myrule',
  *     name: 'Never say never',
@@ -3999,9 +3990,9 @@ YSLOW.doc.copyright = 'Copyright &copy; ' + (new Date()).getFullYear() + ' Yahoo
 
 //
 // 3/2/2009
-// Centralize all name and info of builtin tool to YSLOW.doc class.
+// Centralize all name and info of builtin tool to MYSLOW.doc class.
 //
-YSLOW.registerRule({
+MYSLOW.registerRule({
     id: 'ynumreq',
     //name: 'Make fewer HTTP requests',
     url: 'http://developer.yahoo.com/performance/rules.html#num_http',
@@ -4030,15 +4021,15 @@ YSLOW.registerRule({
 
         if (js > 0) {
             score -= js * config.points_js;
-            messages[messages.length] = 'This page has ' + YSLOW.util.plural('%num% external Javascript script%s%', (js + config.max_js)) + '.  Try combining them into one.';
+            messages[messages.length] = 'This page has ' + MYSLOW.util.plural('%num% external Javascript script%s%', (js + config.max_js)) + '.  Try combining them into one.';
         }
         if (css > 0) {
             score -= css * config.points_css;
-            messages[messages.length] = 'This page has ' + YSLOW.util.plural('%num% external stylesheet%s%', (css + config.max_css)) + '.  Try combining them into one.';
+            messages[messages.length] = 'This page has ' + MYSLOW.util.plural('%num% external stylesheet%s%', (css + config.max_css)) + '.  Try combining them into one.';
         }
         if (cssimg > 0) {
             score -= cssimg * config.points_cssimages;
-            messages[messages.length] = 'This page has ' + YSLOW.util.plural('%num% external background image%s%', (cssimg + config.max_cssimages)) + '.  Try combining them with CSS sprites.';
+            messages[messages.length] = 'This page has ' + MYSLOW.util.plural('%num% external background image%s%', (cssimg + config.max_cssimages)) + '.  Try combining them with CSS sprites.';
         }
 
         return {
@@ -4049,7 +4040,7 @@ YSLOW.registerRule({
     }
 });
 
-YSLOW.registerRule({
+MYSLOW.registerRule({
     id: 'ycdn',
     //name: 'Use a CDN',
     url: 'http://developer.yahoo.com/performance/rules.html#cdn',
@@ -4108,7 +4099,7 @@ YSLOW.registerRule({
             offenders = [],
             exceptions = [],
             message = '',
-            util = YSLOW.util,
+            util = MYSLOW.util,
             plural = util.plural,
             kbSize = util.kbSize,
             getHostname = util.getHostname,
@@ -4241,7 +4232,7 @@ YSLOW.registerRule({
     }
 });
 
-YSLOW.registerRule({
+MYSLOW.registerRule({
     id: 'yexpires',
     //name: 'Add an Expires header',
     url: 'http://developer.yahoo.com/performance/rules.html#expires',
@@ -4280,7 +4271,7 @@ YSLOW.registerRule({
 
         return {
             score: score,
-            message: (offenders.length > 0) ? YSLOW.util.plural(
+            message: (offenders.length > 0) ? MYSLOW.util.plural(
                 'There %are% %num% static component%s%',
                 offenders.length
             ) + ' without a far-future expiration date.' : '',
@@ -4289,7 +4280,7 @@ YSLOW.registerRule({
     }
 });
 
-YSLOW.registerRule({
+MYSLOW.registerRule({
     id: 'ycompress',
     //name: 'Compress components',
     url: 'http://developer.yahoo.com/performance/rules.html#gzip',
@@ -4321,7 +4312,7 @@ YSLOW.registerRule({
 
         return {
             score: score,
-            message: (offenders.length > 0) ? YSLOW.util.plural(
+            message: (offenders.length > 0) ? MYSLOW.util.plural(
                 'There %are% %num% plain text component%s%',
                 offenders.length
             ) + ' that should be sent compressed' : '',
@@ -4330,7 +4321,7 @@ YSLOW.registerRule({
     }
 });
 
-YSLOW.registerRule({
+MYSLOW.registerRule({
     id: 'ycsstop',
     //name: 'Put CSS at the top',
     url: 'http://developer.yahoo.com/performance/rules.html#css_top',
@@ -4361,7 +4352,7 @@ YSLOW.registerRule({
 
         return {
             score: score,
-            message: (offenders.length > 0) ? YSLOW.util.plural(
+            message: (offenders.length > 0) ? MYSLOW.util.plural(
                 'There %are% %num% stylesheet%s%',
                 offenders.length
             ) + ' found in the body of the document' : '',
@@ -4370,7 +4361,7 @@ YSLOW.registerRule({
     }
 });
 
-YSLOW.registerRule({
+MYSLOW.registerRule({
     id: 'yjsbottom',
     //name: 'Put Javascript at the bottom',
     url: 'http://developer.yahoo.com/performance/rules.html#js_bottom',
@@ -4399,7 +4390,7 @@ YSLOW.registerRule({
         return {
             score: score,
             message: (offenders.length > 0) ?
-                YSLOW.util.plural(
+                MYSLOW.util.plural(
                     'There %are% %num% JavaScript script%s%',
                     offenders.length
                 ) + ' found in the head of the document' : '',
@@ -4408,7 +4399,7 @@ YSLOW.registerRule({
     }
 });
 
-YSLOW.registerRule({
+MYSLOW.registerRule({
     id: 'yexpressions',
     //name: 'Avoid CSS expressions',
     url: 'http://developer.yahoo.com/performance/rules.html#css_expressions',
@@ -4429,7 +4420,7 @@ YSLOW.registerRule({
         for (i = 0, len = comps.length; i < len; i += 1) {
             comp = comps[i];
             if (typeof comp.expr_count === 'undefined') {
-                expr_count = YSLOW.util.countExpressions(comp.body);
+                expr_count = MYSLOW.util.countExpressions(comp.body);
                 comp.expr_count = expr_count;
             } else {
                 expr_count = comp.expr_count;
@@ -4437,7 +4428,7 @@ YSLOW.registerRule({
 
             // offence
             if (expr_count > 0) {
-                comp.yexpressions = YSLOW.util.plural(
+                comp.yexpressions = MYSLOW.util.plural(
                     '%num% expression%s%',
                     expr_count
                 );
@@ -4447,10 +4438,10 @@ YSLOW.registerRule({
         }
 
         for (i = 0, len = instyles.length; i < len; i += 1) {
-            expr_count = YSLOW.util.countExpressions(instyles[i].body);
+            expr_count = MYSLOW.util.countExpressions(instyles[i].body);
             if (expr_count > 0) {
                 offenders.push('inline &lt;style&gt; tag #' + (i + 1) + ' (' +
-                    YSLOW.util.plural(
+                    MYSLOW.util.plural(
                         '%num% expression%s%',
                         expr_count
                     ) + ')'
@@ -4466,13 +4457,13 @@ YSLOW.registerRule({
         return {
             score: score,
             message: total > 0 ? 'There is a total of ' +
-                YSLOW.util.plural('%num% expression%s%', total) : '',
+                MYSLOW.util.plural('%num% expression%s%', total) : '',
             components: offenders
         };
     }
 });
 
-YSLOW.registerRule({
+MYSLOW.registerRule({
     id: 'yexternal',
     //name: 'Make JS and CSS external',
     url: 'http://developer.yahoo.com/performance/rules.html#external',
@@ -4487,7 +4478,7 @@ YSLOW.registerRule({
             offenders = [];
 
         if (styles.length) {
-            message = YSLOW.util.plural(
+            message = MYSLOW.util.plural(
                 'There is a total of %num% inline css',
                 styles.length
             );
@@ -4495,7 +4486,7 @@ YSLOW.registerRule({
         }
 
         if (scripts.length) {
-            message = YSLOW.util.plural(
+            message = MYSLOW.util.plural(
                 'There is a total of %num% inline script%s%',
                 scripts.length
             );
@@ -4510,7 +4501,7 @@ YSLOW.registerRule({
     }
 });
 
-YSLOW.registerRule({
+MYSLOW.registerRule({
     id: 'ydns',
     //name: 'Reduce DNS lookups',
     url: 'http://developer.yahoo.com/performance/rules.html#dns_lookups',
@@ -4525,7 +4516,7 @@ YSLOW.registerRule({
 
     lint: function (doc, cset, config) {
         var i, len, domain,
-            util = YSLOW.util,
+            util = MYSLOW.util,
             kbSize = util.kbSize,
             plural = util.plural,
             score = 100,
@@ -4560,7 +4551,7 @@ YSLOW.registerRule({
     }
 });
 
-YSLOW.registerRule({
+MYSLOW.registerRule({
     id: 'yminify',
     //name: 'Minify JS and CSS',
     url: 'http://developer.yahoo.com/performance/rules.html#minify',
@@ -4586,7 +4577,7 @@ YSLOW.registerRule({
             comp = comps[i];
             // set/get minified flag
             if (typeof comp.minified === 'undefined') {
-                minified = YSLOW.util.isMinified(comp.body);
+                minified = MYSLOW.util.isMinified(comp.body);
                 comp.minified = minified;
             } else {
                 minified = comp.minified;
@@ -4599,12 +4590,12 @@ YSLOW.registerRule({
 
         // check inline scripts/styles/whatever
         for (i = 0, len = styles.length; i < len; i += 1) {
-            if (!YSLOW.util.isMinified(styles[i].body)) {
+            if (!MYSLOW.util.isMinified(styles[i].body)) {
                 offenders.push('inline &lt;style&gt; tag #' + (i + 1));
             }
         }
         for (i = 0, len = scripts.length; i < len; i += 1) {
-            if (!YSLOW.util.isMinified(scripts[i].body)) {
+            if (!MYSLOW.util.isMinified(scripts[i].body)) {
                 offenders.push('inline &lt;script&gt; tag #' + (i + 1));
             }
         }
@@ -4613,13 +4604,13 @@ YSLOW.registerRule({
 
         return {
             score: score,
-            message: (offenders.length > 0) ? YSLOW.util.plural('There %are% %num% component%s% that can be minified', offenders.length) : '',
+            message: (offenders.length > 0) ? MYSLOW.util.plural('There %are% %num% component%s% that can be minified', offenders.length) : '',
             components: offenders
         };
     }
 });
 
-YSLOW.registerRule({
+MYSLOW.registerRule({
     id: 'yredirects',
     //name: 'Avoid redirects',
     url: 'http://developer.yahoo.com/performance/rules.html#redirects',
@@ -4632,7 +4623,7 @@ YSLOW.registerRule({
     lint: function (doc, cset, config) {
         var i, len, comp, score,
             offenders = [],
-            briefUrl = YSLOW.util.briefUrl,
+            briefUrl = MYSLOW.util.briefUrl,
             comps = cset.getComponentsByType('redirect');
 
         for (i = 0, len = comps.length; i < len; i += 1) {
@@ -4644,7 +4635,7 @@ YSLOW.registerRule({
 
         return {
             score: score,
-            message: (comps.length > 0) ? YSLOW.util.plural(
+            message: (comps.length > 0) ? MYSLOW.util.plural(
                 'There %are% %num% redirect%s%',
                 comps.length
             ) : '',
@@ -4653,7 +4644,7 @@ YSLOW.registerRule({
     }
 });
 
-YSLOW.registerRule({
+MYSLOW.registerRule({
     id: 'ydupes',
     //name: 'Remove duplicate JS and CSS',
     url: 'http://developer.yahoo.com/performance/rules.html#js_dupes',
@@ -4694,7 +4685,7 @@ YSLOW.registerRule({
 
         return {
             score: score,
-            message: (offenders.length > 0) ? YSLOW.util.plural(
+            message: (offenders.length > 0) ? MYSLOW.util.plural(
                 'There %are% %num% duplicate component%s%',
                 offenders.length
             ) : '',
@@ -4703,7 +4694,7 @@ YSLOW.registerRule({
     }
 });
 
-YSLOW.registerRule({
+MYSLOW.registerRule({
     id: 'yetags',
     //name: 'Configure ETags',
     url: 'http://developer.yahoo.com/performance/rules.html#etags',
@@ -4725,7 +4716,7 @@ YSLOW.registerRule({
         for (i = 0, len = comps.length; i < len; i += 1) {
             comp = comps[i];
             etag = comp.headers && comp.headers.etag;
-            if (etag && !YSLOW.util.isETagGood(etag)) {
+            if (etag && !MYSLOW.util.isETagGood(etag)) {
                 offenders.push(comp);
             }
         }
@@ -4734,7 +4725,7 @@ YSLOW.registerRule({
 
         return {
             score: score,
-            message: (offenders.length > 0) ? YSLOW.util.plural(
+            message: (offenders.length > 0) ? MYSLOW.util.plural(
                 'There %are% %num% component%s% with misconfigured ETags',
                 offenders.length
             ) : '',
@@ -4743,7 +4734,7 @@ YSLOW.registerRule({
     }
 });
 
-YSLOW.registerRule({
+MYSLOW.registerRule({
     id: 'yxhr',
     //name: 'Make Ajax cacheable',
     url: 'http://developer.yahoo.com/performance/rules.html#cacheajax',
@@ -4790,7 +4781,7 @@ YSLOW.registerRule({
 
         return {
             score: score,
-            message: (offenders.length > 0) ? YSLOW.util.plural(
+            message: (offenders.length > 0) ? MYSLOW.util.plural(
                 'There %are% %num% XHR component%s% that %are% not cacheable',
                 offenders.length
             ) : '',
@@ -4799,7 +4790,7 @@ YSLOW.registerRule({
     }
 });
 
-YSLOW.registerRule({
+MYSLOW.registerRule({
     id: 'yxhrmethod',
     //name: 'Use GET for AJAX Requests',
     url: 'http://developer.yahoo.com/performance/rules.html#ajax_get',
@@ -4827,7 +4818,7 @@ YSLOW.registerRule({
 
         return {
             score: score,
-            message: (offenders.length > 0) ? YSLOW.util.plural(
+            message: (offenders.length > 0) ? MYSLOW.util.plural(
                 'There %are% %num% XHR component%s% that %do% not use GET HTTP method',
                 offenders.length
             ) : '',
@@ -4836,7 +4827,7 @@ YSLOW.registerRule({
     }
 });
 
-YSLOW.registerRule({
+MYSLOW.registerRule({
     id: 'ymindom',
     //name: 'Reduce the Number of DOM Elements',
     url: 'http://developer.yahoo.com/performance/rules.html#min_dom',
@@ -4862,7 +4853,7 @@ YSLOW.registerRule({
 
         return {
             score: score,
-            message: (numdom > config.maxdom) ? YSLOW.util.plural(
+            message: (numdom > config.maxdom) ? MYSLOW.util.plural(
                 'There %are% %num% DOM element%s% on the page',
                 numdom
             ) : '',
@@ -4871,7 +4862,7 @@ YSLOW.registerRule({
     }
 });
 
-YSLOW.registerRule({
+MYSLOW.registerRule({
     id: 'yno404',
     //name: 'No 404s',
     url: 'http://developer.yahoo.com/performance/rules.html#no404',
@@ -4898,7 +4889,7 @@ YSLOW.registerRule({
         score = 100 - offenders.length * parseInt(config.points, 10);
         return {
             score: score,
-            message: (offenders.length > 0) ? YSLOW.util.plural(
+            message: (offenders.length > 0) ? MYSLOW.util.plural(
                 'There %are% %num% request%s% that %are% 404 Not Found',
                 offenders.length
             ) : '',
@@ -4907,7 +4898,7 @@ YSLOW.registerRule({
     }
 });
 
-YSLOW.registerRule({
+MYSLOW.registerRule({
     id: 'ymincookie',
     //name: 'Reduce Cookie Size',
     url: 'http://developer.yahoo.com/performance/rules.html#cookie_size',
@@ -4930,7 +4921,7 @@ YSLOW.registerRule({
         if (cookieSize > config.max_cookie_size) {
             n = Math.floor(cookieSize / config.max_cookie_size);
             score -= 1 + n * parseInt(config.points, 10);
-            message = YSLOW.util.plural(
+            message = MYSLOW.util.plural(
                 'There %are% %num% byte%s% of cookies on this page',
                 cookieSize
             );
@@ -4944,7 +4935,7 @@ YSLOW.registerRule({
     }
 });
 
-YSLOW.registerRule({
+MYSLOW.registerRule({
     id: 'ycookiefree',
     //name: 'Use Cookie-free Domains',
     url: 'http://developer.yahoo.com/performance/rules.html#cookie_free',
@@ -4960,7 +4951,7 @@ YSLOW.registerRule({
     lint: function (doc, cset, config) {
         var i, len, score, comp, cookie,
             offenders = [],
-            getHostname = YSLOW.util.getHostname,
+            getHostname = MYSLOW.util.getHostname,
             docDomain = getHostname(cset.doc_comp.url),
             comps = cset.getComponentsByType(config.types);
 
@@ -4982,7 +4973,7 @@ YSLOW.registerRule({
 
         return {
             score: score,
-            message: (offenders.length > 0) ? YSLOW.util.plural(
+            message: (offenders.length > 0) ? MYSLOW.util.plural(
                 'There %are% %num% component%s% that %are% not cookie-free',
                 offenders.length
             ) : '',
@@ -4991,7 +4982,7 @@ YSLOW.registerRule({
     }
 });
 
-YSLOW.registerRule({
+MYSLOW.registerRule({
     id: 'ynofilter',
     //name: 'Avoid Filters',
     url: 'http://developer.yahoo.com/performance/rules.html#no_filters',
@@ -5015,7 +5006,7 @@ YSLOW.registerRule({
         for (i = 0, len = comps.length; i < len; i += 1) {
             comp = comps[i];
             if (typeof comp.filter_count === 'undefined') {
-                filter_count = YSLOW.util.countAlphaImageLoaderFilter(comp.body);
+                filter_count = MYSLOW.util.countAlphaImageLoaderFilter(comp.body);
                 comp.filter_count = filter_count;
             } else {
                 filter_count = comp.filter_count;
@@ -5035,13 +5026,13 @@ YSLOW.registerRule({
                 }
             }
             if (count > 0) {
-                comps[i].yfilters = YSLOW.util.plural('%num% filter%s%', count);
+                comps[i].yfilters = MYSLOW.util.plural('%num% filter%s%', count);
                 offenders.push(comps[i]);
             }
         }
 
         for (i = 0, len = instyles.length; i < len; i += 1) {
-            filter_count = YSLOW.util.countAlphaImageLoaderFilter(instyles[i].body);
+            filter_count = MYSLOW.util.countAlphaImageLoaderFilter(instyles[i].body);
             count = 0;
             for (type in filter_count) {
                 if (filter_count.hasOwnProperty(type)) {
@@ -5056,7 +5047,7 @@ YSLOW.registerRule({
             }
             if (count > 0) {
                 offenders.push('inline &lt;style&gt; tag #' + (i + 1) + ' (' +
-                    YSLOW.util.plural('%num% filter%s%', count) + ')');
+                    MYSLOW.util.plural('%num% filter%s%', count) + ')');
             }
         }
 
@@ -5066,7 +5057,7 @@ YSLOW.registerRule({
         return {
             score: score,
             message: (filter_total + hack_filter_total) > 0 ?
-                'There is a total of ' + YSLOW.util.plural(
+                'There is a total of ' + MYSLOW.util.plural(
                     '%num% filter%s%',
                     filter_total + hack_filter_total
                 ) : '',
@@ -5075,7 +5066,7 @@ YSLOW.registerRule({
     }
 });
 
-YSLOW.registerRule({
+MYSLOW.registerRule({
     id: 'yimgnoscale',
     //name: 'Don\'t Scale Images in HTML',
     url: 'http://developer.yahoo.com/performance/rules.html#no_scale',
@@ -5107,7 +5098,7 @@ YSLOW.registerRule({
 
         return {
             score: score,
-            message: (offenders.length > 0) ? YSLOW.util.plural(
+            message: (offenders.length > 0) ? MYSLOW.util.plural(
                 'There %are% %num% image%s% that %are% scaled down',
                 offenders.length
             ) : '',
@@ -5116,7 +5107,7 @@ YSLOW.registerRule({
     }
 });
 
-YSLOW.registerRule({
+MYSLOW.registerRule({
     id: 'yfavicon',
     //name: 'Make favicon Small and Cacheable',
     url: 'http://developer.yahoo.com/performance/rules.html#favicon',
@@ -5147,7 +5138,7 @@ YSLOW.registerRule({
 
             // check size
             if (comp.size > config.size) {
-                messages.push(YSLOW.util.plural(
+                messages.push(MYSLOW.util.plural(
                     'Favicon is more than %num% bytes',
                     config.size
                 ));
@@ -5176,7 +5167,7 @@ YSLOW.registerRule({
 
 });
 
-YSLOW.registerRule({
+MYSLOW.registerRule({
     id: 'yemptysrc',
     // name: 'Avoid empty src or href',
     url: 'http://developer.yahoo.com/performance/rules.html#emptysrc',
@@ -5201,7 +5192,7 @@ YSLOW.registerRule({
                     messages.push(count + ' ' + type);
                 }
             }
-            msg = messages.join(', ') + YSLOW.util.plural(
+            msg = messages.join(', ') + MYSLOW.util.plural(
                 ' component%s% with empty link were found.',
                 messages.length
             );
@@ -5216,7 +5207,7 @@ YSLOW.registerRule({
 });
 
 /**
- * YSLOW.registerRuleset({
+ * MYSLOW.registerRuleset({
  *
  *     id: 'myalgo',
  *     name: 'The best algo',
@@ -5229,7 +5220,7 @@ YSLOW.registerRule({
  * });
  */
 
-YSLOW.registerRuleset({ // yahoo default with default configuration
+MYSLOW.registerRuleset({ // yahoo default with default configuration
     id: 'ydefault',
     name: 'YSlow(V2)',
     rules: {
@@ -5306,7 +5297,7 @@ YSLOW.registerRuleset({ // yahoo default with default configuration
 
 });
 
-YSLOW.registerRuleset({
+MYSLOW.registerRuleset({
 
     id: 'yslow1',
     name: 'Classic(V1)',
@@ -5359,7 +5350,7 @@ YSLOW.registerRuleset({
 });
 
 
-YSLOW.registerRuleset({
+MYSLOW.registerRuleset({
     id: 'yblog',
     name: 'Small Site or Blog',
     rules: {
@@ -5415,7 +5406,7 @@ YSLOW.registerRuleset({
  *
  * Here is a very simplified snippet for registering a new rules and ruleset:
  *
- * YSLOW.registerRule({
+ * MYSLOW.registerRule({
  *     id: 'foo-rule1',
  *     name: 'Sample Test #1',
  *     info: 'How simple is that?',
@@ -5429,7 +5420,7 @@ YSLOW.registerRuleset({
  *     }
  * });
  *
- * YSLOW.registerRuleset({
+ * MYSLOW.registerRuleset({
  *     id: 'foo',
  *     name: 'Foobar Ruleset',
  *     rules: {
@@ -5446,7 +5437,7 @@ YSLOW.registerRuleset({
  * Copyrights licensed under the New BSD License. See the accompanying LICENSE file for terms.
  */
 
-/*global YSLOW*/
+/*global MYSLOW*/
 /*jslint white: true, onevar: true, undef: true, nomen: true, eqeqeq: true, plusplus: true, bitwise: true, regexp: true, newcap: true, immed: true */
 
 /**
@@ -5454,15 +5445,15 @@ YSLOW.registerRuleset({
  * @constructor
  * @param {Array} results array of lint result
  * @param {Number} overall_score overall score
- * @param {YSLOW.Ruleset} ruleset_applied Ruleset used to generate the result.
+ * @param {MYSLOW.Ruleset} ruleset_applied Ruleset used to generate the result.
  */
-YSLOW.ResultSet = function (results, overall_score, ruleset_applied) {
+MYSLOW.ResultSet = function (results, overall_score, ruleset_applied) {
     this.ruleset_applied = ruleset_applied;
     this.overall_score = overall_score;
     this.results = results;
 };
 
-YSLOW.ResultSet.prototype = {
+MYSLOW.ResultSet.prototype = {
 
     /**
      * Get results array from ResultSet.
@@ -5476,7 +5467,7 @@ YSLOW.ResultSet.prototype = {
     /**
      * Get ruleset applied from ResultSet
      * @return ruleset applied
-     * @type YSLOW.Ruleset
+     * @type MYSLOW.Ruleset
      */
     getRulesetApplied: function () {
         return this.ruleset_applied;
@@ -5497,1656 +5488,9 @@ YSLOW.ResultSet.prototype = {
  * Copyrights licensed under the New BSD License. See the accompanying LICENSE file for terms.
  */
 
-/*global YSLOW, window*/
-/*jslint white: true, browser: true, onevar: true, undef: true, nomen: true, eqeqeq: true, plusplus: true, bitwise: true, regexp: true, newcap: true, immed: true */
 
-/**
- * YSLOW.view manages the YSlow UI.
- * @class
- * @constructor
- * @param {Object} panel This panel object can be YSLOW.firefox.Panel or FirebugPanel.
- * @param {YSLOW.context} yscontext YSlow context to associated with this view.
- */
-YSLOW.view = function (panel, yscontext) {
-    var toolbar, elem, dialogHtml, modaldlg, copyright;
 
-    this.panel_doc = panel.document;
-    this.buttonViews = {};
-    this.curButtonId = "";
-    this.panelNode = panel.panelNode;
-
-    this.loadCSS(this.panel_doc);
-
-    toolbar = this.panel_doc.createElement("div");
-    toolbar.id = "toolbarDiv";
-    toolbar.innerHTML = this.getToolbarSource();
-    toolbar.style.display = "block";
-
-    elem = this.panel_doc.createElement("div");
-    elem.style.display = "block";
-
-    // create modal dialog.
-    dialogHtml = '<div class="dialog-box"><h1><div class="dialog-text">text</div></h1><div class="dialog-more-text"></div><div class="buttons"><input class="dialog-left-button" type="button" value="Ok" onclick="javascript:document.ysview.closeDialog(document)"><input class="dialog-right-button" type="button" value="Cancel" onclick="javascript:document.ysview.closeDialog(document)"></div></div><div class="dialog-mask"></div>';
-
-    modaldlg = this.panel_doc.createElement('div');
-    modaldlg.id = "dialogDiv";
-    modaldlg.innerHTML = dialogHtml;
-    modaldlg.style.display = "none";
-    // save modaldlg in view, make look up easier.
-    this.modaldlg = modaldlg;
-
-    this.tooltip = new YSLOW.view.Tooltip(this.panel_doc, panel.panelNode);
-
-    copyright = this.panel_doc.createElement('div');
-    copyright.id = "copyrightDiv";
-    copyright.innerHTML = YSLOW.doc.copyright;
-    this.copyright = copyright;
-
-    if (panel.panelNode) {
-        panel.panelNode.id = "yslowDiv";
-        panel.panelNode.appendChild(modaldlg);
-        panel.panelNode.appendChild(toolbar);
-        panel.panelNode.appendChild(elem);
-        panel.panelNode.appendChild(copyright);
-    }
-    this.viewNode = elem;
-    this.viewNode.id = "viewDiv";
-    this.viewNode.className = "yui-skin-sam";
-
-    this.yscontext = yscontext;
-
-    YSLOW.util.addEventListener(this.panelNode, 'click', function (e) {
-        var help, helplink, x, y, parent,
-            toolbar = panel.document.ysview.getElementByTagNameAndId(panel.panelNode, "div", "toolbarDiv");
-
-        // In order to support YSlow running on mutli-tab,
-        // we need to look up helpDiv using panelNode.
-        // panel_doc.getElementById('helpDiv') will always find
-        // helpDiv of YSlow running on the first browser tab.
-        if (toolbar) {
-            helplink = panel.document.ysview.getElementByTagNameAndId(toolbar, "li", "helpLink");
-            if (helplink) {
-                x = helplink.offsetLeft;
-                y = helplink.offsetTop;
-                parent = helplink.offsetParent;
-                while (parent) {
-                    x += parent.offsetLeft;
-                    y += parent.offsetTop;
-                    parent = parent.offsetParent;
-                }
-                if (e.clientX >= x && e.clientY >= y && e.clientX < x + helplink.offsetWidth && e.clientY < y + helplink.offsetHeight) { /* clicking on help link, do nothing */
-                    return;
-                }
-            }
-            help = panel.document.ysview.getElementByTagNameAndId(toolbar, "div", "helpDiv");
-        }
-        if (help && help.style.visibility === "visible") {
-            help.style.visibility = "hidden";
-        }
-    });
-
-    YSLOW.util.addEventListener(this.panelNode, 'scroll', function (e) {
-        var overlay = panel.document.ysview.modaldlg;
-
-        if (overlay && overlay.style.display === "block") {
-            overlay.style.top = panel.panelNode.scrollTop + 'px';
-            overlay.style.left = panel.panelNode.scrollLeft + 'px';
-        }
-    });
-
-    YSLOW.util.addEventListener(this.panelNode, 'mouseover', function (e) {
-        var rule;
-
-        if (e.target && typeof e.target === "object") {
-            if (e.target.nodeName === "LABEL" && e.target.className === "rules") {
-                if (e.target.firstChild && e.target.firstChild.nodeName === "INPUT" && e.target.firstChild.type === "checkbox") {
-                    rule = YSLOW.controller.getRule(e.target.firstChild.value);
-                    panel.document.ysview.tooltip.show('<b>' + rule.name + '</b><br><br>' + rule.info, e.target);
-                }
-            }
-        }
-    });
-
-    YSLOW.util.addEventListener(this.panelNode, 'mouseout', function (e) {
-        panel.document.ysview.tooltip.hide();
-    });
-
-    YSLOW.util.addEventListener(this.panel_doc.defaultView ||
-            this.panel_doc.parentWindow, 'resize', function (e) {
-        var overlay = panel.document.ysview.modaldlg;
-
-        if (overlay && overlay.style.display === "block") {
-            overlay.style.display = "none";
-        }
-    });
-
-};
-
-YSLOW.view.prototype = {
-
-    /**
-     * Update the document object store in View object.
-     * @param {Document} doc New Document object to be store in View.
-     */
-    setDocument: function (doc) {
-        this.panel_doc = doc;
-    },
-
-    /**
-     * Platform independent implementation (optional)
-     */
-    loadCSS: function () {},
-
-    /**
-     * @private
-     */
-    addButtonView: function (sButtonId, sHtml) {
-        var btnView = this.getButtonView(sButtonId);
-
-        if (!btnView) {
-            btnView = this.panel_doc.createElement("div");
-            btnView.style.display = "none";
-            this.viewNode.appendChild(btnView);
-            this.buttonViews[sButtonId] = btnView;
-        }
-
-        btnView.innerHTML = sHtml;
-        this.showButtonView(sButtonId);
-    },
-
-    /**
-     * Clear all (changeable) views
-     */
-    clearAllButtonView: function () {
-        var views = this.buttonViews,
-            node = this.viewNode,
-
-            remove = function (v) {
-                if (views.hasOwnProperty(v)) {
-                    node.removeChild(views[v]);
-                    delete views[v];
-                }
-            };
-
-        remove('ysPerfButton');
-        remove('ysCompsButton');
-        remove('ysStatsButton');
-    },
-
-    /**
-     * @private
-     */
-    showButtonView: function (sButtonId) {
-        var sId,
-            btnView = this.getButtonView(sButtonId);
-
-        if (!btnView) {
-            YSLOW.util.dump("ERROR: YSLOW.view.showButtonView: Couldn't find ButtonView '" + sButtonId + "'.");
-            return;
-        }
-
-        // Hide all the other button views.
-        for (sId in this.buttonViews) {
-            if (this.buttonViews.hasOwnProperty(sId) && sId !== sButtonId) {
-                this.buttonViews[sId].style.display = "none";
-            }
-        }
-
-        // special handling for copyright text in grade view
-        if (sButtonId === "ysPerfButton") {
-            // hide the main copyright text
-            if (this.copyright) {
-                this.copyright.style.display = "none";
-            }
-        } else if (this.curButtonId === "ysPerfButton") {
-            // show the main copyright text
-            if (this.copyright) {
-                this.copyright.style.display = "block";
-            }
-        }
-
-        btnView.style.display = "block";
-        this.curButtonId = sButtonId;
-    },
-
-    /**
-     * @private
-     */
-    getButtonView: function (sButtonId) {
-        return (this.buttonViews.hasOwnProperty(sButtonId) ? this.buttonViews[sButtonId] : undefined);
-    },
-
-    /**
-     * @private
-     */
-    setButtonView: function (sButtonId, sHtml) {
-        var btnView = this.getButtonView(sButtonId);
-
-        if (!btnView) {
-            YSLOW.util.dump("ERROR: YSLOW.view.setButtonView: Couldn't find ButtonView '" + sButtonId + "'.");
-            return;
-        }
-
-        btnView.innerHTML = sHtml;
-        this.showButtonView(sButtonId);
-    },
-
-    /**
-     * Show landing page.
-     */
-    setSplashView: function (hideAutoRun, showAntiIframe, hideToolsInfo /*TODO: remove once tools are working*/) {
-        var sHtml,
-            title = 'Grade your web pages with YSlow',
-            header = 'YSlow gives you:',
-            text = '<li>Grade based on the performance (you can define your own rules)</li><li>Summary of the Components in the page</li><li>Chart with statistics</li><li>Tools including Smush.It and JSLint</li>',
-            more_info_text = 'Learn more about YSlow and YDN';
-
-        if (YSLOW.doc.splash) {
-            if (YSLOW.doc.splash.title) {
-                title = YSLOW.doc.splash.title;
-            }
-            if (YSLOW.doc.splash.content) {
-                if (YSLOW.doc.splash.content.header) {
-                    header = YSLOW.doc.splash.content.header;
-                }
-                if (YSLOW.doc.splash.content.text) {
-                    text = YSLOW.doc.splash.content.text;
-                }
-            }
-            if (YSLOW.doc.splash.more_info) {
-                more_info_text = YSLOW.doc.splash.more_info;
-            }
-        }
-
-        /* TODO: remove once tools are working */
-        if (typeof hideToolsInfo !== 'undefined') {
-            YSLOW.hideToolsInfo = hideToolsInfo;
-        } else {
-            hideToolsInfo = YSLOW.hideToolsInfo;
-        }
-        if (hideToolsInfo) {
-            // nasty :-P
-            text = text.replace(/<li>Tools[^<]+<\/li>/, '');
-        }
-
-        sHtml = '<div id="splashDiv">' + '<div id="splashDivCenter">' + '<b id="splashImg" width="250" height="150" alt="splash image" src="chrome://yslow/content/yslow/img/speedometer.png"></b>' + '<div id="left"><h2>' + title + '</h2>' + '<div id="content" class="padding50"><h3>' + header + '</h3><ul id="splashBullets">' + text + '</ul>';
-
-        if (typeof hideAutoRun !== 'undefined') {
-            YSLOW.hideAutoRun = hideAutoRun;
-        } else {
-            hideAutoRun = YSLOW.hideAutoRun;
-        }
-        if (!hideAutoRun) {
-            sHtml += '<label><input type="checkbox" name="autorun" onclick="javascript:document.ysview.setAutorun(this.checked)" ';
-            if (YSLOW.util.Preference.getPref("extensions.yslow.autorun", false)) {
-                sHtml += 'checked';
-            }
-            sHtml += '> Autorun YSlow each time a web page is loaded</label>';
-        }
-
-        if (typeof showAntiIframe !== 'undefined') {
-            YSLOW.showAntiIframe = showAntiIframe;
-        } else {
-            showAntiIframe = YSLOW.showAntiIframe;
-        }
-        if (showAntiIframe) {
-            sHtml += '<label><input type="checkbox" onclick="javascript:document.ysview.setAntiIframe(this.checked)"> Check here if the current page prevents itself from being embedded/iframed. A simpler post onload detection will be used instead.</label>';
-        }
-
-        sHtml += '<div id="runtestDiv"><button id="runtest-btn" onclick="javascript:document.ysview.runTest()">Run Test</button></div></div><div class="footer"><div class="moreinfo">' + '<a href="javascript:document.ysview.openLink(\'https://yslow.org/\');"><b>&#187;</b>' + more_info_text + '</a></div></div></div></div></div>';
-
-        this.addButtonView('panel_about', sHtml);
-    },
-
-    /**
-     * Show progress bar.
-     */
-    genProgressView: function () {
-        var sBody = '<div id="progressDiv"><div id="peel"><p>Finding components in the page:</p>' + '<div id="peelprogress"><div id="progbar"></div></div><div id="progtext"></div></div>' + '<div id="fetch"><p>Getting component information:</p>' + '<div id="fetchprogress"><div id="progbar2"></div></div><div id="progtext2">start...</div></div></div>';
-
-        this.setButtonView('panel_about', sBody);
-    },
-
-    /**
-     * Update progress bar with passed info.
-     * @param {String} progress_type Type of progress info: either 'peel' or 'fetch'.
-     * @param {Object} progress_info
-     * <ul>For peel:
-     * <li><code>current_step</code> - {Number} current phase of peeling</li>
-     * <li><code>total_step</code> - {Number} total number peeling phases</li>
-     * <li><code>message</code> - {String} Progress message</li>
-     * </ul>
-     * <ul>For fetch:
-     * <li><code>current</code> - {Number} Number of components already downloaded </li>
-     * <li><code>total</code> - {Number} Total number of componetns to be downloaded </li>
-     * <li><code>last_component_url</code> - {String} URL of the last downloaded component.</li>
-     * </ul>
-     */
-    updateProgressView: function (progress_type, progress_info) {
-        var outerbar, progbar, progtext, percent, view, maxwidth, width, left,
-            message = '';
-
-        if (this.curButtonId === 'panel_about') {
-            view = this.getButtonView(this.curButtonId);
-
-            if (progress_type === 'peel') {
-                outerbar = this.getElementByTagNameAndId(view, 'div', 'peelprogress');
-                progbar = this.getElementByTagNameAndId(view, 'div', 'progbar');
-                progtext = this.getElementByTagNameAndId(view, 'div', 'progtext');
-                message = progress_info.message;
-                percent = (progress_info.current_step * 100) / progress_info.total_step;
-            } else if (progress_type === 'fetch') {
-                outerbar = this.getElementByTagNameAndId(view, 'div', 'fetchprogress');
-                progbar = this.getElementByTagNameAndId(view, 'div', 'progbar2');
-                progtext = this.getElementByTagNameAndId(view, 'div', 'progtext2');
-                message = progress_info.last_component_url;
-                percent = (progress_info.current * 100) / progress_info.total;
-            } else if (progress_type === 'message') {
-                progtext = this.getElementByTagNameAndId(view, 'div', 'progtext2');
-                if (progtext) {
-                    progtext.innerHTML = progress_info;
-                }
-
-                return;
-            } else {
-                return;
-            }
-        }
-
-        if (outerbar && progbar && progtext) {
-            maxwidth = outerbar.clientWidth;
-
-            if (percent < 0) {
-                percent = 0;
-            }
-            if (percent > 100) {
-                percent = 100;
-            }
-
-            percent = 100 - percent;
-            width = (maxwidth * percent) / 100;
-            if (width > maxwidth) {
-                width = maxwidth;
-            }
-            left = maxwidth - parseInt(width, 10);
-            progbar.style.width = parseInt(width, 10) + "px";
-            progbar.style.left = parseInt(left, 10) + "px";
-
-            progtext.innerHTML = message;
-        }
-    },
-
-    /**
-     * @private
-     */
-    updateStatusBar: function (doc) {
-        var size, grade, result, info, url,
-            yslow = YSLOW,
-            util = yslow.util,
-            view = yslow.view,
-            pref = util.Preference,
-            yscontext = this.yscontext;
-
-        if (!yscontext.PAGE.statusbar) {
-            // only set the bar once
-            yscontext.PAGE.statusbar = true;
-
-            // If some of the info isn't available, we have to run some code.
-            if (!yscontext.PAGE.overallScore) {
-                // run lint
-                yslow.controller.lint(doc, yscontext);
-            }
-            if (!yscontext.PAGE.totalSize) {
-                // collect stats
-                yscontext.collectStats();
-            }
-
-            size = util.kbSize(yscontext.PAGE.totalSize);
-            grade = util.prettyScore(yscontext.PAGE.overallScore);
-
-            view.setStatusBar(grade, 'yslow_status_grade');
-            view.setStatusBar(size, 'yslow_status_size');
-
-            // Send a beacon.
-            if (pref.getPref('optinBeacon', false)) {
-                info = pref.getPref('beaconInfo', 'basic'),
-                url = pref.getPref('beaconUrl',
-                    'http://rtblab.pclick.yahoo.com/images/ysb.gif');
-                result = util.getResults(yscontext, info);
-                util.sendBeacon(result, info, url);
-            }
-        }
-    },
-
-    /**
-     * @private
-     */
-    getRulesetListSource: function (rulesets) {
-        var id, custom,
-            sHtml = '',
-            defaultRulesetId = YSLOW.controller.getDefaultRulesetId();
-
-        for (id in rulesets) {
-            if (rulesets[id]) {
-                sHtml += '<option value="' + rulesets[id].id + '" ';
-                if (!custom && rulesets[id].hasOwnProperty('custom') && rulesets[id].custom) {
-                    custom = true;
-                    sHtml += 'class="firstInGroup" ';
-                }
-
-                if (defaultRulesetId !== undefined && id === defaultRulesetId) {
-                    sHtml += 'selected';
-                }
-                sHtml += '>' + rulesets[id].name + '</option>';
-            }
-        }
-        return sHtml;
-    },
-
-    /**
-     * Refresh the Ruleset Dropdown list.  This is usually called after a ruleset is created or deleted.
-     */
-    updateRulesetList: function () {
-        var i, div, new_select,
-            selects = this.panel_doc.getElementsByTagName('select'),
-            rulesets = YSLOW.controller.getRegisteredRuleset(),
-            sText = this.getRulesetListSource(rulesets),
-
-            onchangeFunc = function (event) {
-                this.ownerDocument.ysview.onChangeRuleset(event);
-            };
-
-        for (i = 0; i < selects.length; i += 1) {
-            if (selects[i].id === "toolbar-rulesetList") {
-                div = selects[i].parentNode;
-                if (div && div.id === "toolbar-ruleset") {
-                    new_select = this.panel_doc.createElement('select');
-                    if (new_select) {
-                        new_select.id = 'toolbar-rulesetList';
-                        new_select.name = 'rulesets';
-                        new_select.onchange = onchangeFunc;
-                        new_select.innerHTML = sText;
-                    }
-
-                    div.replaceChild(new_select, selects[i]);
-                }
-            }
-        }
-    },
-
-    /**
-     * @private
-     */
-    getToolbarSource: function () {
-        var view, rulesets,
-            sHtml = '<div id="menu">',
-            titles = {
-                home: 'Home',
-                grade: 'Grade',
-                components: 'Components',
-                stats: 'Statistics',
-                tools: 'Tools'
-            };
-
-        if (YSLOW.doc && YSLOW.doc.view_names) {
-            for (view in titles) {
-                if (titles.hasOwnProperty(view) &&
-                        YSLOW.doc.view_names[view]) {
-                    titles[view] = YSLOW.doc.view_names[view];
-                }
-            }
-        }
-
-        rulesets = YSLOW.controller.getRegisteredRuleset();
-
-        sHtml = '<div id="toolbar-ruleset" class="floatRight">Rulesets <select id="toolbar-rulesetList" name="rulesets" onchange="javascript:document.ysview.onChangeRuleset(event)">' + this.getRulesetListSource(rulesets) + '</select>';
-
-        sHtml += '<button onclick="javascript:document.ysview.showRuleSettings()">Edit</button><ul id="tbActions"><li id="printLink" class="first"><a href="javascript:document.ysview.openPrintableDialog(document)"><b class="icon">&asymp;</b><em>Printable View</em></a></li><li id="helpLink"><a href="javascript:document.ysview.showHideHelp()"><b class="icon">?</b><em>Help &darr;</em></a></li></ul></div>';
-
-        // help menu
-        sHtml += '<div id="helpDiv" class="help" style="visibility: hidden">' + '<div><a href="javascript:document.ysview.openLink(\'https://github.com/marcelduran/yslow/wiki/User-Guide\')">YSlow Help</a></div>' + '<div><a href="javascript:document.ysview.openLink(\'https://github.com/marcelduran/yslow/wiki/FAQ\')">YSlow FAQ</a></div>' + '<div class="new-section"><a href="javascript:document.ysview.openLink(\'http://yslow.org/blog/\')">YSlow Blog</a></div>' + '<div><a href="javascript:document.ysview.openLink(\'http://tech.groups.yahoo.com/group/exceptional-performance/\')">YSlow Community</a></div>' + '<div class="new-section"><a href="javascript:document.ysview.openLink(\'https://github.com/marcelduran/yslow/issues\')">YSlow Issues</a></div>' + '<div class="new-section"><div><a class="social yslow" href="javascript:document.ysview.openLink(\'http://yslow.org/\')">YSlow Home</a></div><div><a class="social facebook" href="javascript:document.ysview.openLink(\'http://www.facebook.com/getyslow\')">Like YSlow</a></div><div><a class="social twitter" href="javascript:document.ysview.openLink(\'http://twitter.com/yslow\')">Follow YSlow</a></div></div><div class="new-section" id="help-version">Version ' + YSLOW.version + '</div></div>';
-
-        // toolbar nav menu
-        sHtml += '<div id="nav-menu"><ul class="yui-nav" id="toolbarLinks">' +
-            '<li class="first selected off" id="ysHomeButton"><a href="javascript:document.ysview.setSplashView()" onclick="javascript:document.ysview.onclickToolbarMenu(event)"><em>' + titles.home + '</em><span class="pipe"/></a></li>' +
-            '<li id="ysPerfButton"><a href="javascript:document.ysview.showPerformance()" onclick="javascript:document.ysview.onclickToolbarMenu(event)"><em>' + titles.grade + '</em><span class="pipe"/></a></li>' +
-            '<li id="ysCompsButton"><a href="javascript:document.ysview.showComponents()" onclick="javascript:document.ysview.onclickToolbarMenu(event)"><em>' + titles.components + '</em><span class="pipe"/></a></li>' +
-            '<li id="ysStatsButton"><a href="javascript:document.ysview.showStats()" onclick="javascript:document.ysview.onclickToolbarMenu(event)"><em>' + titles.stats + '</em><span class="pipe"/></a></li>' +
-            '<li id="ysToolButton"><a href="javascript:document.ysview.showTools()" onclick="javascript:document.ysview.onclickToolbarMenu(event)"><em>' + titles.tools + '</em></a></li></ul></div>';
-
-        sHtml += '</div>';
-
-        return sHtml;
-    },
-
-    /**
-     * Show the passed view.  If nothing is passed, default view "Grade" will be shown.
-     * Possible sView values are: "ysCompsButton", "ysStatsButton", "ysToolButton", "ysRuleEditButton" and "ysPerfButton".
-     * If the page has not been peeled before this function is called, peeler will be run first and sView will not be displayed until
-     * peeler is done.
-     * @param {String} sView The view to be displayed.
-     */
-    show: function (sView) {
-        var format = 'html',
-            stext = "";
-
-        sView = sView || this.yscontext.defaultview;
-
-        if (this.yscontext.component_set === null) {
-            // need to run peeler first.
-            YSLOW.controller.run(window.top.content, this.yscontext, false);
-            this.yscontext.defaultview = sView;
-        } else {
-            if (this.getButtonView(sView)) {
-                // This view already exists, just toggle to it.
-                this.showButtonView(sView);
-            }
-            else if ("ysCompsButton" === sView) {
-                stext += this.yscontext.genComponents(format);
-                this.addButtonView("ysCompsButton", stext);
-            }
-            else if ("ysStatsButton" === sView) {
-                stext += this.yscontext.genStats(format);
-                this.addButtonView("ysStatsButton", stext);
-                YSLOW.renderer.plotComponents(this.getButtonView("ysStatsButton"), this.yscontext);
-            }
-            else if ("ysToolButton" === sView) {
-                stext += this.yscontext.genToolsView(format);
-                this.addButtonView("ysToolButton", stext);
-            }
-            else {
-                // Default is Performance.
-                stext += this.yscontext.genPerformance(format);
-                this.addButtonView("ysPerfButton", stext);
-            }
-
-            this.panelNode.scrollTop = 0;
-            this.panelNode.scrollLeft = 0;
-
-            this.updateStatusBar(this.yscontext.document);
-
-            // update toolbar selected tab.
-            this.updateToolbarSelection();
-        }
-    },
-
-    /**
-     * @private
-     */
-    updateToolbarSelection: function () {
-        var elem, ul_elem, child;
-
-        switch (this.curButtonId) {
-        case "ysCompsButton":
-        case "ysPerfButton":
-        case "ysStatsButton":
-        case "ysToolButton":
-            elem = this.getElementByTagNameAndId(this.panelNode, 'li', this.curButtonId);
-            if (elem) {
-                if (elem.className.indexOf("selected") !== -1) {
-                    // no need to do anything.
-                    return;
-                } else {
-                    elem.className += " selected";
-                    if (elem.previousSibling) {
-                        elem.previousSibling.className += " off";
-                    }
-                }
-            }
-            break;
-        default:
-            break;
-        }
-
-        ul_elem = this.getElementByTagNameAndId(this.panelNode, 'ul', 'toolbarLinks');
-        child = ul_elem.firstChild;
-        while (child) {
-            if (child.id !== this.curButtonId && child.className.indexOf("selected") !== -1) {
-                this.unselect(child);
-                if (child.previousSibling) {
-                    YSLOW.view.removeClassName(child.previousSibling, 'off');
-                }
-            }
-            child = child.nextSibling;
-        }
-    },
-
-    /**
-     * Show Grade screen. Use YSLOW.view.show(). Called from UI.
-     */
-    showPerformance: function () {
-        this.show('ysPerfButton');
-    },
-
-    /**
-     * Show Stats screen. Use YSLOW.view.show(). Called from UI.
-     */
-    showStats: function () {
-        this.show('ysStatsButton');
-    },
-
-    /**
-     * Show Components screen. Use YSLOW.view.show(). Called from UI.
-     */
-    showComponents: function () {
-        this.show('ysCompsButton');
-    },
-
-    /**
-     * Show Tools screen. Use YSLOW.view.show(). Called from UI.
-     */
-    showTools: function () {
-        this.show('ysToolButton');
-    },
-
-    /**
-     * Show Rule Settings screen. Use YSLOW.view.show(). Called from UI.
-     */
-    showRuleSettings: function () {
-        var stext = this.yscontext.genRulesetEditView('html');
-
-        this.addButtonView("ysRuleEditButton", stext);
-
-        this.panelNode.scrollTop = 0;
-        this.panelNode.scrollLeft = 0;
-
-        // update toolbar selected tab.
-        this.updateToolbarSelection();
-    },
-
-    /**
-     * Run YSlow. Called from UI.
-     */
-    runTest: function () {
-        YSLOW.controller.run(window.top.content, this.yscontext, false);
-    },
-
-    /**
-     * Set autorun preference. Called from UI.
-     * @param {boolean} set Pass true to turn autorun on, false otherwise.
-     */
-    setAutorun: function (set) {
-        YSLOW.util.Preference.setPref("extensions.yslow.autorun", set);
-    },
-
-    /**
-     * Set antiiframe preference. Called from UI.
-     * @param {boolean} set Pass true to use simple afterOnload verification, false otherwise.
-     */
-    setAntiIframe: function (set) {
-        YSLOW.antiIframe = set;
-    },
-
-    /**
-     * Add a custom CDN to custom CDN preference list
-     * @param {string} the CDN to be added
-     */
-    addCDN: function (cdn) {
-        var i, id,
-            that = this,
-            doc = document,
-            ctx = that.yscontext,
-            pref = YSLOW.util.Preference,
-            cdns = pref.getPref('cdnHostnames', ''),
-            panel = that.panel_doc,
-            el = panel.getElementById('tab-label-list'),
-            lis = el.getElementsByTagName('li'),
-            len = lis.length;
-
-        if (cdns) {
-            cdns = cdns.replace(/\s+/g, '').split(',');
-            cdns.push(cdn);
-            cdns = cdns.join();
-        } else {
-            cdns = cdn;
-        }
-        pref.setPref('extensions.yslow.cdnHostnames', cdns);
-
-        // get selected tab
-        for (i = 0; i < len; i+= 1) {
-            el = lis[i];
-            if (el.className.indexOf('selected') > -1) {
-                id = el.id;
-                break;
-            }
-        }
-        // re-run analysis
-        YSLOW.controller.lint(ctx.document, ctx);
-        that.addButtonView('ysPerfButton', ctx.genPerformance('html'));
-        // update score in status bar.
-        YSLOW.view.restoreStatusBar(ctx);
-        that.updateToolbarSelection();
-        // move tab
-        el = panel.getElementById(id);
-        that.onclickTabLabel({currentTarget: el}, true);
-    },
-
-    /**
-     * Handle Ruleset drop down list selection change. Update default ruleset and display
-     * dialog to ask users if they want to run new ruleset at once.
-     * @param {DOMEvent} event onchange event of Ruleset drop down list.
-     */
-    onChangeRuleset: function (event) {
-        var doc, line1, left_button_label, left_button_func,
-            select = YSLOW.util.getCurrentTarget(event),
-            option = select.options[select.selectedIndex];
-
-        YSLOW.controller.setDefaultRuleset(option.value);
-
-        // ask if want to rerun test with the selected ruleset.
-        doc = select.ownerDocument;
-        line1 = 'Do you want to run the selected ruleset now?';
-        left_button_label = 'Run Test';
-        left_button_func = function (e) {
-            var stext;
-
-            doc.ysview.closeDialog(doc);
-            if (doc.yslowContext.component_set === null) {
-                YSLOW.controller.run(doc.yslowContext.document.defaultView ||
-                doc.yslowContext.document.parentWindow, doc.yslowContext, false);
-            } else {
-                // page peeled, just run lint.
-                YSLOW.controller.lint(doc.yslowContext.document, doc.yslowContext);
-            }
-
-            stext = doc.yslowContext.genPerformance('html');
-            doc.ysview.addButtonView("ysPerfButton", stext);
-            doc.ysview.panelNode.scrollTop = 0;
-            doc.ysview.panelNode.scrollLeft = 0;
-            // update score in status bar.
-            YSLOW.view.restoreStatusBar(doc.yslowContext);
-            doc.ysview.updateToolbarSelection();
-        };
-        this.openDialog(doc, 389, 150, line1, undefined, left_button_label, left_button_func);
-    },
-
-    /**
-     * @private
-     * Implemented for handling onclick event of TabLabel in TabView.
-     * Hide current tab content and make content associated with the newly selected tab visible.
-     */
-    onclickTabLabel: function (event, move_tab) {
-        var child, hide_tab_id, show_tab_id, hide, show, show_tab, id_substring,
-            li_elem = YSLOW.util.getCurrentTarget(event),
-            ul_elem = li_elem.parentNode,
-            div_elem = ul_elem.nextSibling; // yui-content div
-
-        if (li_elem.className.indexOf('selected') !== -1 || li_elem.id.indexOf('label') === -1) {
-            return false;
-        }
-        if (ul_elem) {
-            child = ul_elem.firstChild;
-
-            while (child) {
-                if (this.unselect(child)) {
-                    hide_tab_id = child.id.substring(5);
-                    break;
-                }
-                child = child.nextSibling;
-            }
-
-            // select new tab selected.
-            li_elem.className += ' selected';
-            show_tab_id = li_elem.id.substring(5);
-
-            // Go through all the tabs in yui-content to hide the old tab and show the new tab.
-            child = div_elem.firstChild;
-            while (child) {
-                id_substring = child.id.substring(3);
-                if (!hide && hide_tab_id && id_substring === hide_tab_id) {
-                    if (child.className.indexOf("yui-hidden") === -1) {
-                        //set yui-hidden
-                        child.className += " yui-hidden";
-                    }
-                    hide = true;
-                }
-                if (!show && show_tab_id && id_substring === show_tab_id) {
-                    YSLOW.view.removeClassName(child, "yui-hidden");
-                    show = true;
-                    show_tab = child;
-                }
-                if ((hide || !hide_tab_id) && (show || !show_tab_id)) {
-                    break;
-                }
-                child = child.nextSibling;
-            }
-
-            if (move_tab === true && show === true && show_tab) {
-                this.positionResultTab(show_tab, div_elem, li_elem);
-            }
-        }
-        return false;
-    },
-
-    positionResultTab: function (tab, container, label) {
-        var y, parent, delta,
-            padding = 5,
-            doc = this.panel_doc,
-            win = doc.defaultView || doc.parentWindow,
-            pageHeight = win.offsetHeight ? win.offsetHeight : win.innerHeight,
-            height = label.offsetTop + tab.offsetHeight;
-
-        container.style.height = height + 'px';
-        tab.style.position = "absolute";
-        tab.style.left = label.offsetLeft + label.offsetWidth + "px";
-        tab.style.top = label.offsetTop + "px";
-
-        /* now make sure tab is visible */
-        y = tab.offsetTop;
-        parent = tab.offsetParent;
-        while (parent !== null) {
-            y += parent.offsetTop;
-            parent = parent.offsetParent;
-        }
-
-        if (y < this.panelNode.scrollTop || y + tab.offsetHeight > this.panelNode.scrollTop + pageHeight) {
-
-            if (y < this.panelNode.scrollTop) {
-                // scroll up
-                this.panelNode.scrollTop = y - padding;
-            } else {
-                // scroll down
-                delta = y + tab.offsetHeight - this.panelNode.scrollTop - pageHeight + padding;
-                if (delta > y - this.panelNode.scrollTop) {
-                    delta = y - this.panelNode.scrollTop;
-                }
-                this.panelNode.scrollTop += delta;
-            }
-        }
-    },
-
-    /**
-     * Event handling for onclick event on result tab (Grade screen). Called from UI.
-     * @param {DOMEevent} event onclick event
-     */
-    onclickResult: function (event) {
-        YSLOW.util.preventDefault(event);
-
-        return this.onclickTabLabel(event, true);
-    },
-
-    /**
-     * @private
-     * Helper function to unselect element.
-     */
-    unselect: function (elem) {
-        return YSLOW.view.removeClassName(elem, "selected");
-    },
-
-    /**
-     * @private
-     * Helper function to filter result based on its category. (Grade Screen)
-     */
-    filterResult: function (doc, category) {
-        var ul_elem, showAll, child, firstTab, tab, firstChild, div_elem,
-            view = this.getButtonView('ysPerfButton');
-
-        if (category === "all") {
-            showAll = true;
-        }
-
-        /* go through tab-label to re-adjust hidden state */
-        if (view) {
-            ul_elem = this.getElementByTagNameAndId(view, "ul", "tab-label-list");
-        }
-        if (ul_elem) {
-            child = ul_elem.firstChild;
-            div_elem = ul_elem.nextSibling; // yui-content div
-            tab = div_elem.firstChild;
-
-            while (child) {
-                YSLOW.view.removeClassName(child, 'first');
-                if (showAll || child.className.indexOf(category) !== -1) {
-                    child.style.display = "block";
-                    if (firstTab === undefined) {
-                        firstTab = tab;
-                        firstChild = child;
-                        YSLOW.view.removeClassName(tab, "yui-hidden");
-                        child.className += ' first';
-                        if (child.className.indexOf("selected") === -1) { /* set selected class */
-                            child.className += " selected";
-                        }
-                        child = child.nextSibling;
-                        tab = tab.nextSibling;
-                        continue;
-                    }
-                } else {
-                    child.style.display = "none";
-                }
-
-                /* hide non-first tab */
-                if (tab.className.indexOf("yui-hidden") === -1) {
-                    tab.className += " yui-hidden";
-                }
-
-                /* remove selected from class */
-                this.unselect(child);
-
-                child = child.nextSibling;
-                tab = tab.nextSibling;
-            }
-
-            if (firstTab) { /* tab back to top position */
-                this.positionResultTab(firstTab, div_elem, firstChild);
-            }
-        }
-    },
-
-    /**
-     * Event handler of onclick event of category filter (Grade screen).  Called from UI.
-     * @param {DOMEvent} event onclick event
-     */
-    updateFilterSelection: function (event) {
-        var li,
-            elem = YSLOW.util.getCurrentTarget(event);
-
-        YSLOW.util.preventDefault(event);
-
-        if (elem.className.indexOf("selected") !== -1) {
-            return; /* click on something already selected */
-        }
-        elem.className += " selected";
-
-        li = elem.parentNode.firstChild;
-        while (li) {
-            if (li !== elem && this.unselect(li)) {
-                break;
-            }
-            li = li.nextSibling;
-        }
-        this.filterResult(elem.ownerDocument, elem.id);
-    },
-
-    /**
-     * Event handler of toolbar menu.
-     * @param {DOMEvent} event onclick event
-     */
-    onclickToolbarMenu: function (event) {
-        var child,
-            a_elem = YSLOW.util.getCurrentTarget(event),
-            li_elem = a_elem.parentNode,
-            ul_elem = li_elem.parentNode;
-
-        if (li_elem.className.indexOf("selected") !== -1) { /* selecting an already selected target, do nothing. */
-            return;
-        }
-        li_elem.className += " selected";
-
-        if (li_elem.previousSibling) {
-            li_elem.previousSibling.className += " off";
-        }
-
-        if (ul_elem) {
-            child = ul_elem.firstChild;
-            while (child) {
-                if (child !== li_elem && this.unselect(child)) {
-                    if (child.previousSibling) {
-                        YSLOW.view.removeClassName(child.previousSibling, 'off');
-                    }
-                    break;
-                }
-                child = child.nextSibling;
-            }
-        }
-    },
-
-    /**
-     * Expand components with the passed type. (Components Screen)
-     * @param {Document} doc Document object of the YSlow Chrome window.
-     * @param {String} type Component type.
-     */
-    expandCollapseComponentType: function (doc, type) {
-        var table,
-            renderer = YSLOW.controller.getRenderer('html'),
-            view = this.getButtonView('ysCompsButton');
-
-        if (view) {
-            table = this.getElementByTagNameAndId(view, 'table', 'components-table');
-            renderer.expandCollapseComponentType(doc, table, type);
-        }
-    },
-
-    /**
-     * Expand all components. (Components Screen)
-     * @param {Document} doc Document object of the YSlow Chrome window.
-     */
-    expandAll: function (doc) {
-        var table,
-            renderer = YSLOW.controller.getRenderer('html'),
-            view = this.getButtonView('ysCompsButton');
-
-        if (view) {
-            table = this.getElementByTagNameAndId(view, 'table', 'components-table');
-            renderer.expandAllComponentType(doc, table);
-        }
-    },
-
-    /**
-     * Regenerate the components table. (Components Screen)
-     * @param {Document} doc Document object of the YSlow Chrome window.
-     * @param {String} column_name The column to sort by.
-     * @param {boolean} sortDesc true if to Sort descending order, false otherwise.
-     */
-    regenComponentsTable: function (doc, column_name, sortDesc) {
-        var table,
-            renderer = YSLOW.controller.getRenderer('html'),
-            view = this.getButtonView('ysCompsButton');
-
-        if (view) {
-            table = this.getElementByTagNameAndId(view, 'table', 'components-table');
-            renderer.regenComponentsTable(doc, table, column_name, sortDesc, this.yscontext.component_set);
-        }
-    },
-
-    /**
-     * Show Component header row. (Component Screen)
-     * @param {String} headersDivId id of the HTML TR element containing the component header.
-     */
-    showComponentHeaders: function (headersDivId) {
-        var elem, td,
-            view = this.getButtonView('ysCompsButton');
-
-        if (view) {
-            elem = this.getElementByTagNameAndId(view, "tr", headersDivId);
-            if (elem) {
-                td = elem.firstChild;
-                if (elem.style.display === "none") {
-                    elem.style.display = "table-row";
-                } else {
-                    elem.style.display = "none";
-                }
-            }
-        }
-    },
-
-    /**
-     * Open link in new tab.
-     * @param {String} url URL of the page to be opened.
-     */
-    openLink: function (url) {
-        YSLOW.util.openLink(url);
-    },
-
-    /**
-     * Open link in a popup window
-     * @param {String} url URL of the page to be opened.
-     * @param {String} name (optional) the window name.
-     * @param {Number} width (optional) the popup window width.
-     * @param {Number} height (optional) the popup window height.
-     */
-    openPopup: function (url, name, width, height, features) {
-        window.open(url, name || '_blank', 'width=' + (width || 626) +
-            ',height=' + (height || 436) + ',' + (features ||
-            'toolbar=0,status=1,location=1,resizable=1'));
-    },
-
-    /**
-     * Launch tool.
-     * @param {String} tool_id
-     * @param {Object} param to be passed to tool's run method.
-     */
-    runTool: function (tool_id, param) {
-        YSLOW.controller.runTool(tool_id, this.yscontext, param);
-    },
-
-    /**
-     * Onclick event handler of Ruleset tab in Rule Settings screen.
-     * @param {DOMEvent} event onclick event
-     */
-    onclickRuleset: function (event) {
-        var ruleset_id, end, view, form,
-            li_elem = YSLOW.util.getCurrentTarget(event),
-            index = li_elem.className.indexOf('ruleset-');
-
-        YSLOW.util.preventDefault(event);
-        if (index !== -1) {
-            end = li_elem.className.indexOf(' ', index + 8);
-            if (end !== -1) {
-                ruleset_id = li_elem.className.substring(index + 8, end);
-            } else {
-                ruleset_id = li_elem.className.substring(index + 8);
-            }
-            view = this.getButtonView('ysRuleEditButton');
-            if (view) {
-                form = this.getElementByTagNameAndId(view, 'form', 'edit-form');
-                YSLOW.renderer.initRulesetEditForm(li_elem.ownerDocument, form, YSLOW.controller.getRuleset(ruleset_id));
-            }
-        }
-
-        return this.onclickTabLabel(event, false);
-    },
-
-    /**
-     * Display Save As Dialog
-     * @param {Document} doc Document object of YSlow Chrome window.
-     * @param {String} form_id id of the HTML form element that contains the ruleset settings to be submit (or saved).
-     */
-    openSaveAsDialog: function (doc, form_id) {
-        var line1 = '<label>Save ruleset as: <input type="text" id="saveas-name" class="text-input" name="saveas-name" length="100" maxlength="100"></label>',
-            left_button_label = 'Save',
-
-            left_button_func = function (e) {
-                var textbox, line, view, form, input,
-                    doc = YSLOW.util.getCurrentTarget(e).ownerDocument;
-
-                if (doc.ysview.modaldlg) {
-                    textbox = doc.ysview.getElementByTagNameAndId(doc.ysview.modaldlg, 'input', 'saveas-name');
-                }
-                if (textbox) {
-                    if (YSLOW.controller.checkRulesetName(textbox.value) === true) {
-                        line = line1 + '<div class="error">' + textbox.value + ' ruleset already exists.</div>';
-                        doc.ysview.closeDialog(doc);
-                        doc.ysview.openDialog(doc, 389, 150, line, '', left_button_label, left_button_func);
-                    } else {
-                        view = doc.ysview.getButtonView('ysRuleEditButton');
-                        if (view) {
-                            form = doc.ysview.getElementByTagNameAndId(view, 'form', form_id);
-                            input = doc.createElement('input');
-                            input.type = 'hidden';
-                            input.name = 'saveas-name';
-                            input.value = textbox.value;
-                            form.appendChild(input);
-                            form.submit();
-                        }
-                        doc.ysview.closeDialog(doc);
-                    }
-                }
-
-            };
-
-        this.openDialog(doc, 389, 150, line1, undefined, left_button_label, left_button_func);
-    },
-
-    /**
-     * Display Printable View Dialog
-     * @param {Document} doc Document object of YSlow Chrome window.
-     */
-    openPrintableDialog: function (doc) {
-        var line = 'Please run YSlow first before using Printable View.',
-            line1 = 'Check which information you want to view or print<br>',
-            line2 = '<div id="printOptions">' + '<label><input type="checkbox" name="print-type" value="grade" checked>Grade</label>' + '<label><input type="checkbox" name="print-type" value="components" checked>Components</label>' + '<label><input type="checkbox" name="print-type" value="stats" checked>Statistics</label></div>',
-            left_button_label = 'Ok',
-
-            left_button_func = function (e) {
-                var i,
-                    doc = YSLOW.util.getCurrentTarget(e).ownerDocument,
-                    aInputs = doc.getElementsByName('print-type'),
-                    print_type = {};
-
-                for (i = 0; i < aInputs.length; i += 1) {
-                    if (aInputs[i].checked) {
-                        print_type[aInputs[i].value] = 1;
-                    }
-                }
-                doc.ysview.closeDialog(doc);
-                doc.ysview.runTool('printableview', {
-                    'options': print_type,
-                    'yscontext': doc.yslowContext
-                });
-            };
-
-        if (doc.yslowContext.component_set === null) {
-            this.openDialog(doc, 389, 150, line, '', 'Ok');
-            return;
-        }
-
-        this.openDialog(doc, 389, 150, line1, line2, left_button_label, left_button_func);
-    },
-
-    /**
-     * @private
-     * helper function to get element with id and tagname in node.
-     */
-    getElementByTagNameAndId: function (node, tagname, id) {
-        var i, arrElements;
-
-        if (node) {
-            arrElements = node.getElementsByTagName(tagname);
-            if (arrElements.length > 0) {
-                for (i = 0; i < arrElements.length; i += 1) {
-                    if (arrElements[i].id === id) {
-                        return arrElements[i];
-                    }
-                }
-            }
-        }
-
-        return null;
-    },
-
-    /**
-     * Helper function for displaying dialog.
-     * @param {Document} doc Document object of YSlow Chrome window
-     * @param {Number} width desired width of the dialog
-     * @param {Number} height desired height of the dialog
-     * @param {String} text1 first line of text
-     * @param {String} text2 second line fo text
-     * @param {String} left_button_label left button label
-     * @param {Function} left_button_func onclick function of left button
-     */
-    openDialog: function (doc, width, height, text1, text2, left_button_label, left_button_func) {
-        var i, j, dialog, text, more_text, button, inputs, win, pageWidth, pageHeight, left, top,
-            overlay = this.modaldlg,
-            elems = overlay.getElementsByTagName('div');
-
-        for (i = 0; i < elems.length; i += 1) {
-            if (elems[i].className && elems[i].className.length > 0) {
-                if (elems[i].className === "dialog-box") {
-                    dialog = elems[i];
-                } else if (elems[i].className === "dialog-text") {
-                    text = elems[i];
-                } else if (elems[i].className === "dialog-more-text") {
-                    more_text = elems[i];
-                }
-            }
-        }
-
-        if (overlay && dialog && text && more_text) {
-            text.innerHTML = (text1 ? text1 : '');
-            more_text.innerHTML = (text2 ? text2 : '');
-
-            inputs = overlay.getElementsByTagName('input');
-            for (j = 0; j < inputs.length; j += 1) {
-                if (inputs[j].className === "dialog-left-button") {
-                    button = inputs[j];
-                }
-            }
-            if (button) {
-                button.value = left_button_label;
-                button.onclick = left_button_func || function (e) {
-                    doc.ysview.closeDialog(doc);
-                };
-            }
-
-            // position dialog to center of panel.
-            win = doc.defaultView || doc.parentWindow;
-            pageWidth = win.innerWidth;
-            pageHeight = win.innerHeight;
-
-            left = Math.floor((pageWidth - width) / 2);
-            top = Math.floor((pageHeight - height) / 2);
-            dialog.style.left = ((left && left > 0) ? left : 225) + 'px';
-            dialog.style.top = ((top && top > 0) ? top : 80) + 'px';
-
-            overlay.style.left = this.panelNode.scrollLeft + 'px';
-            overlay.style.top = this.panelNode.scrollTop + 'px';
-            overlay.style.display = 'block';
-
-            // put focus on the first input.
-            if (inputs.length > 0) {
-                inputs[0].focus();
-            }
-        }
-
-    },
-
-    /**
-     * Close the dialog.
-     * @param {Document} doc Document object of YSlow Chrome window
-     */
-    closeDialog: function (doc) {
-        var dialog = this.modaldlg;
-
-        dialog.style.display = "none";
-    },
-
-    /**
-     * Save the modified changes in the selected ruleset in Rule settings screen.
-     * @param {Document} doc Document object of YSlow Chrome window
-     * @param {String} form_id ID of Form element
-     */
-    saveRuleset: function (doc, form_id) {
-        var form,
-            renderer = YSLOW.controller.getRenderer('html'),
-            view = this.getButtonView('ysRuleEditButton');
-
-        if (view) {
-            form = this.getElementByTagNameAndId(view, 'form', form_id);
-            renderer.saveRuleset(doc, form);
-        }
-    },
-
-    /**
-     * Delete the selected ruleset in Rule Settings screen.
-     * @param {Document} doc Document object of YSlow Chrome window
-     * @param {String} form_id ID of Form element
-     */
-    deleteRuleset: function (doc, form_id) {
-        var form,
-            renderer = YSLOW.controller.getRenderer('html'),
-            view = this.getButtonView('ysRuleEditButton');
-
-        if (view) {
-            form = this.getElementByTagNameAndId(view, 'form', form_id);
-            renderer.deleteRuleset(doc, form);
-        }
-    },
-
-    /**
-     * Share the selected ruleset in Rule Settings screen.  Create a .XPI file on Desktop.
-     * @param {Document} doc Document object of YSlow Chrome window
-     * @param {String} form_id ID of Form element
-     */
-    shareRuleset: function (doc, form_id) {
-        var form, ruleset_id, ruleset, result, line1,
-            renderer = YSLOW.controller.getRenderer('html'),
-            view = this.getButtonView('ysRuleEditButton');
-
-        if (view) {
-            form = this.getElementByTagNameAndId(view, 'form', form_id);
-            ruleset_id = renderer.getEditFormRulesetId(form);
-            ruleset = YSLOW.controller.getRuleset(ruleset_id);
-
-            if (ruleset) {
-                result = YSLOW.Exporter.exportRuleset(ruleset);
-
-                if (result) {
-                    line1 = '<label>' + result.message + '</label>';
-                    this.openDialog(doc, 389, 150, line1, '', "Ok");
-                }
-            }
-        }
-    },
-
-    /**
-     * Reset the form selection for creating a new ruleset.
-     * @param {HTMLElement} button New Set button
-     * @param {String} form_id ID of Form element
-     */
-    createRuleset: function (button, form_id) {
-        var view, form,
-            li_elem = button.parentNode,
-            ul_elem = li_elem.parentNode,
-            child = ul_elem.firstChild;
-
-        // unselect ruleset
-        while (child) {
-            this.unselect(child);
-            child = child.nextSibling;
-        }
-
-        view = this.getButtonView('ysRuleEditButton');
-        if (view) {
-            form = this.getElementByTagNameAndId(view, 'form', form_id);
-            YSLOW.renderer.initRulesetEditForm(this.panel_doc, form);
-        }
-    },
-
-    /**
-     * Show/Hide the help menu.
-     */
-    showHideHelp: function () {
-        var help,
-            toolbar = this.getElementByTagNameAndId(this.panelNode, "div", "toolbarDiv");
-
-        // In order to support YSlow running on mutli-tab,
-        // we need to look up helpDiv using panelNode.
-        // panel_doc.getElementById('helpDiv') will always find
-        // helpDiv of YSlow running on the first browser tab.
-        if (toolbar) {
-            help = this.getElementByTagNameAndId(toolbar, "div", "helpDiv");
-        }
-        if (help) {
-            if (help.style.visibility === "visible") {
-                help.style.visibility = "hidden";
-            } else {
-                help.style.visibility = "visible";
-            }
-        }
-    },
-
-    /**
-     * Run smushIt.
-     * @param {Document} doc Document object of YSlow Chrome window
-     * @param {String} url URL of the image to be smushed.
-     */
-    smushIt: function (doc, url) {
-        YSLOW.util.smushIt(url,
-            function (resp) {
-                var line1, line2, smushurl, dest_url,
-                    txt = '';
-
-                if (resp.error) {
-                    txt += '<br><div>' + resp.error + '</div>';
-                } else {
-                    smushurl = YSLOW.util.getSmushUrl();
-                    dest_url = YSLOW.util.makeAbsoluteUrl(resp.dest, smushurl);
-                    txt += '<div>Original size: ' + resp.src_size + ' bytes</div>' + '<div>Result size: ' + resp.dest_size + ' bytes</div>' + '<div>% Savings: ' + resp.percent + '%</div>' + '<div><a href="javascript:document.ysview.openLink(\'' + dest_url + '\')">Click here to view or save the result image.</a></div>';
-                }
-
-                line1 = '<div class="smushItResult"><div>Image: ' + YSLOW.util.briefUrl(url, 250) + '</div></div>';
-                line2 = txt;
-                doc.ysview.openDialog(doc, 389, 150, line1, line2, "Ok");
-            }
-        );
-    },
-
-    checkAllRules: function (doc, form_id, check) {
-        var i, view, form, aElements;
-
-        if (typeof check !== "boolean") {
-            return;
-        }
-        view = this.getButtonView('ysRuleEditButton');
-        if (view) {
-            form = this.getElementByTagNameAndId(view, 'form', form_id);
-            aElements = form.elements;
-            for (i = 0; i < aElements.length; i += 1) {
-                if (aElements[i].type === "checkbox") {
-                    aElements[i].checked = check;
-                }
-            }
-        }
-    }
-
-};
-
-YSLOW.view.Tooltip = function (panel_doc, parentNode) {
-    this.tooltip = panel_doc.createElement('div');
-    if (this.tooltip) {
-        this.tooltip.id = "tooltipDiv";
-        this.tooltip.innerHTML = '';
-        this.tooltip.style.display = "none";
-        if (parentNode) {
-            parentNode.appendChild(this.tooltip);
-        }
-    }
-    this.timer = null;
-};
-
-YSLOW.view.Tooltip.prototype = {
-
-    show: function (text, target) {
-        var tooltip = this;
-
-        this.text = text;
-        this.target = target;
-        this.tooltipData = {
-            'text': text,
-            'target': target
-        };
-        this.timer = YSLOW.util.setTimer(function () {
-            tooltip.showX();
-        }, 500);
-    },
-
-    showX: function () {
-        if (this.tooltipData) {
-            this.showTooltip(this.tooltipData.text, this.tooltipData.target);
-        }
-        this.timer = null;
-    },
-
-    showTooltip: function (text, target) {
-        var tooltipWidth, tooltipHeight, parent, midpt_x, midpt_y, sClass, new_x,
-            padding = 10,
-            x = 0,
-            y = 0,
-            doc = target.ownerDocument,
-            win = doc.defaultView || doc.parentWindow,
-            pageWidth = win.offsetWidth ? win.offsetWidth : win.innerWidth,
-            pageHeight = win.offsetHeight ? win.offsetHeight : win.innerHeight;
-
-        this.tooltip.innerHTML = text;
-        this.tooltip.style.display = "block";
-
-        tooltipWidth = this.tooltip.offsetWidth;
-        tooltipHeight = this.tooltip.offsetHeight;
-
-        if (tooltipWidth > pageWidth || tooltipHeight > pageHeight) {
-            // forget it, the viewport is too small, don't bother.
-            this.tooltip.style.display = "none";
-            return;
-        }
-
-        parent = target.offsetParent;
-        while (parent !== null) {
-            x += parent.offsetLeft;
-            y += parent.offsetTop;
-            parent = parent.offsetParent;
-        }
-        x += target.offsetLeft;
-        y += target.offsetTop;
-
-        if (x < doc.ysview.panelNode.scrollLeft || y < doc.ysview.panelNode.scrollTop || (y + target.offsetHeight > doc.ysview.panelNode.scrollTop + pageHeight)) {
-            // target is not fully visible.
-            this.tooltip.style.display = "none";
-            return;
-        }
-
-        midpt_x = x + target.offsetWidth / 2;
-        midpt_y = y + target.offsetHeight / 2;
-
-        //decide if tooltip will fit to the right
-        if (x + target.offsetWidth + padding + tooltipWidth < pageWidth) {
-            // fit to the right?
-            x += target.offsetWidth + padding;
-            // check vertical alignment
-            if ((y >= doc.ysview.panelNode.scrollTop) && (y - padding + tooltipHeight + padding <= doc.ysview.panelNode.scrollTop + pageHeight)) {
-                y = y - padding;
-                sClass = 'right top';
-            } else {
-                // align bottom
-                y += target.offsetHeight - tooltipHeight;
-                sClass = 'right bottom';
-            }
-        } else {
-            if (y - tooltipHeight - padding >= doc.ysview.panelNode.scrollTop) {
-                // put it to the top.
-                y -= tooltipHeight + padding;
-                sClass = 'top';
-            } else {
-                // put it to the bottom.
-                y += target.offsetHeight + padding;
-                sClass = 'bottom';
-            }
-            new_x = Math.floor(midpt_x - tooltipWidth / 2);
-            if ((new_x >= doc.ysview.panelNode.scrollLeft) && (new_x + tooltipWidth <= doc.ysview.panelNode.scrollLeft + pageWidth)) {
-                x = new_x;
-            } else if (new_x < doc.ysview.panelNode.scrollLeft) {
-                x = doc.ysview.panelNode.scrollLeft;
-            } else {
-                x = doc.ysview.panelNode.scrollLeft + pageWidth - padding - tooltipWidth;
-            }
-        }
-
-        if (sClass) {
-            this.tooltip.className = sClass;
-        }
-        this.tooltip.style.left = x + 'px';
-        this.tooltip.style.top = y + 'px';
-    },
-
-    hide: function () {
-        if (this.timer) {
-            clearTimeout(this.timer);
-        }
-        this.tooltip.style.display = "none";
-    }
-
-};
-
-/**
- * Set YSlow status bar text.
- * @param {String} text text to put on status bar
- * @param {String} sId id of the status bar element to put the text.
- */
-YSLOW.view.setStatusBar = function (text, sId) {
-    var el = document.getElementById(sId || 'yslow_status_grade');
-
-    if (el) {
-        el.value = text;
-    }
-};
-
-/**
- * Clear YSlow status bar text.
- */
-YSLOW.view.clearStatusBar = function () {
-    this.setStatusBar("", "yslow_status_time");
-    this.setStatusBar("YSlow", "yslow_status_grade");
-    this.setStatusBar("", "yslow_status_size");
-};
-
-/**
- * Restore YSlow status bar text
- * @param {YSLOW.context} yscontext YSlow context that contains page result and statistics.
- */
-YSLOW.view.restoreStatusBar = function (yscontext) {
-    var grade, size, t_done;
-
-    if (yscontext) {
-        if (yscontext.PAGE.overallScore) {
-            grade = YSLOW.util.prettyScore(yscontext.PAGE.overallScore);
-            this.setStatusBar(grade, "yslow_status_grade");
-        }
-        if (yscontext.PAGE.totalSize) {
-            size = YSLOW.util.kbSize(yscontext.PAGE.totalSize);
-            this.setStatusBar(size, "yslow_status_size");
-        }
-        if (yscontext.PAGE.t_done) {
-            t_done = yscontext.PAGE.t_done / 1000 + "s";
-            this.setStatusBar(t_done, "yslow_status_time");
-        }
-    }
-};
-
-/**
- * Toggle YSlow in status bar.
- * @param {Boolean} bhide show or hide YSlow in status bar.
- */
-YSLOW.view.toggleStatusBar = function (bHide) {
-    document.getElementById('yslow-status-bar').hidden = bHide;
-};
-
-/**
- * Remove name from element's className.
- * @param {HTMLElement} element
- * @param {String} name name to be removed from className.
- * @return true if name is found in element's classname
- */
-YSLOW.view.removeClassName = function (element, name) {
-    var i, names;
-
-    if (element && element.className && element.className.length > 0 && name && name.length > 0) {
-        names = element.className.split(" ");
-        for (i = 0; i < names.length; i += 1) {
-            if (names[i] === name) {
-                names.splice(i, 1);
-                element.className = names.join(" ");
-                return true;
-            }
-        }
-    }
-
-    return false;
-};
-/**
- * Copyright (c) 2012, Yahoo! Inc.  All rights reserved.
- * Copyrights licensed under the New BSD License. See the accompanying LICENSE file for terms.
- */
-
-/*global YSLOW*/
+/*global MYSLOW*/
 /*jslint white: true, onevar: true, undef: true, nomen: true, eqeqeq: true, plusplus: true, bitwise: true, regexp: true, newcap: true, immed: true */
 
 /**
@@ -7155,15 +5499,15 @@ YSLOW.view.removeClassName = function (element, name) {
  * @constructor
  * @param {Document} doc Document object of current page.
  */
-YSLOW.context = function (doc) {
+MYSLOW.context = function (doc) {
     this.document = doc;
     this.component_set = null;
     this.result_set = null;
     this.onloadTimestamp = null;
 
     // reset renderer variables
-    if (YSLOW.renderer) {
-        YSLOW.renderer.reset();
+    if (MYSLOW.renderer) {
+        MYSLOW.renderer.reset();
     }
 
     this.PAGE = {
@@ -7188,7 +5532,7 @@ YSLOW.context = function (doc) {
 
 };
 
-YSLOW.context.prototype = {
+MYSLOW.context.prototype = {
 
     defaultview: "ysPerfButton",
 
@@ -7243,7 +5587,7 @@ YSLOW.context.prototype = {
         }
 
         totalSize = 0;
-        aTypes = YSLOW.peeler.types;
+        aTypes = MYSLOW.peeler.types;
         canvas_data = {};
         for (i = 0; i < aTypes.length; i += 1) {
             sType = aTypes[i];
@@ -7286,1650 +5630,23 @@ YSLOW.context.prototype = {
             this.PAGE.totalObjSizePrimed = stats.size_obj;
             this.PAGE.canvas_data.primed = stats.canvas_data;
         }
-    },
-
-    /**
-     * Call registered renderer to generate Grade view with the passed output format.
-     *
-     * @param {String} output_format output format, e.g. 'html', 'xml'
-     * @return Grade in the passed output format.
-     */
-    genPerformance: function (output_format, doc) {
-        if (this.result_set === null) {
-            if (!doc) {
-                doc = this.document;
-            }
-            YSLOW.controller.lint(doc, this);
-        }
-        return YSLOW.controller.render(output_format, 'reportcard', {
-            'result_set': this.result_set
-        });
-    },
-
-    /**
-     * Call registered renderer to generate Stats view with the passed output format.
-     *
-     * @param {String} output_format output format, e.g. 'html', 'xml'
-     * @return Stats in the passed output format.
-     */
-    genStats: function (output_format) {
-        var stats = {};
-        if (!this.PAGE.totalSize) {
-            // collect stats
-            this.collectStats();
-        }
-        stats.PAGE = this.PAGE;
-        return YSLOW.controller.render(output_format, 'stats', {
-            'stats': stats
-        });
-    },
-
-    /**
-     * Call registered renderer to generate Components view with the passed output format.
-     *
-     * @param {String} output_format output format, e.g. 'html', 'xml'
-     * @return Components in the passed output format.
-     */
-    genComponents: function (output_format) {
-        if (!this.PAGE.totalSize) {
-            // collect stats
-            this.collectStats();
-        }
-        return YSLOW.controller.render(output_format, 'components', {
-            'comps': this.component_set.components,
-            'total_size': this.PAGE.totalSize
-        });
-    },
-
-    /**
-     * Call registered renderer to generate Tools view with the passed output format.
-     *
-     * @param {String} output_format output format, e.g. 'html'
-     * @return Tools in the passed output format.
-     */
-    genToolsView: function (output_format) {
-        var tools = YSLOW.Tools.getAllTools();
-        return YSLOW.controller.render(output_format, 'tools', {
-            'tools': tools
-        });
-    },
-
-    /**
-     * Call registered renderer to generate Ruleset Settings view with the passed output format.
-     *
-     * @param {String} output_format output format, e.g. 'html'
-     * @return Ruleset Settings in the passed output format.
-     */
-    genRulesetEditView: function (output_format) {
-        return YSLOW.controller.render(output_format, 'rulesetEdit', {
-            'rulesets': YSLOW.controller.getRegisteredRuleset()
-        });
     }
 
 };
-/**
- * Copyright (c) 2012, Yahoo! Inc.  All rights reserved.
- * Copyrights licensed under the New BSD License. See the accompanying LICENSE file for terms.
- */
-
-/*global YSLOW*/
-/*jslint unparam: true, continue: true, sloppy: true, type: true, maxerr: 50, indent: 4 */
-
-/**
- * Renderer class
- *
- * @class
- */
-YSLOW.renderer = {
-
-    sortBy: 'type',
-
-    sortDesc: false,
-
-    bPrintable: false,
-
-    colors: {
-        doc: '#8963df',
-        redirect: '#FC8C8C',
-        iframe: '#FFDFDF',
-        xhr: '#89631f',
-        flash: '#8D4F5B',
-        js: '#9fd0e8',
-        css: '#aba5eb',
-        cssimage: '#677ab8',
-        image: '#d375cd',
-        favicon: '#a26c00',
-        unknown: '#888888'
-    },
-
-    reset: function () {
-        this.sortBy = 'type';
-        this.sortDesc = false;
-    },
-
-    genStats: function (stats, bCacheFull) {
-        var hCount, hSize, nHttpRequests, aTypes, cache_type, i, sType, sText,
-            tableHtml = '',
-            totalSize = 0;
-
-        if (!stats.PAGE) {
-            return '';
-        }
-
-        if (bCacheFull) {
-            hCount = stats.PAGE.totalObjCountPrimed;
-            hSize = stats.PAGE.totalObjSizePrimed;
-            nHttpRequests = stats.PAGE.totalRequestsPrimed;
-            totalSize = stats.PAGE.totalSizePrimed;
-        } else {
-            hCount = stats.PAGE.totalObjCount;
-            hSize = stats.PAGE.totalObjSize;
-            nHttpRequests = stats.PAGE.totalRequests;
-            totalSize = stats.PAGE.totalSize;
-        }
-
-        // Iterate over the component types and format the SUMMARY results.
-
-        // One row for each component type.
-        aTypes = YSLOW.peeler.types;
-        cache_type = (bCacheFull) ? 'primed' : 'empty';
-        for (i = 0; i < aTypes.length; i += 1) {
-            sType = aTypes[i];
-            if (typeof hCount[sType] !== 'undefined') {
-                tableHtml += '<tr><td class="legend">' +
-                    '<div class="stats-legend" style="background: ' +
-                    this.colors[sType] +
-                    '">&nbsp;</div></td><td class="count">' +
-                    hCount[sType] +
-                    '</td><td class="type">' +
-                    YSLOW.util.prettyType(sType) +
-                    '</td><td class="size">' +
-                    YSLOW.util.kbSize(hSize[sType]) +
-                    '</td></tr>';
-            }
-        }
-
-        sText = '<div id="stats-detail">' +
-            '<div class="summary-row">HTTP Requests - ' +
-            nHttpRequests +
-            '</div><div class="summary-row-2">Total Weight - ' +
-            YSLOW.util.kbSize(totalSize) +
-            '</div><table id="stats-table">' +
-            tableHtml +
-            '</table></div>';
-
-        return sText;
-    },
-
-    plotComponents: function (stats_view, yscontext) {
-        if (typeof stats_view !== "object") {
-            return;
-        }
-        this.plotOne(stats_view, yscontext.PAGE.canvas_data.empty, yscontext.PAGE.totalSize, 'comp-canvas-empty');
-        this.plotOne(stats_view, yscontext.PAGE.canvas_data.primed, yscontext.PAGE.totalSizePrimed, 'comp-canvas-primed');
-    },
-
-    plotOne: function (stats_view, data, total, canvas_id) {
-        var canvas, i, ctx, canvas_size, radius, center, sofar, piece, thisvalue,
-            aElements = stats_view.getElementsByTagName('canvas');
-
-        for (i = 0; i < aElements.length; i += 1) {
-            if (aElements[i].id === canvas_id) {
-                canvas = aElements[i];
-            }
-        }
-        if (!canvas) {
-            return;
-        }
-
-        ctx = canvas.getContext('2d');
-        canvas_size = [canvas.width, canvas.height];
-        radius = Math.min(canvas_size[0], canvas_size[1]) / 2;
-        center = [canvas_size[0] / 2, canvas_size[1] / 2];
-
-
-        sofar = 0; // keep track of progress
-        // loop the data[]
-        for (piece in data) {
-            if (data.hasOwnProperty(piece) && data[piece]) {
-                thisvalue = data[piece] / total;
-
-                ctx.beginPath();
-                // center of the pie
-                ctx.moveTo(center[0], center[1]);
-                // draw next arc
-                ctx.arc(
-                    center[0],
-                    center[1],
-                    radius,
-                    // -0.5 sets set the start to be top
-                    Math.PI * (-0.5 + 2 * sofar),
-                    Math.PI * (-0.5 + 2 * (sofar + thisvalue)),
-                    false
-                );
-                ctx.lineTo(center[0], center[1]); // line back to the center
-                ctx.closePath();
-                ctx.fillStyle = this.colors[piece]; // color
-                ctx.fill();
-
-                sofar += thisvalue; // increment progress tracker
-            }
-        }
-    },
-
-    getComponentHeadersTable: function (comp) {
-        var field,
-            sText = '<table><tr class="respHeaders"><td colspan=2>Response Headers</td></tr>';
-
-        for (field in comp.headers) {
-            if (comp.headers.hasOwnProperty(field) && comp.headers[field]) {
-                sText += '<tr><td class="param-name">' +
-                    YSLOW.util.escapeHtml(YSLOW.util.formatHeaderName(field)) +
-                    '</td><td class="param-value">' +
-                    YSLOW.util.escapeHtml(comp.headers[field]) +
-                    '</td></tr>';
-            }
-        }
-
-        if (comp.req_headers) {
-            sText += '<tr class="reqHeaders"><td colspan=2>Request Headers</td></tr>';
-            for (field in comp.req_headers) {
-                if (comp.req_headers.hasOwnProperty(field) &&
-                        comp.req_headers[field]) {
-                    sText += '<tr><td class="param-name">' +
-                        YSLOW.util.escapeHtml(YSLOW.util.formatHeaderName(field)) +
-                        '</td><td class="param-value"><p>' +
-                        YSLOW.util.escapeHtml(comp.req_headers[field]) +
-                        '</p></td></tr>';
-                }
-            }
-        }
-
-        sText += '</table>';
-        return sText;
-    },
-
-    /**
-     * Generate HTML table row code for a component.
-     * @param fields table columns
-     * @param comp Component
-     * @param row_class 'odd' or 'even'
-     * @param hidden
-     * @return html code
-     */
-    genComponentRow: function (fields, comp, row_class, hidden) {
-        var headersDivId, sHtml, i, sClass, value, sent, recv;
-
-        if (typeof row_class !== "string") {
-            row_class = '';
-        }
-        if (comp.status >= 400 && comp.status < 500) {
-            row_class += ' compError';
-        }
-        if (comp.after_onload === true) {
-            row_class += ' afteronload';
-        }
-
-        headersDivId = 'compHeaders' + comp.id;
-
-        sHtml = '<tr class="' + row_class + ' type-' + comp.type + '"' + (hidden ? ' style="display:none"' : '') + '>';
-        for (i in fields) {
-            if (fields.hasOwnProperty(i)) {
-                sClass = i;
-                value = '';
-
-                if (i === "type") {
-                    value += comp[i];
-                    if (comp.is_beacon) {
-                        value += ' &#8224;';
-                    }
-                    if (comp.after_onload) {
-                        value += ' *';
-                    }
-                } else if (i === "size") {
-                    value += YSLOW.util.kbSize(comp.size);
-                } else if (i === "url") {
-                    if (comp.status >= 400 && comp.status < 500) {
-                        sHtml += '<td class="' + sClass + '">' + comp[i] + ' (status: ' + comp.status + ')</td>';
-                        // skip the rest of the fields if this component has error.
-                        continue;
-                    } else {
-                        value += YSLOW.util.prettyAnchor(comp[i], comp[i], undefined, !YSLOW.renderer.bPrintable, 100, 1, comp.type);
-                    }
-                } else if (i === "gzip" && (comp.compressed === "gzip" || comp.compressed === "deflate")) {
-                    value += (comp.size_compressed !== undefined ? YSLOW.util.kbSize(comp.size_compressed) : 'uncertain');
-                } else if (i === "set-cookie") {
-                    sent = comp.getSetCookieSize();
-                    value += sent > 0 ? sent : '';
-                } else if (i === "cookie") {
-                    recv = comp.getReceivedCookieSize();
-                    value += recv > 0 ? recv : '';
-                } else if (i === "etag") {
-                    value += comp.getEtag();
-                } else if (i === "expires") {
-                    value += YSLOW.util.prettyExpiresDate(comp.expires);
-                } else if (i === "headers") {
-                    if (YSLOW.renderer.bPrintable) {
-                        continue;
-                    }
-                    if (comp.raw_headers && comp.raw_headers.length > 0) {
-                        value += '<a href="javascript:document.ysview.showComponentHeaders(\'' + headersDivId + '\')"><b class="mag"></b></a>';
-                    }
-                } else if (i === "action") {
-                    if (YSLOW.renderer.bPrintable) {
-                        continue;
-                    }
-                    if (comp.type === 'cssimage' || comp.type === 'image') {
-                        // for security reason, don't display smush.it unless it's image mime type.
-                        if (comp.response_type === undefined || comp.response_type === "image") {
-                            value += '<a href="javascript:document.ysview.smushIt(document, \'' + comp.url + '\')">smush.it</a>';
-                        }
-                    }
-                } else if (comp[i] !== undefined) {
-                    value += comp[i];
-                }
-                sHtml += '<td class="' + sClass + '">' + value + '</td>';
-            }
-        }
-        sHtml += '</tr>';
-
-        if (comp.raw_headers && comp.raw_headers.length > 0) {
-            sHtml += '<tr id="' + headersDivId + '" class="headers" style="display:none;"><td colspan="12">' + this.getComponentHeadersTable(comp) + '</td></tr>';
-        }
-        return sHtml;
-    },
-
-    componentSortCallback: function (comp1, comp2) {
-        var i, types, max,
-            a = '',
-            b = '',
-            sortBy = YSLOW.renderer.sortBy,
-            desc = YSLOW.renderer.sortDesc;
-
-        switch (sortBy) {
-        case 'type':
-            a = comp1.type;
-            b = comp2.type;
-            break;
-        case 'size':
-            a = comp1.size ? Number(comp1.size) : 0;
-            b = comp2.size ? Number(comp2.size) : 0;
-            break;
-        case 'gzip':
-            a = comp1.size_compressed ? Number(comp1.size_compressed) : 0;
-            b = comp2.size_compressed ? Number(comp2.size_compressed) : 0;
-            break;
-        case 'set-cookie':
-            a = comp1.getSetCookieSize();
-            b = comp2.getSetCookieSize();
-            break;
-        case 'cookie':
-            a = comp1.getReceivedCookieSize();
-            b = comp2.getReceivedCookieSize();
-            break;
-        case 'headers':
-            // header exist?
-            break;
-        case 'url':
-            a = comp1.url;
-            b = comp2.url;
-            break;
-        case 'respTime':
-            a = comp1.respTime ? Number(comp1.respTime) : 0;
-            b = comp2.respTime ? Number(comp2.respTime) : 0;
-            break;
-        case 'etag':
-            a = comp1.getEtag();
-            b = comp2.getEtag();
-            break;
-        case 'action':
-            if (comp1.type === 'cssimage' || comp1.type === 'image') {
-                a = 'smush.it';
-            }
-            if (comp2.type === 'cssimage' || comp2.type === 'image') {
-                b = 'smush.it';
-            }
-            break;
-        case 'expires':
-            // special case - date type
-            a = comp1.expires || 0;
-            b = comp2.expires || 0;
-            break;
-        }
-
-        if (a === b) {
-            // secondary sorting by ID to stablize the sorting algorithm.
-            if (comp1.id > comp2.id) {
-                return (desc) ? -1 : 1;
-            }
-            if (comp1.id < comp2.id) {
-                return (desc) ? 1 : -1;
-            }
-        }
-
-        // special case for sorting by type.
-        if (sortBy === 'type') {
-            types = YSLOW.peeler.types;
-            for (i = 0, max = types.length; i < max; i += 1) {
-                if (comp1.type === types[i]) {
-                    return (desc) ? 1 : -1;
-                }
-                if (comp2.type === types[i]) {
-                    return (desc) ? -1 : 1;
-                }
-            }
-        }
-
-        // normal comparison
-        if (a > b) {
-            return (desc) ? -1 : 1;
-        }
-        if (a < b) {
-            return (desc) ? 1 : -1;
-        }
-
-        return 0;
-
-    },
-
-    /**
-     * Sort components, return a new array, the passed array is unchanged.
-     * @param array of components to be sorted
-     * @param field to sort by.
-     * @return a new array of the sorted components.
-     */
-    sortComponents: function (comps, sortBy, desc) {
-        var arr_comps = comps;
-
-        this.sortBy = sortBy;
-        this.sortDesc = desc;
-        arr_comps.sort(this.componentSortCallback);
-
-        return arr_comps;
-    },
-
-    genRulesCheckbox: function (ruleset) {
-        var sText, id, rule, column_id,
-            weightsText = '',
-            numRules = 0,
-            rules = YSLOW.controller.getRegisteredRules(),
-            j = 0,
-            col1Text = '<div class="column1">',
-            col2Text = '<div class="column2">',
-            col3Text = '<div class="column3">';
-
-        for (id in rules) {
-            if (rules.hasOwnProperty(id) && rules[id]) {
-                rule = rules[id];
-
-                sText = '<label class="rules"><input id="rulesetEditRule' +
-                    id +
-                    '" name="rules" value="' +
-                    id +
-                    '" type="checkbox"' +
-                    (ruleset.rules[id] ? ' checked' : '') +
-                    '>' +
-                    rule.name +
-                    '</label><br>';
-
-                if (ruleset.rules[id] !== undefined) {
-                    numRules += 1;
-                }
-
-                if (ruleset.weights !== undefined && ruleset.weights[id] !== undefined) {
-                    weightsText += '<input type="hidden" name="weight-' +
-                        id +
-                        '" value="' +
-                        ruleset.weights[rule.id] +
-                        '">';
-                }
-
-                column_id = (j % 3);
-                switch (column_id) {
-                case 0:
-                    col1Text += sText;
-                    break;
-                case 1:
-                    col2Text += sText;
-                    break;
-                case 2:
-                    col3Text += sText;
-                    break;
-                }
-                j += 1;
-            }
-        }
-
-        col1Text += '</div>';
-        col2Text += '</div>';
-        col3Text += '</div>';
-
-        return '<h4><span id="rulesetEditFormTitle">' + ruleset.name + '</span> Ruleset <span id="rulesetEditFormNumRules" class="font10">(includes ' + parseInt(numRules, 10) + ' of ' + parseInt(j, 10) + ' rules)</span></h4>' + '<div class="rulesColumns"><table><tr><td>' + col1Text + '</td><td>' + col2Text + '</td><td>' + col3Text + '</td></tr></table><div id="rulesetEditWeightsDiv" class="weightsDiv">' + weightsText + '</div></div>';
-    },
-
-    genRulesetEditForm: function (ruleset) {
-        var contentHtml = '';
-
-        contentHtml += '<div id="rulesetEditFormDiv">' + '<form id="edit-form" action="javascript:document.ysview.saveRuleset(document, \'edit-form\')">' + '<div class="floatRight"><a href="javascript:document.ysview.checkAllRules(document, \'edit-form\', true)">Check All</a>|<a href="javascript:document.ysview.checkAllRules(document, \'edit-form\', false)">Uncheck All</a></div>' + YSLOW.renderer.genRulesCheckbox(ruleset) + '<div class="buttons"><input type="button" value="Save ruleset as ..." onclick="javascript:document.ysview.openSaveAsDialog(document, \'edit-form\')">' + '<span id="rulesetEditCustomButtons" style="visibility: ' + (ruleset.custom === true ? 'visible' : 'hidden') + '">' + '<input type="button" value="Save" onclick="this.form.submit()">' + '<!--<input type="button" value="Share" onclick="javascript:document.ysview.shareRuleset(document, \'edit-form\')">-->' + '<input class="btn_delete" type="button" value="Delete" onclick="javascript:document.ysview.deleteRuleset(document, \'edit-form\')">' + '</span></div>' + '<div id="rulesetEditRulesetId"><input type="hidden" name="ruleset-id" value="' + ruleset.id + '"></div>' + '<div id="rulesetEditRulesetName"><input type="hidden" name="ruleset-name" value="' + ruleset.name + '"></div>' + '</form></div>';
-
-        return contentHtml;
-    },
-
-    initRulesetEditForm: function (doc, form, ruleset) {
-        var divs, i, j, id, buttons, rulesetId, rulesetName, title, weightsDiv,
-            rules, numRulesSpan, spans, checkbox,
-            aElements = form.elements,
-            weightsText = '',
-            checkboxes = [],
-            numRules = 0,
-            totalRules = 0;
-
-        // uncheck all rules
-        for (i = 0; i < aElements.length; i += 1) {
-            if (aElements[i].name === "rules") {
-                aElements[i].checked = false;
-                checkboxes[aElements[i].id] = aElements[i];
-                totalRules += 1;
-            } else if (aElements[i].name === "saveas-name") {
-                // clear saveas-name
-                form.removeChild(aElements[i]);
-            }
-        }
-
-        divs = form.getElementsByTagName('div');
-        for (i = 0; i < divs.length; i += 1) {
-            if (divs[i].id === "rulesetEditWeightsDiv") {
-                weightsDiv = divs[i];
-            } else if (divs[i].id === "rulesetEditRulesetId") {
-                rulesetId = divs[i];
-            } else if (divs[i].id === "rulesetEditRulesetName") {
-                rulesetName = divs[i];
-            }
-        }
-
-        spans = form.parentNode.getElementsByTagName('span');
-        for (j = 0; j < spans.length; j += 1) {
-            if (spans[j].id === "rulesetEditFormTitle") {
-                title = spans[j];
-            } else if (spans[j].id === "rulesetEditCustomButtons") {
-                // show save, delete and share for custom rules
-                buttons = spans[j];
-                if (ruleset !== undefined && ruleset.custom === true) {
-                    // show the buttons
-                    buttons.style.visibility = 'visible';
-                } else {
-                    // hide the buttons
-                    buttons.style.visibility = 'hidden';
-                }
-            } else if (spans[j].id === "rulesetEditFormNumRules") {
-                numRulesSpan = spans[j];
-            }
-        }
-
-        if (ruleset) {
-            rules = ruleset.rules;
-            for (id in rules) {
-                if (rules.hasOwnProperty(id) && rules[id]) {
-                    // check the checkbox.
-                    checkbox = checkboxes['rulesetEditRule' + id];
-                    if (checkbox) {
-                        checkbox.checked = true;
-                    }
-                    if (ruleset.weights !== undefined && ruleset.weights[id] !== undefined) {
-                        weightsText += '<input type="hidden" name="weight-' + id + '" value="' + ruleset.weights[id] + '">';
-                    }
-                    numRules += 1;
-                }
-            }
-            numRulesSpan.innerHTML = '(includes ' + parseInt(numRules, 10) + ' of ' + parseInt(totalRules, 10) + ' rules)';
-            rulesetId.innerHTML = '<input type="hidden" name="ruleset-id" value="' + ruleset.id + '">';
-            rulesetName.innerHTML = '<input type="hidden" name="ruleset-name" value="' + ruleset.name + '">';
-            title.innerHTML = ruleset.name;
-        } else {
-            rulesetId.innerHTML = '';
-            rulesetName.innerHTML = '';
-            title.innerHTML = 'New';
-            numRulesSpan.innerHTML = '';
-        }
-        weightsDiv.innerHTML = weightsText;
-    }
-};
-
-YSLOW.registerRenderer({
-    /**
-     * @member YSLOW.HTMLRenderer
-     * @final
-     */
-    id: 'html',
-    /**
-     * @member YSLOW.HTMLRenderer
-     * @final
-     */
-    supports: {
-        components: 1,
-        reportcard: 1,
-        stats: 1,
-        tools: 1,
-        rulesetEdit: 1
-    },
-
-    /**
-     * @private
-     */
-    genComponentsTable: function (comps, sortBy, sortDesc) {
-        var f, j, type, comp,
-            headers = {
-                'type': 'TYPE',
-                'size': 'SIZE<br> (KB)',
-                'gzip': 'GZIP<br> (KB)',
-                'set-cookie': 'COOKIE&nbsp;RECEIVED<br>(bytes)',
-                'cookie': 'COOKIE&nbsp;SENT<br>(bytes)',
-                'headers': 'HEADERS',
-                'url': 'URL',
-                'expires': 'EXPIRES<br>(Y/M/D)',
-                'respTime': 'RESPONSE<br> TIME&nbsp;(ms)',
-                'etag': 'ETAG',
-                'action': 'ACTION'
-            },
-            collapsed = false,
-            tableHtml = '',
-            rowHtml = '',
-            numComponentsByType = 0,
-            sizeByType = 0;
-
-        if (sortBy !== undefined && headers[sortBy] === undefined) {
-            return ''; // Invalid column name, don't do anything.
-        }
-
-        if (YSLOW.renderer.bPrintable) {
-            sortBy = YSLOW.renderer.sortBy;
-            sortDesc = YSLOW.renderer.sortDesc;
-        } else if (sortBy === undefined || sortBy === "type") {
-            sortBy = "type";
-            collapsed = true;
-        }
-
-        comps = YSLOW.renderer.sortComponents(comps, sortBy, sortDesc);
-
-
-        // table headers
-        tableHtml += '<table id="components-table"><tr>';
-        for (f in headers) {
-            if (headers.hasOwnProperty(f) && headers[f]) {
-                if (YSLOW.renderer.bPrintable &&
-                        (f === "action" || f === "components" ||
-                        f === "headers")) {
-                    continue;
-                }
-                tableHtml += '<th';
-                if (sortBy === f) {
-                    tableHtml += ' class=" sortBy"';
-                }
-                tableHtml += '>';
-                if (YSLOW.renderer.bPrintable) {
-                    tableHtml += headers[f];
-                } else {
-                    tableHtml += '<div class="';
-                    if (sortBy === f) {
-                        tableHtml += (sortDesc ? ' sortDesc' : ' sortAsc');
-                    }
-                    tableHtml += '"><a href="javascript:document.ysview.regenComponentsTable(document, \'' + f + '\'' + (sortBy === f ? (sortDesc ? ', false' : ', true') : '') + ')">' + (sortBy === f ? (sortDesc ? '&darr;' : '&uarr;') : '') + ' ' + headers[f] + '</a></div>';
-
-                }
-            }
-        }
-        tableHtml += '</tr>';
-
-        // component data
-        for (j = 0; j < comps.length; j += 1) {
-            comp = comps[j];
-            if ((sortBy === undefined || sortBy === "type") && !YSLOW.renderer.bPrintable) {
-                if (type === undefined) {
-                    type = comp.type;
-                } else if (type !== comp.type) { /* add type summary row */
-                    tableHtml += '<tr class="type-summary ' + (collapsed ? 'expand' : 'collapse') + '"><td>' + '<a href="javascript:document.ysview.expandCollapseComponentType(document, \'' + type + '\')"><b class="expcol"><b class="exp exph"></b><b class="exp expv"></b><b class="col"></b></b><span class="rowTitle type-' + type + '">' + type + '&nbsp;(' + numComponentsByType + ')</span></a></td><td class="size">' + YSLOW.util.kbSize(sizeByType) + '</td><td><!-- GZIP --></td><td></td><td></td><td><!-- HEADERS --></td>' + '<td><!-- URL --></td><td><!-- EXPIRES --></td><td><!-- RESPTIME --></td><td><!-- ETAG --></td>' + '<td><!-- ACTION--></td></tr>'; /* flush to tableHtml */
-                    tableHtml += rowHtml;
-                    rowHtml = '';
-                    numComponentsByType = 0;
-                    sizeByType = 0;
-                    type = comp.type;
-                }
-                rowHtml += YSLOW.renderer.genComponentRow(headers, comp, (numComponentsByType % 2 === 0 ? 'even' : 'odd'), collapsed);
-                numComponentsByType += 1;
-                sizeByType += comp.size;
-            } else {
-                tableHtml += YSLOW.renderer.genComponentRow(headers, comp, (j % 2 === 0 ? 'even' : 'odd'), false);
-            }
-        }
-        if (rowHtml.length > 0) {
-            tableHtml += '<tr class="type-summary ' + (collapsed ? 'expand' : 'collapse') + '"><td>' + '<a href="javascript:document.ysview.expandCollapseComponentType(document, \'' + type + '\')"><b class="expcol"><b class="exp exph"></b><b class="exp expv"></b><b class="col"></b></b><span class="rowTitle type-' + type + '">' + type + '&nbsp;(' + numComponentsByType + ')</span></a></td><td class="size">' + YSLOW.util.kbSize(sizeByType) + '</td><td><!-- GZIP --></td><td></td><td></td><td><!-- HEADERS --></td>' + '<td><!-- URL --></td><td><!-- EXPIRES --></td><td><!-- RESPTIME --></td><td><!-- ETAG --></td>' + '<td><!-- ACTION--></td></tr>';
-            tableHtml += rowHtml;
-        }
-        tableHtml += '</table>';
-        return tableHtml;
-
-    },
-
-    /**
-     * @member YSLOW.HTMLRenderer
-     * Generate HTML code for Components tab
-     * @param {YSLOW.ComponentSet} comps  array of components
-     * @param {Number} totalSize total page size
-     * @return html code for Components tab
-     * @type String
-     */
-    componentsView: function (comps, totalSize) {
-        var sText,
-            tableHtml = this.genComponentsTable(comps, YSLOW.renderer.sortBy, false),
-            beacon_legend = 'in type column indicates the component is loaded after window onload event.',
-            after_onload_legend = 'denotes 1x1 pixels image that may be image beacon',
-            title = 'Components';
-
-        if (YSLOW.doc) {
-            if (YSLOW.doc.components_legend) {
-                if (YSLOW.doc.components_legend.beacon) {
-                    beacon_legend = YSLOW.doc.components_legend.beacon;
-                }
-                if (YSLOW.doc.components_legend.after_onload) {
-                    after_onload_legend = YSLOW.doc.components_legend.after_onload;
-                }
-            }
-            if (YSLOW.doc.view_names && YSLOW.doc.view_names.components) {
-                title = YSLOW.doc.view_names.components;
-            }
-        }
-
-        sText = '<div id="componentsDiv">' + '<div id="summary"><span class="view-title">' + title + '</span>The page has a total of ' + '<span class="number">' + comps.length + '</span>' + ' components and a total weight of ' + '<span class="number">' + YSLOW.util.kbSize(totalSize) + '</span> bytes</div>' + '<div id="expand-all"><a href="javascript:document.ysview.expandAll(document)"><b>&#187;</b><span id="expand-all-text">Expand All</span></a></div>' + '<div id="components">' + tableHtml + '</div><div class="legend">* ' + beacon_legend + '<br>' + '&#8224; ' + after_onload_legend + '</div></div>';
-
-        return sText;
-    },
-
-    /**
-     * @private
-     */
-    reportcardPrintableView: function (results, overall_grade, ruleset) {
-        var i, j, result, grade, grade_class,
-            html = '<div id="reportDiv"><table><tr class="header"><td colspan="2">Overall Grade: ' + overall_grade + '  (Ruleset applied: ' + ruleset.name + ')</td></tr>';
-
-        for (i = 0; i < results.length; i += 1) {
-            result = results[i];
-            if (typeof result === "object") {
-                grade = YSLOW.util.prettyScore(result.score);
-                grade_class = 'grade-' + (grade === "N/A" ? 'NA' : grade);
-
-                html += '<tr><td class="grade ' + grade_class + '"><b>' + grade + '</b></td>' + '<td class="desc"><p>' + result.name + '<br><div class="message">' + result.message + '</div>';
-
-                if (result.components && result.components.length > 0) {
-                    html += '<ul class="comps-list">';
-                    for (j = 0; j < result.components.length; j += 1) {
-                        if (typeof result.components[j] === "string") {
-                            html += '<li>' + result.components[j] + '</li>';
-                        } else if (result.components[j].url !== undefined) {
-                            html += '<li>' + YSLOW.util.briefUrl(result.components[j].url, 60) + '</li>';
-                        }
-                    }
-                    html += '</ul><br>';
-                }
-
-                html += '</p></td></tr>';
-            }
-        }
-        html += '</table></div>';
-        return html;
-    },
-
-    getFilterCode: function (categories, results, grade, url) {
-        var html, id, i, len, link, result, score,
-            total = results.length,
-            array = [];
-
-        for (id in categories) {
-            if (categories.hasOwnProperty(id) && categories[id]) {
-                array.push(id);
-            }
-        }
-        array.sort();
-
-        html = '<div id="filter"><ul>' + '<li class="first selected" id="all" onclick="javascript:document.ysview.updateFilterSelection(event)"><a href="#">ALL (' + total + ')</a></li>' + '<li class="first">FILTER BY: </li>';
-
-        for (i = 0, len = array.length; i < len; i += 1) {
-            html += '<li';
-            if (i === 0) {
-                html += ' class="first"';
-            }
-            html += ' id="' + array[i] + '" onclick="javascript:document.ysview.updateFilterSelection(event)"><a href="#">' + array[i].toUpperCase() + ' (' + categories[array[i]] + ')</a></li>';
-        }
-
-        // social
-        link = 'http://yslow.org/scoremeter/?url=' +
-            encodeURIComponent(url) + '&grade=' + grade;
-        for (i = 0; i < total; i += 1) {
-            result = results[i];
-            score = parseInt(result.score, 10);
-            if (score >= 0 && score < 100) {
-                link += '&' + result.rule_id.toLowerCase() + '=' + score;
-            }
-        }
-
-        // for some reason window.open mess with decoding, thus encoding twice
-        link = encodeURIComponent(encodeURIComponent(link));
-        url = encodeURIComponent(encodeURIComponent(url.slice(0, 60) + (url.length > 60 ? '...' : '')));
-
-        html += '<li class="social"><a class="facebook" href="javascript:document.ysview.openPopup(\'http://www.facebook.com/sharer.php?t=YSlow%20Scoremeter&u=' + link + '\', \'facebook\')" title="Share these results"><span>Share</span></a></li>';
-        html += '<li class="social"><a class="twitter" href="javascript:document.ysview.openPopup(\'http://twitter.com/share?original_referer=&source=tweetbutton&text=YSlow%20grade%20' + grade + '%20for%20' + url + '&url=' + link + '&via=yslow\', \'twitter\')" title="Tweet these results"><span>Tweet</spam></a></li>';
-
-        html += '</ul></div>';
-
-        return html;
-    },
-
-    /**
-     * @member YSLOW.HTMLRenderer
-     * Generate HTML code for Grade screen
-     * @param {YSLOW.ResultSet} resultset
-     * @return html code for Grade screen
-     * @type String
-     */
-    reportcardView: function (resultset) {
-        var overall_grade, i, j, k, result, grade, index, sClass, grade_class, score, messages, comp, string, rule,
-            html = '<div id="reportDiv">',
-            appliedRuleset = resultset.getRulesetApplied(),
-            results = resultset.getResults(),
-            url = resultset.url,
-            title = 'Grade',
-            tab_label_html = '',
-            tab_html = '',
-            categories = {};
-
-
-        if (YSLOW.doc) {
-            if (YSLOW.doc.view_names && YSLOW.doc.view_names.grade) {
-                title = YSLOW.doc.view_names.grade;
-            }
-        }
-
-        overall_grade = YSLOW.util.prettyScore(resultset.getOverallScore());
-
-        if (YSLOW.renderer.bPrintable) {
-            return this.reportcardPrintableView(results, overall_grade, appliedRuleset);
-        }
-
-        html += '<div id="summary"><table><tr><td><div class="bigFont">' + title + '</div></td>' + '<td class="padding5"><div id="overall-grade" class="grade-' + overall_grade + '">' + overall_grade + '</div></td>' + '<td class="padding15">Overall performance score ' + Math.round(resultset.getOverallScore()) + '</td>' + '<td class="padding15">Ruleset applied: ' + appliedRuleset.name + '</td>' + '<td class="padding15">URL: ' + YSLOW.util.briefUrl(url, 100) + '</td>' + '</tr></table></div>';
-
-
-        for (i = 0; i < results.length; i += 1) {
-            result = results[i];
-            if (typeof result === "object") {
-                grade = YSLOW.util.prettyScore(result.score);
-                index = i + 1;
-                sClass = '';
-                grade_class = 'grade-' + (grade === "N/A" ? 'NA' : grade);
-                score = parseInt(result.score, 10);
-                if (isNaN(score) || result.score === -1) {
-                    score = "n/a";
-                } else {
-                    score += "%";
-                }
-
-                tab_label_html += '<li' + ' id="label' + index + '"';
-                if (i === 0) {
-                    sClass += "first selected";
-                }
-                if (result.category) {
-                    for (k = 0; k < result.category.length; k += 1) {
-                        if (sClass.length > 0) {
-                            sClass += ' ';
-                        }
-                        sClass += result.category[k];
-                        // update filter categories
-                        if (categories[result.category[k]] === undefined) {
-                            categories[result.category[k]] = 0;
-                        }
-                        categories[result.category[k]] += 1;
-                    }
-                }
-                if (sClass.length > 0) {
-                    tab_label_html += ' class="' + sClass + '"';
-                }
-                tab_label_html += ' onclick="javascript:document.ysview.onclickResult(event)">' + '<a href="#" class="' + grade_class + '">' + '<div class="tab-label">' + '<span class="grade" title="' + score + '">' + grade + '</span>' + '<span class="desc">' + result.name + '</span></div></a></li>';
-
-                tab_html += '<div id="tab' + index + '" class="result-tab';
-                if (i !== 0) {
-                    tab_html += ' yui-hidden';
-                }
-                messages = result.message.split('\n');
-                if (messages) {
-                    result.message = messages.join('<br>');
-                }
-                tab_html += '"><h4>Grade ' + grade + ' on ' + result.name + '</h4><p>' + result.message + '<br>';
-
-                if (result.components && result.components.length > 0) {
-                    tab_html += '<ul class="comps-list">';
-                    for (j = 0; j < result.components.length; j += 1) {
-                        comp = result.components[j];
-                        if (typeof comp === "string") {
-                            tab_html += '<li>' + comp + '</li>';
-                        } else if (comp.url !== undefined) {
-                            tab_html += '<li>';
-                            string = result.rule_id.toLowerCase();
-                            if (result.rule_id.match('expires')) {
-                                tab_html += '(' + YSLOW.util.prettyExpiresDate(comp.expires) + ') ';
-                            }
-                            tab_html += YSLOW.util.prettyAnchor(comp.url, comp.url, undefined, true, 120, undefined, comp.type) + '</li>';
-                        }
-                    }
-                    tab_html += '</ul><br>';
-                }
-                tab_html += '</p>';
-
-                rule = YSLOW.controller.getRule(result.rule_id);
-
-                if (rule) {
-                    tab_html += '<hr><p class="rule-info">' + (rule.info || '** To be added **') + '</p>';
-
-                    if (rule.url !== undefined) {
-                        tab_html += '<p class="more-info"><a href="javascript:document.ysview.openLink(\'' + rule.url + '\')"><b>&#187;</b>Read More</a></p>';
-
-                    }
-                }
-
-                tab_html += '</div>';
-            }
-        }
-
-        html += '<div id="reportInnerDiv">' + this.getFilterCode(categories, results, overall_grade, url) + '<div id="result" class="yui-navset yui-navset-left">' + '<ul class="yui-nav" id="tab-label-list">' + tab_label_html + '</ul>' + '<div class="yui-content">' + tab_html + '</div>' + '<div id="copyright2">' + YSLOW.doc.copyright + '</div>' + '</div></div></div>';
-
-        return html;
-    },
-
-    /**
-     * @member YSLOW.HTMLRenderer
-     * Generate HTML code for Stats screen
-     * @param {Object} stats page stats
-     * <ul>
-     * <li><code>PAGE.totalObjCountPrimed</code> a hash of components count group by type (primed cache)</li>
-     * <li><code>PAGE.totalObjSizePrimed</code> a hash of components size group by type (primed cache)</li>
-     * <li><code>PAGE.totalObjRequestsPrimed</code> total number of requests (primed cache)</li>
-     * <li><code>PAGE.totalSizePrimed</code> total size of all components (primed cache)</li>
-     * <li><code>PAGE.totalObjCount</code> a hash of components count group by type (empty cache)</li>
-     * <li><code>PAGE.totalObjSize</code> a hash of components size group by type (empty cache)</li>
-     * <li><code>PAGE.totalObjRequests</code> total number of requests (empty cache)</li>
-     * <li><code>PAGE.totalSize</code> total size of all components (empty cache)</li>
-     * </ul>
-     * @return html code for Stats screen
-     * @type String
-     */
-    statsView: function (stats) {
-        var sText = '',
-            title = 'Stats';
-
-        if (YSLOW.doc) {
-            if (YSLOW.doc.view_names && YSLOW.doc.view_names.stats) {
-                title = YSLOW.doc.view_names.stats;
-            }
-        }
-
-        sText += '<div id="statsDiv">' + '<div id="summary"><span class="view-title">' + title + '</span>The page has a total of ' + '<span class="number">' + stats.PAGE.totalRequests + '</span>' + ' HTTP requests and a total weight of ' + '<span class="number">' + YSLOW.util.kbSize(stats.PAGE.totalSize) + '</span>' + ' bytes with empty cache</div>';
-
-        // Page summary.
-        sText += '<div class="section-header">WEIGHT GRAPHS</div>';
-
-        sText += '<div id="empty-cache">' + '<div class="stats-graph floatLeft"><div class="canvas-title">Empty Cache</div>' + '<canvas id="comp-canvas-empty" width="150" height="150"></canvas></div>' + '<div class="yslow-stats-empty">' + YSLOW.renderer.genStats(stats, false) + '</div></div>';
-
-        sText += '<div id="primed-cache">' + '<div class="stats-graph floatLeft"><div class="canvas-title">Primed Cache</div>' + '<canvas id="comp-canvas-primed" width="150" height="150"></canvas></div>' + '<div class="yslow-stats-primed">' + YSLOW.renderer.genStats(stats, true) + '</div></div>';
-
-        sText += '</div>';
-
-        return sText;
-    },
-
-    /**
-     * @member YSLOW.HTMLRenderer
-     * Generate Html for Tools tab
-     * @param {Array} tools array of tools
-     * @return html for Tools tab
-     * @type String
-     */
-    toolsView: function (tools) {
-        var i, sText, tool,
-            tableHtml = '<table>',
-            title = 'Tools',
-            desc = 'Click the Launch Tool link next to the tool you want to run to start the tool.';
-
-        if (YSLOW.doc) {
-            if (YSLOW.doc.tools_desc) {
-                desc = YSLOW.doc.tools_desc;
-            }
-            if (YSLOW.doc.view_names && YSLOW.doc.view_names.tools) {
-                title = YSLOW.doc.view_names.tools;
-            }
-        }
-
-        for (i = 0; i < tools.length; i += 1) {
-            tool = tools[i];
-            tableHtml += '<tr><td class="name"><b><a href="#" onclick="javascript:document.ysview.runTool(\'' + tool.id + '\', {\'yscontext\': document.yslowContext })">' + tool.name + '</a></b></td><td>-</td><td>' + (tool.short_desc || 'Short text here explaining what are the main benefits of running this App') + '</td></tr>';
-        }
-
-        tableHtml += '</table>';
-
-        sText = '<div id="toolsDiv">' + '<div id="summary"><span class="view-title">' + title + '</span>' + desc + '</div>' + '<div id="tools">' + tableHtml + '</div></div>';
-
-        return sText;
-    },
-
-    /**
-     * @member YSLOW.HTMLRenderer
-     * Generate Html for Ruleset Settings Screen
-     * @param {Object} rulesets a hash of rulesets with { ruleset-name => ruleset }
-     * @return html code for Ruleset Settings screen
-     * @type String
-     */
-    rulesetEditView: function (rulesets) {
-        var id, ruleset, tab_id, sText,
-            settingsHtml = '<div id="settingsDiv" class="yui-navset yui-navset-left">',
-            navHtml, contentHtml,
-            index = 0,
-            custom = false,
-            selectedRuleset,
-            defaultRulesetId,
-            title = 'Rule Settings',
-            desc = 'Choose which ruleset better fit your specific needs. You can Save As an existing rule, based on an existing ruleset.';
-
-        if (YSLOW.doc) {
-            if (YSLOW.doc.rulesettings_desc) {
-                desc = YSLOW.doc.rulesettings_desc;
-            }
-            if (YSLOW.doc.view_names && YSLOW.doc.view_names.rulesetedit) {
-                title = YSLOW.doc.view_names.rulesetedit;
-            }
-        }
-
-        defaultRulesetId = YSLOW.controller.getDefaultRulesetId();
-
-        navHtml = '<ul class="yui-nav"><li class="header">STANDARD SETS</li>';
-
-        for (id in rulesets) {
-            if (rulesets.hasOwnProperty(id) && rulesets[id]) {
-                ruleset = rulesets[id];
-                tab_id = 'tab' + index;
-                if (!custom && ruleset.custom === true) {
-                    navHtml += '<li class="new-section header" id="custom-set-title">CUSTOM SETS</li>';
-                    custom = true;
-                }
-                navHtml += '<li id="label' + index + '" class="' + 'ruleset-' + ruleset.id;
-                if (id === defaultRulesetId) {
-                    selectedRuleset = rulesets[id];
-                    navHtml += ' selected"';
-                }
-                navHtml += '" onclick="javascript:document.ysview.onclickRuleset(event)"><a href="#' + tab_id + '">' + ruleset.name + '</a></li>';
-                index += 1;
-            }
-        }
-
-        navHtml += '<li class="new-section create-ruleset" id="create-ruleset"><input type="button" value="New Set" onclick="javascript:document.ysview.createRuleset(this, \'edit-form\')"></li></ul>';
-        contentHtml = '<div class="yui-content">' + YSLOW.renderer.genRulesetEditForm(selectedRuleset) + '</div>';
-
-        settingsHtml += navHtml + contentHtml;
-
-        sText = '<div id="rulesetEditDiv">' + '<div id="summary"><span class="view-title">' + title + '</span>' + desc + '</div>' + settingsHtml + '</div>';
-
-        return sText;
-    },
-
-    /**
-     * @private
-     */
-    rulesetEditUpdateTab: function (doc, form, ruleset, updateAction, updateSelection) {
-        var ul_elem, content, li_elem, index, id, tab_id, event, custom_set_title,
-            label_id, idx, prev_li_elem, header, event2,
-            container = form.parentNode.parentNode.parentNode;
-
-        if (container && container.id === 'settingsDiv' && ruleset.custom === true) {
-            ul_elem = container.firstChild;
-            content = ul_elem.nextSibling;
-
-            if (updateAction < 1) {
-                // for delete, we'll need to identify the tab to update.
-                li_elem = ul_elem.firstChild;
-                while (li_elem) {
-                    index = li_elem.className.indexOf('ruleset-');
-                    if (index !== -1) {
-                        id = li_elem.className.substring(index + 8);
-                        index = id.indexOf(" ");
-                        if (index !== -1) {
-                            id = id.substring(0, index);
-                        }
-                        if (ruleset.id === id) {
-                            index = li_elem.id.indexOf('label');
-                            if (index !== -1) {
-                                tab_id = li_elem.id.substring(index + 5);
-                                if (li_elem.className.indexOf('selected') !== -1) {
-                                    // the tab we're removing is the selected tab, select the last non-header tab.
-                                    event = {};
-                                    event.currentTarget = prev_li_elem;
-                                    doc.ysview.onclickRuleset(event);
-                                }
-                                // check if we are removing the last custom ruleset.
-                                if (li_elem.previousSibling && li_elem.previousSibling.id === 'custom-set-title' && li_elem.nextSibling && li_elem.nextSibling.id === 'create-ruleset') {
-                                    custom_set_title = li_elem.previousSibling;
-                                }
-                                ul_elem.removeChild(li_elem);
-                                if (custom_set_title) {
-                                    ul_elem.removeChild(custom_set_title);
-                                }
-                            }
-                            break;
-                        } else {
-                            prev_li_elem = li_elem;
-                        }
-                    }
-                    li_elem = li_elem.nextSibling;
-                }
-            } else {
-                li_elem = ul_elem.lastChild;
-                while (li_elem) {
-                    idx = li_elem.id.indexOf('label');
-                    if (idx !== -1) {
-                        label_id = li_elem.id.substring(idx + 5);
-                        break;
-                    }
-                    li_elem = li_elem.previousSibling;
-                }
-
-                label_id = Number(label_id) + 1;
-                li_elem = doc.createElement('li');
-                li_elem.className = 'ruleset-' + ruleset.id;
-                li_elem.id = 'label' + label_id;
-                li_elem.onclick = function (event) {
-                    doc.ysview.onclickRuleset(event);
-                };
-                li_elem.innerHTML = '<a href="#tab' + label_id + '">' + ruleset.name + '</a>';
-                ul_elem.insertBefore(li_elem, ul_elem.lastChild); // lastChild is the "New Set" button.
-                header = ul_elem.firstChild;
-                while (header) {
-                    if (header.id && header.id === 'custom-set-title') {
-                        custom_set_title = header;
-                        break;
-                    }
-                    header = header.nextSibling;
-                }
-                if (!custom_set_title) {
-                    custom_set_title = doc.createElement('li');
-                    custom_set_title.className = 'new-section header';
-                    custom_set_title.id = 'custom-set-title';
-                    custom_set_title.innerHTML = 'CUSTOM SETS';
-                    ul_elem.insertBefore(custom_set_title, li_elem);
-                }
-
-                if (updateSelection) {
-                    event2 = {};
-                    event2.currentTarget = li_elem;
-                    doc.ysview.onclickRuleset(event2);
-                }
-            }
-        }
-
-    },
-
-    /**
-     * @private
-     * Helper function to find if name is in class_name.
-     * @param {String} class_name
-     * @param {String} name
-     * @return true if name is a substring of class_name, false otherwise.
-     * @type Boolean
-     */
-    hasClassName: function (class_name, name) {
-        var i,
-            arr_class = class_name.split(" ");
-
-        if (arr_class) {
-            for (i = 0; i < arr_class.length; i += 1) {
-                if (arr_class[i] === name) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
-    },
-
-    /**
-     * @member YSLOW.HTMLRenderer
-     * Expand or collapse the rows in components table that matches type.
-     * @param {Document} doc Document object of YSlow Chrome Window.
-     * @param {HTMLElement} table table element
-     * @param {String} type component type of the rows to be expanded or collapsed
-     * @param {Boolean} expand true to expand, false to collapse. This can be undefined.
-     * @param {Boolean} all true to expand/collapse all, can be undefined.
-     */
-    expandCollapseComponentType: function (doc, table, type, expand, all) {
-        var hiding, i, j, do_all, row, span, names, header, className, len,
-            expandAllDiv, elems, expandAllText, checkExpand,
-            hasClass = this.hasClassName,
-            summary = {
-                expand: 0,
-                collapse: 0
-            };
-
-        if (typeof all === "boolean" && all === true) {
-            do_all = true;
-        }
-
-        if (table) {
-            for (i = 0, len = table.rows.length; i < len; i += 1) {
-                row = table.rows[i];
-                className = row.className;
-                if (hasClass(className, 'type-summary')) {
-                    if (hasClass(className, 'expand')) {
-                        summary.expand += 1;
-                        hiding = false;
-                    } else if (hasClass(className, 'collapse')) {
-                        summary.collapse += 1;
-                        hiding = true;
-                    }
-                    span = row.getElementsByTagName('span')[0];
-                    if (do_all || hasClass(span.className, 'type-' + type)) {
-                        if (do_all) {
-                            names = span.className.split(' ');
-                            for (j = 0; j < names.length; j += 1) {
-                                if (names[j].substring(0, 5) === 'type-') {
-                                    type = names[j].substring(5);
-                                }
-                            }
-                        }
-                        if (typeof hiding !== "boolean" || (typeof expand === "boolean" && expand === hiding)) {
-                            if (do_all) {
-                                hiding = !expand;
-                                continue;
-                            } else {
-                                return;
-                            }
-                        }
-                        YSLOW.view.removeClassName(row, (hiding ? 'collapse' : 'expand'));
-                        row.className += (hiding ? ' expand' : ' collapse');
-                        if (hiding) {
-                            summary.collapse -= 1;
-                            summary.expand += 1;
-                        } else {
-                            summary.collapse += 1;
-                            summary.expand -= 1;
-                        }
-                    }
-                } else if (hasClass(className, 'type-' + type)) {
-                    if (hiding) {
-                        row.style.display = "none";
-                        // next sibling should be its header, collapse it too.
-                        header = row.nextSibling;
-                        if (header.id.indexOf('compHeaders') !== -1) {
-                            header.style.display = "none";
-                        }
-                    } else {
-                        row.style.display = "table-row";
-                    }
-                }
-            }
-        }
-
-        // now check all type and see if we need to toggle "expand all" and "collapse all".
-        if (summary.expand === 0 || summary.collapse === 0) {
-            expandAllDiv = table.parentNode.previousSibling;
-            if (expandAllDiv) {
-                elems = expandAllDiv.getElementsByTagName('span');
-                for (i = 0; i < elems.length; i += 1) {
-                    if (elems[i].id === "expand-all-text") {
-                        expandAllText = elems[i];
-                    }
-                }
-
-                checkExpand = false;
-
-                if (expandAllText.innerHTML.indexOf('Expand') !== -1) {
-                    checkExpand = true;
-                }
-
-                // toggle
-                if (checkExpand) {
-                    if (summary.expand === 0) {
-                        expandAllText.innerHTML = 'Collapse All';
-                    }
-                } else if (summary.collapse === 0) {
-                    expandAllText.innerHTML = 'Expand All';
-                }
-            }
-        }
-    },
-
-    /**
-     * @member YSLOW.HTMLRenderer
-     * Expand all component rows in components table.
-     * @param {Document} doc Document object of YSlow Chrome Window.
-     * @param {HTMLElement} table table element
-     */
-    expandAllComponentType: function (doc, table) {
-        var elem, i,
-            expand = false,
-            expandAllDiv = table.parentNode.previousSibling,
-            elems = expandAllDiv.getElementsByTagName('span');
-
-        for (i = 0; i < elems.length; i += 1) {
-            if (elems[i].id === "expand-all-text") {
-                elem = elems[i];
-            }
-        }
-        if (elem) {
-            if (elem.innerHTML.indexOf('Expand') !== -1) {
-                expand = true;
-            }
-        }
-
-        this.expandCollapseComponentType(doc, table, undefined, expand, true);
-
-        if (elem) {
-            elem.innerHTML = (expand ? 'Collapse All' : 'Expand All');
-        }
-    },
-
-    /**
-     * @member YSLOW.HTMLRenderer
-     * Regenerate Components Table.
-     * @param {Document} doc Document object of YSlow Chrome Window
-     * @param {HTMLElement} table table element
-     * @param {String} column_name Column to sort by
-     * @param {Boolean} sortDesc true if sort descending order, false otherwise
-     * @param {YSlow.ComponentSet} cset ComponentSet object
-     */
-    regenComponentsTable: function (doc, table, column_name, sortDesc, cset) {
-        var show, elem, tableHtml;
-
-        if (table) {
-            if (sortDesc === undefined) {
-                sortDesc = false;
-            }
-            // hide or show expand-all
-            if (column_name === "type") {
-                show = true;
-            }
-            elem = table.parentNode.previousSibling;
-            if (elem.id === 'expand-all') {
-                elem.style.visibility = (show ? 'visible' : 'hidden');
-            }
-
-            tableHtml = this.genComponentsTable(cset.components, column_name, sortDesc);
-            table.parentNode.innerHTML = tableHtml;
-        }
-    },
-
-    /**
-     * @member YSLOW.HTMLRenderer
-     * Save Ruleset.
-     * @param {Document} doc Document Object of YSlow Chrome Window
-     * @param {HTMLElement} form Form element
-     */
-    saveRuleset: function (doc, form) {
-        var i, elem, index, id, saveas_name, ruleset_name, ruleset_id, rules,
-            ruleset = {},
-            weights = {};
-
-        if (form) {
-            ruleset.custom = true;
-            ruleset.rules = {};
-            ruleset.weights = {};
-
-            for (i = 0; i < form.elements.length; i += 1) {
-                elem = form.elements[i];
-
-                // build out ruleset object with the form elements.
-                if (elem.name === 'rules' && elem.type === 'checkbox') {
-                    if (elem.checked) {
-                        ruleset.rules[elem.value] = {};
-                    }
-                } else if (elem.name === 'saveas-name') {
-                    saveas_name = elem.value;
-                } else if (elem.name === 'ruleset-name') {
-                    ruleset_name = elem.value;
-                } else if (elem.name === 'ruleset-id') {
-                    ruleset_id = elem.value;
-                } else if ((index = elem.name.indexOf('weight-')) !== -1) {
-                    weights[elem.name.substring(index)] = elem.value;
-                }
-            }
-            rules = ruleset.rules;
-            for (id in rules) {
-                if (rules.hasOwnProperty(id) && weights['weight-' + id]) {
-                    ruleset.weights[id] = parseInt(weights['weight-' + id], 10);
-                }
-            }
-
-            if (saveas_name) {
-                ruleset.id = saveas_name.replace(/\s/g, "-");
-                ruleset.name = saveas_name;
-            } else {
-                ruleset.id = ruleset_id;
-                ruleset.name = ruleset_name;
-            }
-
-            // register ruleset
-            if (ruleset.id && ruleset.name) {
-                YSLOW.controller.addRuleset(ruleset, true);
-
-                // save to pref
-                YSLOW.controller.saveRulesetToPref(ruleset);
-
-                // update UI
-                if (saveas_name !== undefined) {
-                    this.updateRulesetUI(doc, form, ruleset, 1);
-                }
-            }
-        }
-    },
-
-    updateRulesetUI: function (doc, form, ruleset, updateAction) {
-        var i, forms = doc.getElementsByTagName('form');
-
-        for (i = 0; i < forms.length; i += 1) {
-            if (forms[i].id === form.id) {
-                this.rulesetEditUpdateTab(doc, forms[i], ruleset, updateAction, (forms[i] === form));
-            }
-        }
-        doc.ysview.updateRulesetList();
-    },
-
-    /**
-     * @member YSLOW.HTMLRenderer
-     * Delete the current selected ruleset in Ruleset settings screen.
-     * @param {Document} doc Document object of YSlow Chrome Window.
-     * @param {HTMLElement} form Form element
-     */
-    deleteRuleset: function (doc, form) {
-        var ruleset_id = this.getEditFormRulesetId(form),
-            ruleset = YSLOW.controller.removeRuleset(ruleset_id);
-
-        if (ruleset && ruleset.custom) {
-            // remove from pref
-            YSLOW.controller.deleteRulesetFromPref(ruleset);
-
-            // update UI
-            this.updateRulesetUI(doc, form, ruleset, -1);
-        }
-    },
-
-    /**
-     * @member YSLOW.HTMLRenderer
-     * Get form id from Ruleset Settings screen.
-     * @param {DOMElement} form Form element
-     */
-    getEditFormRulesetId: function (form) {
-        var i,
-            aInputs = form.getElementsByTagName('input');
-
-        for (i = 0; i < aInputs.length; i += 1) {
-            if (aInputs[i].name === 'ruleset-id') {
-                return aInputs[i].value;
-            }
-        }
-
-        return undefined;
-    }
-
-});
-
-YSLOW.registerRenderer({
-    /**
-     * @member YSLOW.XMLRenderer
-     * @final
-     */
-    id: 'xml',
-    /**
-     * @member YSLOW.XMLRenderer
-     * @final
-     */
-    supports: {
-        components: 1,
-        reportcard: 1,
-        stats: 1
-    },
-
-    /**
-     * @member YSLOW.XMLRenderer
-     * Generate XML code for Components tab
-     * @param {Array} comps  array of components
-     * @param {Number} totalSize total page size
-     * @return XML code for Components tab
-     * @type String
-     */
-    componentsView: function (comps, totalSize) {
-        var i, cookieSize,
-            sText = '<components>';
-
-        for (i = 0; i < comps.length; i += 1) {
-            sText += '<component>';
-            sText += '<type>' + comps[i].type + '</type>';
-            sText += '<size>' + comps[i].size + '</size>';
-            if (comps[i].compressed === false) {
-                sText += '<gzip/>';
-            } else {
-                sText += '<gzip>' + (comps[i].size_compressed !== undefined ? parseInt(comps[i].size_compressed, 10) : 'uncertain') + '</gzip>';
-            }
-            cookieSize = comps[i].getSetCookieSize();
-            if (cookieSize > 0) {
-                sText += '<set-cookie>' + parseInt(cookieSize, 10) + '</set-cookie>';
-            }
-            cookieSize = comps[i].getReceivedCookieSize();
-            if (cookieSize > 0) {
-                sText += '<cookie>' + parseInt(cookieSize, 10) + '</cookie>';
-            }
-            sText += '<url>' + encodeURI(comps[i].url) + '</url>';
-            sText += '<expires>' + comps[i].expires + '</expires>';
-            sText += '<resptime>' + comps[i].respTime + '</resptime>';
-            sText += '<etag>' + comps[i].getEtag() + '</etag>';
-            sText += '</component>';
-        }
-        sText += '</components>';
-        return sText;
-    },
-
-    /**
-     * @member YSLOW.XMLRenderer
-     * Generate XML code for Grade tab
-     * @param {YSlow.ResultSet} resultset object containing result.
-     * @return xml code for Grades tab
-     * @type String
-     */
-    reportcardView: function (resultset) {
-        var i, j, result,
-            overall_score = resultset.getOverallScore(),
-            overall_grade = YSLOW.util.prettyScore(overall_score),
-            appliedRuleset = resultset.getRulesetApplied(),
-            results = resultset.getResults(),
-            sText = '<performance ruleset="' + appliedRuleset.name + '" url="' + resultset.url + '">';
-
-        sText += '<overall grade="' + overall_grade + '" score="' + overall_score + '" />';
-
-        for (i = 0; i < results.length; i += 1) {
-            result = results[i];
-
-            sText += '<lints id="' + result.rule_id + '" ruletext="' + result.name + '" hreftext="' + YSLOW.controller.getRule(result.rule_id).url + '" grade="' + YSLOW.util.prettyScore(result.score) + '" score="' + result.score + '" category="' + result.category.join(',') + '">';
-
-            sText += '<message>' + result.message + '</message>';
-            if (results.components && results.components.length > 0) {
-                sText += '<offenders>';
-                for (j = 0; j < result.components.length; j += 1) {
-                    if (typeof result.components[j] === "string") {
-                        sText += '<offender>' + result.components[j] + '</offender>';
-                    } else if (result.components[j].url !== undefined) {
-                        sText += '<offender>' + result.components[j].url + '</offender>';
-                    }
-                }
-                sText += '</offenders>';
-            }
-            sText += '</lints>';
-        }
-        sText += '</performance>';
-        return sText;
-    },
-
-    /**
-     * @member YSLOW.XMLRenderer
-     * Generate XML code for Stats tab
-     * @param {Object} stats page stats
-     * <ul>
-     * <li><code>PAGE.totalObjCountPrimed</code> a hash of components count group by type (primed cache)</li>
-     * <li><code>PAGE.totalObjSizePrimed</code> a hash of components size group by type (primed cache)</li>
-     * <li><code>PAGE.totalObjRequestsPrimed</code> total number of requests (primed cache)</li>
-     * <li><code>PAGE.totalSizePrimed</code> total size of all components (primed cache)</li>
-     * <li><code>PAGE.totalObjCount</code> a hash of components count group by type (empty cache)</li>
-     * <li><code>PAGE.totalObjSize</code> a hash of components size group by type (empty cache)</li>
-     * <li><code>PAGE.totalObjRequests</code> total number of requests (empty cache)</li>
-     * <li><code>PAGE.totalSize</code> total size of all components (empty cache)</li>
-     * </ul>
-     * @return xml code for Stats tab
-     * @type String
-     */
-    statsView: function (stats) {
-        var i, sType, sText,
-            primed_cache_items = '<items type="primedCache">',
-            empty_cache_items = '<items type="emptyCache">',
-            aTypes = YSLOW.peeler.types;
-
-        for (i = 0; i < aTypes.length; i += 1) {
-            sType = aTypes[i];
-            if ((stats.PAGE.totalObjCountPrimed[sType]) !== undefined) {
-                primed_cache_items += '<item type="' + sType + '" count="' + stats.PAGE.totalObjCountPrimed[sType] + '" size="' + stats.PAGE.totalObjSizePrimed[sType] + '" />';
-            }
-            if ((stats.PAGE.totalObjCount[sType]) !== undefined) {
-                empty_cache_items += '<item type="' + sType + '" count="' + stats.PAGE.totalObjCount[sType] + '" size="' + stats.PAGE.totalObjSize[sType] + '" />';
-            }
-        }
-        primed_cache_items += '</items>';
-        empty_cache_items += '</items>';
-
-        sText = '<stats numRequests="' + stats.PAGE.totalRequests + '" totalSize="' + stats.PAGE.totalSize + '" numRequests_p="' + stats.PAGE.totalRequestsPrimed + '" totalSize_p="' + stats.PAGE.totalSizePrimed + '">' + primed_cache_items + empty_cache_items + '</stats>';
-
-        return sText;
-    }
-});
-/**
- * Copyright (c) 2012, Yahoo! Inc.  All rights reserved.
- * Copyrights licensed under the New BSD License. See the accompanying LICENSE file for terms.
- */
-
-/*global YSLOW*/
-/*jslint white: true, onevar: true, undef: true, newcap: true, nomen: true, plusplus: true, bitwise: true, continue: true, maxerr: 50, indent: 4 */
 
 /**
  * @todo:
  * - need better way to discover @import stylesheets, the current one doesn't find them
  * - add request type - post|get - when possible, maybe in the net part of the peeling process
  *
- */
+     */
 
 /**
  * Peeler singleton
  * @class
  * @static
  */
-YSLOW.peeler = {
+MYSLOW.peeler = {
 
     /**
      * @final
@@ -8957,7 +5674,7 @@ YSLOW.peeler = {
      * @param {DOMElement} node object
      * @param {Number} onloadTimestamp onload timestamp
      * @return ComponentSet
-     * @type YSLOW.ComponentSet
+     * @type MYSLOW.ComponentSet
      */
     peel: function (node, onloadTimestamp) {
         // platform implementation goes here
@@ -8974,7 +5691,7 @@ YSLOW.peeler = {
         var frames, doc, docUrl, type, i, len, el, frameDocs, parentDoc,
             allDocs = {};
 
-        YSLOW.util.event.fire('peelProgress', {
+        MYSLOW.util.event.fire('peelProgress', {
             'total_step': 7,
             'current_step': 1,
             'message': 'Finding documents'
@@ -8985,7 +5702,7 @@ YSLOW.peeler = {
         }
 
         // check if frame digging was disabled, if so, return the top doc and return.
-        if (!YSLOW.util.Preference.getPref('extensions.yslow.getFramesComponents', true)) {
+        if (!MYSLOW.util.Preference.getPref('extensions.yslow.getFramesComponents', true)) {
             allDocs[node.URL] = {
                 'document': node,
                 'type': 'doc'
@@ -9018,7 +5735,7 @@ YSLOW.peeler = {
                     docUrl = !node.getAttribute('src') ? '' : 'about:blank';
                 }
             } catch (err) {
-                YSLOW.util.dump(err);
+                MYSLOW.util.dump(err);
             }
         } else {
             return allDocs;
@@ -9035,7 +5752,7 @@ YSLOW.peeler = {
                 if (el.src) {
                     frameDocs = this.findDocuments(el);
                     if (frameDocs) {
-                        allDocs = YSLOW.util.merge(allDocs, frameDocs);
+                        allDocs = MYSLOW.util.merge(allDocs, frameDocs);
                     }
                 }
             }
@@ -9045,11 +5762,11 @@ YSLOW.peeler = {
                 el = frames[i];
                 frameDocs = this.findDocuments(el);
                 if (frameDocs) {
-                    allDocs = YSLOW.util.merge(allDocs, frameDocs);
+                    allDocs = MYSLOW.util.merge(allDocs, frameDocs);
                 }
             }
         } catch (e) {
-            YSLOW.util.dump(e);
+            MYSLOW.util.dump(e);
         }
 
         return allDocs;
@@ -9070,34 +5787,34 @@ YSLOW.peeler = {
         try {
             comps = this.findStyleSheets(node, baseHref);
         } catch (e1) {
-            YSLOW.util.dump(e1);
+            MYSLOW.util.dump(e1);
         }
         try {
             comps = comps.concat(this.findScripts(node));
         } catch (e2) {
-            YSLOW.util.dump(e2);
+            MYSLOW.util.dump(e2);
         }
         try {
             comps = comps.concat(this.findFlash(node));
         } catch (e3) {
-            YSLOW.util.dump(e3);
+            MYSLOW.util.dump(e3);
         }
         try {
             comps = comps.concat(this.findCssImages(node));
         } catch (e4) {
-            YSLOW.util.dump(e4);
+            MYSLOW.util.dump(e4);
         }
         try {
             comps = comps.concat(this.findImages(node));
         } catch (e5) {
-            YSLOW.util.dump(e5);
+            MYSLOW.util.dump(e5);
         }
         try {
             if (type === 'doc') {
                 comps = comps.concat(this.findFavicon(node, baseHref));
             }
         } catch (e6) {
-            YSLOW.util.dump(e6);
+            MYSLOW.util.dump(e6);
         }
 
         return comps;
@@ -9109,14 +5826,14 @@ YSLOW.peeler = {
      * peeler. These can be xhr requests or images that are preloaded by
      * javascript.
      *
-     * @param {YSLOW.ComponentSet} component_set ComponentSet to be checked
+     * @param {MYSLOW.ComponentSet} component_set ComponentSet to be checked
      * against.
      * @param {String} base_herf base href
      */
     addComponentsNotInNode: function (component_set, base_href) {
         var i, j, imgs, type, objs,
             types = ['flash', 'js', 'css', 'doc', 'redirect'],
-            xhrs = YSLOW.net.getResponseURLsByType('xhr');
+            xhrs = MYSLOW.net.getResponseURLsByType('xhr');
 
         // Now, check net module for xhr component.
         if (xhrs.length > 0) {
@@ -9126,7 +5843,7 @@ YSLOW.peeler = {
         }
 
         // check image beacons
-        imgs = YSLOW.net.getResponseURLsByType('image');
+        imgs = MYSLOW.net.getResponseURLsByType('image');
         if (imgs.length > 0) {
             for (j = 0; j < imgs.length; j += 1) {
                 type = 'image';
@@ -9139,7 +5856,7 @@ YSLOW.peeler = {
 
         // should we check other types?
         for (i = 0; i < types.length; i += 1) {
-            objs = YSLOW.net.getResponseURLsByType(types[i]);
+            objs = MYSLOW.net.getResponseURLsByType(types[i]);
             for (j = 0; j < objs.length; j += 1) {
                 component_set.addComponentNoDuplicate(objs[j], types[i], base_href);
             }
@@ -9175,13 +5892,13 @@ YSLOW.peeler = {
                             href: href === node.URL ? '' : href,
                             containerNode: container
                         });
-                        cssUrl = YSLOW.util.makeAbsoluteUrl(href, baseHref);
+                        cssUrl = MYSLOW.util.makeAbsoluteUrl(href, baseHref);
                         comps = comps.concat(that.findImportedStyleSheets(el.sheet, cssUrl));
                     }
                 }
             };
 
-        YSLOW.util.event.fire('peelProgress', {
+        MYSLOW.util.event.fire('peelProgress', {
             'total_step': 7,
             'current_step': 2,
             'message': 'Finding StyleSheets'
@@ -9227,7 +5944,7 @@ YSLOW.peeler = {
             }
             for (i = 0, len = rules.length; i < len; i += 1) {
                 rule = rules[i];
-                if (rule.type === YSLOW.peeler.CSSRULE.IMPORT_RULE && rule.styleSheet && rule.href) {
+                if (rule.type === MYSLOW.peeler.CSSRULE.IMPORT_RULE && rule.styleSheet && rule.href) {
                     // It is an imported stylesheet!
                     comps.push({
                         type: 'css',
@@ -9235,9 +5952,9 @@ YSLOW.peeler = {
                         base: parentUrl
                     });
                     // Recursively check if this stylesheet itself imports any other stylesheets.
-                    cssUrl = YSLOW.util.makeAbsoluteUrl(rule.href, parentUrl);
+                    cssUrl = MYSLOW.util.makeAbsoluteUrl(rule.href, parentUrl);
                     comps = comps.concat(this.findImportedStyleSheets(rule.styleSheet, cssUrl));
-                } else if (rule.type === YSLOW.peeler.CSSRULE.FONT_FACE_RULE) {
+                } else if (rule.type === MYSLOW.peeler.CSSRULE.FONT_FACE_RULE) {
                     if (rule.style && typeof rule.style.getPropertyValue === 'function') {
                         ff = rule.style.getPropertyValue('src');
                         ff = reFile.exec(ff);
@@ -9255,7 +5972,7 @@ YSLOW.peeler = {
                 }
             }
         } catch (e) {
-            YSLOW.util.dump(e);
+            MYSLOW.util.dump(e);
         }
 
         return comps;
@@ -9294,7 +6011,7 @@ YSLOW.peeler = {
                 }
             };
 
-        YSLOW.util.event.fire('peelProgress', {
+        MYSLOW.util.event.fire('peelProgress', {
             'total_step': 7,
             'current_step': 3,
             'message': 'Finding JavaScripts'
@@ -9325,7 +6042,7 @@ YSLOW.peeler = {
         var i, el, els, len,
             comps = [];
 
-        YSLOW.util.event.fire('peelProgress', {
+        MYSLOW.util.event.fire('peelProgress', {
             'total_step': 7,
             'current_step': 4,
             'message': 'Finding Flash'
@@ -9370,7 +6087,7 @@ YSLOW.peeler = {
             props = ['backgroundImage', 'listStyleImage', 'content', 'cursor'],
             lenJ = props.length;
 
-        YSLOW.util.event.fire('peelProgress', {
+        MYSLOW.util.event.fire('peelProgress', {
             'total_step': 7,
             'current_step': 5,
             'message': 'Finding CSS Images'
@@ -9381,7 +6098,7 @@ YSLOW.peeler = {
             el = els[i];
             for (j = 0; j < lenJ; j += 1) {
                 prop = props[j];
-                url = YSLOW.util.getComputedStyle(el, prop, true);
+                url = MYSLOW.util.getComputedStyle(el, prop, true);
                 if (url && !hash[url]) {
                     comps.push({
                         type: 'cssimage',
@@ -9407,7 +6124,7 @@ YSLOW.peeler = {
             comps = [],
             hash = {};
 
-        YSLOW.util.event.fire('peelProgress', {
+        MYSLOW.util.event.fire('peelProgress', {
             'total_step': 7,
             'current_step': 6,
             'message': 'Finding Images'
@@ -9444,7 +6161,7 @@ YSLOW.peeler = {
         var i, len, link, links, rel,
             comps = [];
 
-        YSLOW.util.event.fire('peelProgress', {
+        MYSLOW.util.event.fire('peelProgress', {
             'total_step': 7,
             'current_step': 7,
             'message': 'Finding favicon'
@@ -9467,7 +6184,7 @@ YSLOW.peeler = {
         if (!comps.length) {
             comps.push({
                 type: 'favicon',
-                href: YSLOW.util.makeAbsoluteUrl('/favicon.ico', baseHref)
+                href: MYSLOW.util.makeAbsoluteUrl('/favicon.ico', baseHref)
             });
         }
 
@@ -9488,7 +6205,7 @@ YSLOW.peeler = {
             base = doc.getElementsByTagName('base')[0];
             base = (base && base.href) || doc.URL;
         } catch (e) {
-            YSLOW.util.dump(e);
+            MYSLOW.util.dump(e);
         }
 
         return base;
@@ -9499,9 +6216,9 @@ YSLOW.peeler = {
  * Copyrights licensed under the New BSD License. See the accompanying LICENSE file for terms.
  */
 
-/*global YSLOW*/
+/*global MYSLOW*/
 
-YSLOW.peeler.peel = function (node) {
+MYSLOW.peeler.peel = function (node) {
     var url, docs, doc, doct, baseHref,
         comps = [];
 
@@ -9529,8 +6246,8 @@ YSLOW.peeler.peel = function (node) {
             }
         }
     } catch (err) {
-        YSLOW.util.dump(err);
-        YSLOW.util.event.fire('peelError', {
+        MYSLOW.util.dump(err);
+        MYSLOW.util.event.fire('peelError', {
             'message': err
         });
     }
@@ -9542,16 +6259,16 @@ YSLOW.peeler.peel = function (node) {
  * Copyrights licensed under the New BSD License. See the accompanying LICENSE file for terms.
  */
 
-/*global YSLOW, Components*/
+/*global MYSLOW, Components*/
 /*jslint white: true, onevar: true, undef: true, nomen: true, eqeqeq: true, plusplus: true, bitwise: true, regexp: true, newcap: true, immed: true */
 
 /**
- * This class implement YSLOW.util.Preferences for Chrome.
+ * This class implement MYSLOW.util.Preferences for Chrome.
  * @class
  * @static
  */
 
-YSLOW.util.Preference.registerNative({
+MYSLOW.util.Preference.registerNative({
     prefDomain: 'extensions.yslow.',
 
     /**
