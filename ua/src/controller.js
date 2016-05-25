@@ -10,37 +10,11 @@ var comps, baseHref, fetchCount, reqCount, el, currentTab, docBody,
 $(function(){
     fetchResult(MYSLOW.peeler.peel(document));
     MYSLOW.util.event.addListener('componentFetchDone', function () {
-        // doc.ysview.show();
-        //console.log(comps);
         var cset = arguments.length ? arguments[0].component_set : {};
-        // component_info:Array[0]
-        // components:Array[14]
-        // cookies:"BAIDUID=0D4E214FCF51E4E9B7B21E3D8E9C65F7:FG=1; pgv_pvi=8748750848; locale=zh; BIDUPSID=0D4E214FCF51E4E9B7B21E3D8E9C65F7; PSTM=1463986001; BAIDULOC=12950584.427097_4835038.074741293_30_131_1463986126418; H5LOC=1; BD_UPN=123253; BD_HOME=0; H_PS_PSSID=; plus_cv=0::m:1-nav:250e8bac-hotword:ffd4f671; plus_lsv=9b5298d2b94c6f56; H_WISE_SIDS=106240_102907_106379_102567_104487_100273_102479_106197_106369_104483_106029_106064_104341_106323_106434_103999_106460_104845_104639_106071; BDSVRTM=15"
-        // doc_comp:MYSLOW.Component
-        // domElementsCount:677
-        // inline:Object
-        // nextID:15
-        // notified_fetch_done:true
-        // onloadTimestamp:undefined
-        // outstanding_net_request:0
-        // root_node:document
         MYSLOW.controller.lint(doc, yscontext);
-
         //lint 的结果yscontext.result_set.results
-        // {
-        //   "score": 0,
-        //   "message": "There xxx",
-        //   "components": [
-        //     "m.baidu.com: 12 components, 19.1K <button onclick=\"javascript:document.ysview.addCDN('m.baidu.com')\">Add as CDN</button>"
-        //   ],
-        //   "weight": 6,
-        //   "name": "Use a Content Delivery Network (CDN)",
-        //   "category": [
-        //     "server"
-        //   ],
-        //   "rule_id": "ycdn"
-        // }"
-
+        //资源大小 yscontext.component_set.components
+        //资源分类总和 yscontext.PAGE.totalObjSize
         helper.renderYslowPanel(yscontext);
     });
 });
@@ -183,7 +157,7 @@ function getCookies(comp, last) {
 function peelDone() {
     var cset = yscontext.component_set;
     yscontext.collectStats();
-    // processData(cset);
+    processData(yscontext);
     MYSLOW.util.event.fire('componentFetchProgress', {
         'total': fetchCount + 2,
         'current': fetchCount + 2,
@@ -196,13 +170,25 @@ function peelDone() {
 }
 
 function processData(cset){
-    cset.totalWeight = cset.components.reduce(function(pre, cur, index){
-        return pre.size + cur.size;
-    });
-    cset.allReqCount = cset.components.length;
-    cset.byTypes = {};
-    cset.components.forEach(function(item, idx){
-        cset.byTypes[item.type] = cset.byTypes[item.type] || [];
-        cset.byTypes[item.type].push(item);
+    var totalSize = yscontext.PAGE.totalSize;
+    var timing = window.performance.timing;
+    yscontext.estimateTime= [
+        {
+            networkType: '2G',
+            speed: 35,
+        },
+        {
+            networkType: '3G',
+            speed: 150,
+        },
+        {
+            networkType: 'WiFi',
+            speed: 500
+        }
+    ];
+    yscontext.estimateTime = yscontext.estimateTime.map(function(item){
+        item.downloadTime = yscontext.PAGE.totalSize/1000/item.speed;
+        item.totalTime = (timing.responseStart - timing.navigationStart  + timing.loadEventEnd - timing.domLoading)/1000 + item.downloadTime;
+        return item;
     });
 }

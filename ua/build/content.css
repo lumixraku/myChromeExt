@@ -18,6 +18,12 @@
     font-weight: bold;
     line-height: 30px;
     height: 30px; }
+  .info-panel .info-loading {
+    opacity: 0.5;
+    min-height: 200px;
+    line-height: 200px;
+    text-align: center;
+    background-color: rgba(127, 127, 127, 0.5); }
   .info-panel .infos {
     display: flex;
     flex-flow: row wrap; }

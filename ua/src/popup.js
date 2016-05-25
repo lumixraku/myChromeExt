@@ -6,8 +6,6 @@ var msg = doc.querySelector('.msg');
 document.addEventListener('DOMContentLoaded', function(e) {
     if (storeValue) {
         input.value = storeValue;
-    }else{
-        input.value = 'http://';
     }
     input.addEventListener('keydown', function(e){
         if(e.keyCode === 13){
@@ -18,12 +16,14 @@ document.addEventListener('DOMContentLoaded', function(e) {
 
     function saveHandler(){
         var value = input.value;
-        if(!/^https?:\/\/.*/.test(value)){
+        if( value !== '' &&  !/^https?:\/\/.*/.test(value)){
             value = 'http://' + value;
         }
         localStorage.setItem('url', value);
         chrome.storage.sync.set({ 'url': value }, function() {
-            msg.innerHTML = '设置成功 请刷新页面';
+            if(input.value !== ''){
+                msg.innerHTML = '设置成功 请刷新页面';
+            }
         });
         sendToBG(value);
         // sendToContent(value);

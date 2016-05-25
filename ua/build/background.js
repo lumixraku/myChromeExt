@@ -9,13 +9,17 @@ function getUrlForFilter() {
     var url = localStorage.getItem('url');
     var rs = [];
     var arr = [];
+
+    //如果保存了url  那么一定是以 http  或者  https 开头的
     if (/^https?:\/\/(.*)/.test(url)) {
         rs = url.match(/^https?:\/\/(.*)/);
         if (rs[1]) {
             arr.push('*://*.' + rs[1] + '/*');
         }
+    }else{
+        arr = ['heheda.com'];  // arr= []会匹配所有的url
     }
-    console.log(arr[0]);
+    console.log(arr);
     return arr;
 }
 
@@ -39,6 +43,7 @@ chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
 });
 
 chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
+    var url = localStorage.getItem('url');
     if (!sender.tab) {
         if (message.from === 'popup_save') {
             // 响应从popup 保存的请求
@@ -48,19 +53,21 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
             }, ['requestHeaders', 'blocking']);
 
             //打开新 tab
-            chrome.tabs.query({
-                active: true,
-                currentWindow: true
-            }, function(tabs) {
-                // 打开新tab
-                chrome.tabs.create({
-                    index: tabs[tabs.length - 1].index + 1,
-                    url: localStorage.getItem('url'),
-                    active: true
-                }, function(tab) {
+            if (url !== '') {
+                chrome.tabs.query({
+                    active: true,
+                    currentWindow: true
+                }, function(tabs) {
+                    // 打开新tab
+                    chrome.tabs.create({
+                        index: tabs[tabs.length - 1].index + 1,
+                        url: localStorage.getItem('url'),
+                        active: true
+                    }, function(tab) {
 
+                    });
                 });
-            });
+            }
         }
     } else {
         //controller 有一个获取cookies 的请求
@@ -76,7 +83,7 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
                 }
                 sendResponse(cookieStr);
             });
-            return true;//async send messae should return true
+            return true; //async send messae should return true
             //http://pymaster.logdown.com/post/176203-chrome-extension-under-the-context-of-the-onmessage-asynchronous-sendresponse
         }
 

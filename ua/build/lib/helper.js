@@ -25,7 +25,8 @@ helper = (function() {
             var func = new Function(body);
             var map  = { '&' : '&amp;', '<' : '&lt;', '>' : '&gt;', '\x22' : '&#x22;', '\x27' : '&#x27;' };
             var escapeHTML = function (string) { return (''+string).replace(/[&<>\'\"]/g, function (_) { return map[_] }) };
-            return function (stash) { return func.call(me.context = { escapeHTML: escapeHTML, line: 1, ret : '', stash: stash }) };
+            var noEscapeHTML = function(string) {return string};
+            return function (stash) { return func.call(me.context = { escapeHTML: noEscapeHTML, line: 1, ret : '', stash: stash }) };
         })();
         return data ? me.cache[id](data) : me.cache[id];
     }
@@ -150,8 +151,9 @@ helper = (function() {
     helper.renderYslowPanel = function(data, $performancePanel){
         var $reqInfo = $('#req-info');
         var $gradeInfo = $('#grade-info');
+        var $timeInfo = $('#time-info');
         var tplFn1 = helper.template("<div class=\"infos\">\n    <%for(key in item){%>\n    <div class=\"info\">\n        <div class=\"title\">\n            <%= key%>\n        </div>\n        <div class=\"val\">\n            <%= item[key] %>\n        </div>\n    </div>\n    <%}%>\n</div>");
-        var tplFn2 = helper.template("<div class=\"infos list\">\n    <% for (var i=0; i < list.length; i++) { %>\n        <div class=\"info\">\n            <div class=\"title\">\n                <%= list[i].url%> :\n            </div>\n            <div class=\"val\">\n                (TYPE:<%= list[i].type %>) &nbsp;\n                Size: <%= (list[i].size/1000).toFixed(2) %> &nbsp;\n                <span class=\"unit\">Kb</span>\n            </div>\n        </div>\n        <% } %>\n</div>\n");
+        var tplFn2 = helper.template("<div class=\"infos list\">\n    <% for (var i=0; i < list.length; i++) { %>\n        <div class=\"info\">\n            <div class=\"title\">\n                <%= list[i].url%> :\n            </div>\n            <div class=\"val\">\n                (TYPE:<%= list[i].type %>) &nbsp;\n                <% var size = list[i].size_compressed || list[i].size %>\n                Size: <%= (size/1000).toFixed(2) %> &nbsp;\n                <span class=\"unit\">Kb</span>\n            </div>\n        </div>\n        <% } %>\n</div>\n");
         $reqInfo.html(['<div class="panel-title">请求信息</div>', tplFn1({
             item:{
                 domCount: data.component_set.domElementsCount,
@@ -173,13 +175,17 @@ helper = (function() {
         $gradeInfo.html(['<div class="panel-title">页面性能指标和建议</div>',tplFn3({
             list: data.result_set.results
         })].join(''));
+        var tplFn4 = helper.template("<div class=\"panel-title\">预计加载时间</div>\n<div class=\"infos list\">\n    <% for (var i=0; i < items.length; i++) { %>\n        <div class=\"info\">\n            <div class=\"title\">\n                在<%= items[i].networkType%>的网络环境中\n            </div>\n            <div class=\"val\">\n                <%= (items[i].totalTime).toFixed(2)%>\n                    <span class=\"unit\">\n                秒\n                </span>\n            </div>\n        </div>\n        <% } %>\n</div>\n");
+        $timeInfo.html(tplFn4({
+            items: data.estimateTime
+        }));
 
     };
     helper.renderPerformacePanel = function(data) {
         var $basicInfo = $('#basic-info');
         var $memoryInfo = $('#memory-info');
         var $resourceInfo = $('#resource-info');
-        var tplFn = helper.template("<div class=\"panel-title\">加载信息</div>\n<div class=\"infos\">\n    <% for (var i=0; i < items.length; i++) { %>\n        <div class=\"info connect-info\">\n            <div class=\"title\">\n                <%= items[i].name%>\n            </div>\n            <div class=\"val\">\n                <%= Math.round(items[i].value)%>\n                    <span class=\"unit\">\n                <%= items[i].unit%>\n                </span>\n            </div>\n            <div class=\"popup\">\n                <%= items[i].desc %>\n            </div>\n        </div>\n        <% } %>\n</div>\n");
+        var tplFn = helper.template("<div class=\"panel-title\">加载信息</div>\n<div class=\"infos\">\n    <% for (var i=0; i < items.length; i++) { %>\n        <div class=\"info connect-info\">\n            <div class=\"title\">\n                <%= items[i].name%>\n            </div>\n            <div class=\"val\">\n                <%= Math.round(items[i].value)%>\n                    <span class=\"unit\">\n                <%= (items[i].unit || '') %>\n                </span>\n            </div>\n            <div class=\"popup\">\n                <%= items[i].desc %>\n            </div>\n        </div>\n        <% } %>\n</div>\n");
         $basicInfo.html(tplFn({
             items: data.perfTiming
         }));

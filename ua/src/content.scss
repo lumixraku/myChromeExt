@@ -21,6 +21,13 @@
         line-height: 30px;
         height: 30px;
     }
+    .info-loading{
+        opacity: 0.5;
+        min-height: 200px;
+        line-height: 200px;
+        text-align:center;
+        background-color:rgba(127,127,127,0.5);
+    }
     .infos {
         display: flex;
         flex-flow: row wrap;

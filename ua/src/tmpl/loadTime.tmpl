@@ -1,0 +1,16 @@
+<div class="panel-title">预计加载时间</div>
+<div class="infos list">
+    <% for (var i=0; i < items.length; i++) { %>
+        <div class="info">
+            <div class="title">
+                在<%= items[i].networkType%>的网络环境中
+            </div>
+            <div class="val">
+                <%= (items[i].totalTime).toFixed(2)%>
+                    <span class="unit">
+                秒
+                </span>
+            </div>
+        </div>
+        <% } %>
+</div>

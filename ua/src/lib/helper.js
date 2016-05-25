@@ -25,7 +25,8 @@ helper = (function() {
             var func = new Function(body);
             var map  = { '&' : '&amp;', '<' : '&lt;', '>' : '&gt;', '\x22' : '&#x22;', '\x27' : '&#x27;' };
             var escapeHTML = function (string) { return (''+string).replace(/[&<>\'\"]/g, function (_) { return map[_] }) };
-            return function (stash) { return func.call(me.context = { escapeHTML: escapeHTML, line: 1, ret : '', stash: stash }) };
+            var noEscapeHTML = function(string) {return string};
+            return function (stash) { return func.call(me.context = { escapeHTML: noEscapeHTML, line: 1, ret : '', stash: stash }) };
         })();
         return data ? me.cache[id](data) : me.cache[id];
     }
@@ -150,6 +151,7 @@ helper = (function() {
     helper.renderYslowPanel = function(data, $performancePanel){
         var $reqInfo = $('#req-info');
         var $gradeInfo = $('#grade-info');
+        var $timeInfo = $('#time-info');
         var tplFn1 = helper.template(__inline('../tmpl/req1.tmpl'));
         var tplFn2 = helper.template(__inline('../tmpl/req2.tmpl'));
         $reqInfo.html(['<div class="panel-title">请求信息</div>', tplFn1({
@@ -173,6 +175,10 @@ helper = (function() {
         $gradeInfo.html(['<div class="panel-title">页面性能指标和建议</div>',tplFn3({
             list: data.result_set.results
         })].join(''));
+        var tplFn4 = helper.template(__inline('../tmpl/loadTime.tmpl'));
+        $timeInfo.html(tplFn4({
+            items: data.estimateTime
+        }));
 
     };
     helper.renderPerformacePanel = function(data) {
