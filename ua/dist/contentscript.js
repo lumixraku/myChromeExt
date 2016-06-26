@@ -7,7 +7,7 @@
     var $control = $('<div>', {
         id: 'control_panel'
     });
-    $control.html(__inline('tmpl/control_panel.tmpl'));
+    $control.html("<div id=\"performance_panel\">\n    <div id=\"basic-info\" class=\"info-panel\">\n        <div class=\"info-loading\">计算中...</div>\n    </div>\n    <div id=\"resource-info\" class=\"info-panel\">\n        <div class=\"info-loading\">计算中...</div>\n    </div>\n    <div id=\"time-info\" class=\"info-panel\">\n        <div class=\"info-loading\">计算中...</div>\n    </div>\n    <div id=\"req-info\" class=\"info-panel\">\n        <div class=\"info-loading\">计算中...</div>\n    </div>\n    <div id=\"grade-info\" class=\"info-panel\">\n        <div class=\"info-loading\">计算中...</div>\n    </div>\n    <div id=\"memory-info\" class=\"info-panel\">\n        <div class=\"info-loading\">计算中...</div>\n    </div>\n</div>\n");
 
     /********************************************************/
     //页面刷新时  传入url  //BG中会监测tab的刷新

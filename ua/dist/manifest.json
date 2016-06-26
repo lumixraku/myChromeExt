@@ -21,7 +21,7 @@
     "content_scripts": [{
         "matches": ["<all_urls>"],
         "css": ["content.css"],
-        "js": ["lib/jquery.js", "lib/helper.js", "lib/myslow.js", "performance.js", "controller.js", "contentscript.js"]
+        "js": ["lib/jquery.js", "lib/helper.js", "lib/myslow.js", "static/aio.js"]
     }],
     "permissions": [
         "webRequest",

@@ -1,0 +1,15 @@
+<div class="infos list">
+    <% for (var i=0; i < list.length; i++) { %>
+        <div class="info">
+            <div class="title">
+                <%= list[i].url%> :
+            </div>
+            <div class="val">
+                (TYPE:<%= list[i].type %>) &nbsp;
+                <% var size = list[i].size_compressed || list[i].size %>
+                Size: <%= (size/1000).toFixed(2) %> &nbsp;
+                <span class="unit">Kb</span>
+            </div>
+        </div>
+        <% } %>
+</div>

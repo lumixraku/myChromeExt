@@ -175,15 +175,15 @@ function processData(cset){
     yscontext.estimateTime= [
         {
             networkType: '2G',
-            speed: 35,
+            speed: 50,
         },
         {
             networkType: '3G',
-            speed: 150,
+            speed: 250,
         },
         {
             networkType: 'WiFi',
-            speed: 500
+            speed: 1000
         }
     ];
     yscontext.estimateTime = yscontext.estimateTime.map(function(item){
